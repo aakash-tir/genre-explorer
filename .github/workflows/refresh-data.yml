@@ -1,0 +1,75 @@
+name: Refresh dataset
+
+# Rebuilds public/data/ from MusicBrainz, ListenBrainz and Deezer, and opens a PR with
+# the result. Never pushes to main — the dataset goes through the same review gate as
+# code, which is the whole point of the sharp-drop guard in the pipeline.
+#
+# THE SCHEDULE IS DELIBERATELY COMMENTED OUT. `npm run build:dataset` is a stub until
+# milestone 2 and would fail every Sunday, training everyone to ignore a red workflow.
+# Uncomment the cron in the PR that lands the pipeline.
+on:
+  # schedule:
+  #   # Sundays 04:00 UTC. MusicBrainz is quietest then, and the scrape takes ~40 minutes.
+  #   - cron: '0 4 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: rebuild and open PR
+    runs-on: ubuntu-latest
+    # The MusicBrainz scrape is 2,184 requests at 1 req/s, so allow well over the ~40
+    # minutes it should take.
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Caches the upstream HTTP responses between runs so a rerun after a failure does
+      # not re-hammer MusicBrainz from scratch.
+      - name: Restore pipeline cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/build-dataset
+          key: build-dataset-${{ github.run_id }}
+          restore-keys: build-dataset-
+
+      - name: Rebuild dataset
+        run: npm run build:dataset
+
+      # The dataset must pass the same schema and consistency tests as a code change.
+      - name: Validate
+        run: npm test
+
+      - name: Open PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: data/weekly-refresh
+          title: 'data: weekly dataset refresh'
+          commit-message: 'data: weekly dataset refresh'
+          body: |
+            Automated rebuild of `public/data/` from MusicBrainz, ListenBrainz and Deezer.
+
+            Check before merging:
+            - [ ] Node and edge counts look sane against the previous dataset
+            - [ ] No genre family has vanished
+            - [ ] `graph.json` is still within the ~400 KB budget
+
+            The pipeline fails outright on a sharp drop, so a green run means the counts
+            are within tolerance — but tolerance is not the same as correct.
+          labels: data, automated
+          delete-branch: true

@@ -1,0 +1,44 @@
+{
+  "id": "techno",
+  "popularArtists": [
+    {
+      "mbid": "f22942a1-6f70-4f48-866e-238cb2308fbd",
+      "name": "Aphex Twin",
+      "listens": 14807187,
+      "links": [
+        {
+          "kind": "spotify",
+          "url": "https://open.spotify.com/artist/6kBDZFXuLrZgHnvmPu9NsG"
+        },
+        { "kind": "soundcloud", "url": "https://soundcloud.com/aphex-twin-official" },
+        { "kind": "bandcamp", "url": "https://aphextwin.bandcamp.com/" }
+      ]
+    }
+  ],
+  "smallArtists": [
+    {
+      "mbid": "2f9ecbed-27be-40e6-abca-6de49d50299e",
+      "name": "Ceephax Acid Crew",
+      "listens": 41522,
+      "links": [{ "kind": "discogs", "url": "https://www.discogs.com/artist/8271" }]
+    }
+  ],
+  "popularTracks": [
+    {
+      "mbid": "959115ab-4d35-4ffc-a243-0c46031697aa",
+      "title": "Sinking",
+      "artistName": "Alabama 3",
+      "listens": 5286,
+      "links": []
+    }
+  ],
+  "obscureTracks": [
+    {
+      "mbid": "8d581b03-f8dc-4094-85a1-a3a505517824",
+      "title": "Walk On",
+      "artistName": "Sunscreem",
+      "listens": 3,
+      "links": []
+    }
+  ]
+}

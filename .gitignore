@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build output
+dist/
+dist-ssr/
+build/
+*.local
+
+# Pipeline cache — upstream HTTP responses, regenerable, large
+.cache/
+
+# Secrets. There should never be any in this project (every data source is open and
+# unauthenticated), but a static site is a terrible place to discover otherwise.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+credentials.json
+secrets.json
+.npmrc
+
+# Test + tooling output
+coverage/
+.vitest/
+.eslintcache
+*.tsbuildinfo
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude local overrides (project settings.json IS committed)
+.claude/settings.local.json
+.claude/CLAUDE.local.json
+CLAUDE.local.md
+
+# NOTE: public/data/ and graphify-out/ are deliberately NOT ignored — they are
+# tracked build artifacts, refreshed by PR. Only graphify's local AST cache is skipped;
+# it is regenerable and would add churn to every commit.
+graphify-out/cache/

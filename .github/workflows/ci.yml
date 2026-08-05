@@ -1,0 +1,61 @@
+name: CI
+
+# Runs on every PR and on pushes to main. The `verify` job is wired up as a required
+# status check on main, so a red run blocks the merge button — see docs/runbooks/.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A new push to a PR cancels the previous run for that branch. Saves Actions minutes
+# without ever cancelling a run against main.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Type check
+        run: npm run typecheck
+
+      # The gate. Everything above catches sloppiness; this catches wrongness.
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      # The dataset is a committed artifact refreshed by an automated PR. Bundling it
+      # proves the shipped payload is the one the tests validated, and makes the
+      # graph.json size budget visible in the run summary.
+      - name: Report bundle and dataset size
+        run: |
+          echo "### Payload" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          du -sh dist >> "$GITHUB_STEP_SUMMARY"
+          ls -lh public/data/graph.json >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"

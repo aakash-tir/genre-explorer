@@ -1,0 +1,96 @@
+/* Skeleton styling only. The real visual design lands with the canvas in milestone 3. */
+
+:root {
+  --bg: #08080c;
+  --panel: #101018;
+  --ink: #e8e8f0;
+  --ink-dim: #9a9ab0;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font:
+    15px/1.5 system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 240px 1fr 320px;
+  height: 100%;
+}
+
+.filters,
+.detail {
+  background: var(--panel);
+  padding: 1rem 1.25rem;
+  overflow-y: auto;
+}
+
+.canvas-host {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.stub {
+  color: var(--ink-dim);
+  font-style: italic;
+}
+
+.counts {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.25rem 1.5rem;
+  margin: 0;
+}
+
+.counts dt {
+  color: var(--ink-dim);
+}
+
+.counts dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 0.5rem;
+}
+
+.status--error pre {
+  max-width: 60ch;
+  white-space: pre-wrap;
+  color: #ff9b9b;
+}
+
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+}
