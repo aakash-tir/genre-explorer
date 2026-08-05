@@ -3044,7 +3044,7 @@
       "label": "Decisions still open",
       "file_type": "document",
       "source_file": "docs/future.md",
-      "source_location": "L32",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "docs_future_decisions_still_open",
       "community": 15,
@@ -3055,7 +3055,7 @@
       "label": "Upstream watch",
       "file_type": "document",
       "source_file": "docs/future.md",
-      "source_location": "L45",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "docs_future_upstream_watch",
       "community": 15,
@@ -3066,7 +3066,7 @@
       "label": "Scaling",
       "file_type": "document",
       "source_file": "docs/future.md",
-      "source_location": "L56",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "docs_future_scaling",
       "community": 15,
@@ -3514,21 +3514,21 @@
       "norm_label": "verifying it took"
     },
     {
-      "label": "\u26a0\ufe0f Current state: server-side protection is NOT active",
+      "label": "If it fails",
       "file_type": "document",
       "source_file": "docs/runbooks/ci-and-branch-protection.md",
       "source_location": "L69",
       "_origin": "ast",
-      "id": "docs_runbooks_ci_and_branch_protection_current_state_server_side_protection_is_not_active",
+      "id": "docs_runbooks_ci_and_branch_protection_if_it_fails",
       "community": 12,
       "community_name": "Runbook \u2014 CI and branch protection",
-      "norm_label": "\u26a0\ufe0f current state: server-side protection is not active"
+      "norm_label": "if it fails"
     },
     {
       "label": "Day-to-day workflow",
       "file_type": "document",
       "source_file": "docs/runbooks/ci-and-branch-protection.md",
-      "source_location": "L107",
+      "source_location": "L80",
       "_origin": "ast",
       "id": "docs_runbooks_ci_and_branch_protection_day_to_day_workflow",
       "community": 12,
@@ -3539,7 +3539,7 @@
       "label": "The dataset refresh workflow",
       "file_type": "document",
       "source_file": "docs/runbooks/ci-and-branch-protection.md",
-      "source_location": "L123",
+      "source_location": "L96",
       "_origin": "ast",
       "id": "docs_runbooks_ci_and_branch_protection_the_dataset_refresh_workflow",
       "community": 12,
@@ -8008,7 +8008,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/future.md",
-      "source_location": "L32",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_future_future",
@@ -8041,7 +8041,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/future.md",
-      "source_location": "L56",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_future_future",
@@ -8052,7 +8052,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/future.md",
-      "source_location": "L45",
+      "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_future_future",
@@ -8426,7 +8426,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/runbooks/ci-and-branch-protection.md",
-      "source_location": "L107",
+      "source_location": "L80",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_runbooks_ci_and_branch_protection_runbook_ci_and_branch_protection",
@@ -8437,7 +8437,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/runbooks/ci-and-branch-protection.md",
-      "source_location": "L123",
+      "source_location": "L96",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_runbooks_ci_and_branch_protection_runbook_ci_and_branch_protection",
@@ -8474,7 +8474,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_runbooks_ci_and_branch_protection_branch_protection_on_main",
-      "target": "docs_runbooks_ci_and_branch_protection_current_state_server_side_protection_is_not_active",
+      "target": "docs_runbooks_ci_and_branch_protection_if_it_fails",
       "confidence_score": 1.0
     },
     {
@@ -8709,6 +8709,5 @@
       "confidence_score": 1.0
     }
   ],
-  "hyperedges": [],
-  "built_at_commit": "28aaa467bf9b09e4e1e1071f926ac28e7f5e5501"
+  "hyperedges": []
 }
