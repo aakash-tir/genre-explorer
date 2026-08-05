@@ -1,18 +1,13 @@
 # Graph Report - genre-explorer  (2026-08-04)
 
 ## Corpus Check
-- 45 files · ~25,931 words
+- 45 files · ~25,702 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
 - 343 nodes · 432 edges · 28 communities (26 shown, 2 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
-
-## Graph Freshness
-- Built from commit: `28aaa467`
-- Run `git rev-parse HEAD` and compare to check if the graph is stale.
-- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - devDependencies
@@ -116,7 +111,7 @@ Nodes (9): After every PR merge (required), Backlog (required), Change log (requ
 
 ### Community 12 - "Runbook — CI and branch protection"
 Cohesion: 0.22
-Nodes (8): Applying it, Branch protection on `main`, ⚠️ Current state: server-side protection is NOT active, Day-to-day workflow, Runbook — CI and branch protection, The dataset refresh workflow, The gate, Verifying it took
+Nodes (8): Applying it, Branch protection on `main`, Day-to-day workflow, If it fails, Runbook — CI and branch protection, The dataset refresh workflow, The gate, Verifying it took
 
 ### Community 13 - "colors.ts"
 Cohesion: 0.50
