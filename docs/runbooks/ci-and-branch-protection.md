@@ -66,16 +66,43 @@ gh api repos/{owner}/genre-explorer/branches/main/protection \
          conversations: .required_conversation_resolution.enabled}'
 ```
 
-### If it fails
+### ⚠️ Current state: server-side protection is NOT active
 
-Branch protection on **private** repositories requires a paid GitHub plan (Pro, Team or
-Enterprise). On a free account the API returns **403 Upgrade to GitHub Pro**.
+Attempted on **2026-08-04**. Both APIs refused:
 
-If that happens, say so — do not quietly skip it. The local hook still blocks direct
-commits from Claude Code sessions, but there is **no server-side enforcement**: a plain
-`git push origin main` from a normal terminal will succeed. The options are to upgrade
-the plan, make the repo public (rulesets are free on public repos), or accept the local
-hook as the only guard.
+```
+PUT  repos/aakash-tir/genre-explorer/branches/main/protection
+POST repos/aakash-tir/genre-explorer/rulesets
+→ 403 "Upgrade to GitHub Pro or make this repository public to enable this feature."
+```
+
+Verified afterwards rather than assumed:
+
+```
+gh api repos/aakash-tir/genre-explorer/branches/main --jq '.protected'
+→ false
+```
+
+Branch protection and rulesets on **private** repositories require a paid GitHub plan
+(Pro, Team or Enterprise). This repo is private on a free account, so:
+
+- **`.claude/hooks/protect-main.sh` is the only guard.** It blocks `git commit`,
+  `git merge` and `git push` against `main` from inside Claude Code sessions.
+- **A plain `git push origin main` from a normal terminal will succeed.** There is
+  nothing server-side stopping it.
+- **CI still runs** on every PR and push to `main` — it just cannot _block_ a merge.
+  A red run is visible, not enforced.
+
+Three ways out, in rough order of cost:
+
+1. **Make the repo public.** Rulesets and branch protection are free on public repos, and
+   the gate becomes real immediately. Nothing in this project is secret — there are no API
+   keys anywhere, by design.
+2. **Upgrade to GitHub Pro** (~$4/month) and re-run the command above.
+3. **Accept the local hook** and treat the PR workflow as a discipline rather than a gate.
+
+Re-run the `gh api -X PUT` command above after doing 1 or 2, then verify with the check
+below. Do not assume it took.
 
 ## Day-to-day workflow
 
