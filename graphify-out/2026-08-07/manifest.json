@@ -30,8 +30,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1786086936.5446835,
-    "ast_hash": "7c4055d5cf9bd9e87857dbfd6076d9af",
+    "mtime": 1785901339.5367568,
+    "ast_hash": "b2ce1422f636c71133cfd3273573e4b4",
     "semantic_hash": ""
   },
   "public/data/genres/techno.json": {
@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1786086936.5456822,
-    "ast_hash": "9d2bf19514cb7fe17cf95e148fab0d11",
+    "mtime": 1785901666.9504685,
+    "ast_hash": "9167ad11d685fa73e129f9b051c72eab",
     "semantic_hash": ""
   },
   "src/graph/colors.ts": {
@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   ".claude/progress.md": {
-    "mtime": 1786086936.538482,
-    "ast_hash": "5cbc1bc431cf567c0e23f2d10adc099c",
+    "mtime": 1786085868.9641492,
+    "ast_hash": "f3aa2e428d96386c866aae659de0a69f",
     "semantic_hash": ""
   },
   ".claude/project-context.md": {
@@ -205,8 +205,8 @@
     "semantic_hash": ""
   },
   "docs/future.md": {
-    "mtime": 1786086936.539492,
-    "ast_hash": "0843caa56c9c787c8d011c2be248188e",
+    "mtime": 1786085868.966159,
+    "ast_hash": "e4383f014b61a9c06955d19d36e530a8",
     "semantic_hash": ""
   },
   "docs/research/graph-rendering.md": {
@@ -322,31 +322,6 @@
   "tests/fixtures/genre-grunge.html": {
     "mtime": 1786085868.979142,
     "ast_hash": "acab142272d7eef779ee43069a645afb",
-    "semantic_hash": ""
-  },
-  "src/graph/GraphCanvas.tsx": {
-    "mtime": 1786086936.5456822,
-    "ast_hash": "df828b8f5f7d94a86808095eb99eb8a5",
-    "semantic_hash": ""
-  },
-  "src/graph/camera.ts": {
-    "mtime": 1786086936.5466814,
-    "ast_hash": "bd40dfdaced4251b9bb127e05c6a46af",
-    "semantic_hash": ""
-  },
-  "tests/graph/camera.test.ts": {
-    "mtime": 1786086936.5486813,
-    "ast_hash": "e72ca76dea93f4435dbdd882f08f9505",
-    "semantic_hash": ""
-  },
-  "docs/architecture/architecture-diagram.html": {
-    "mtime": 1786086451.5012565,
-    "ast_hash": "d9c94ad4da5074ce3da843bb08dc6872",
-    "semantic_hash": ""
-  },
-  "logs/2026-08-07.md": {
-    "mtime": 1786086936.541682,
-    "ast_hash": "469c1f053f8d02f3fb69fe8648f7ea44",
     "semantic_hash": ""
   }
 }
