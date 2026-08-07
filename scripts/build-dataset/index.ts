@@ -25,9 +25,22 @@
  */
 import { MIN_RELEASE_GROUPS } from './config';
 import { buildGraph } from './build-graph';
+import { emitDetail } from './emit-details';
+import {
+  fetchEntities,
+  type CandidateArtist,
+  type CandidateRecording,
+} from './fetch-entities';
 import { fetchGenres } from './fetch-genres';
 import { fetchHierarchy } from './fetch-hierarchy';
+import { fetchArtistLinks } from './fetch-links';
 import { fetchPopularity } from './fetch-popularity';
+import {
+  fetchArtistListens,
+  fetchRecordingListens,
+  selectEntities,
+  type Ranked,
+} from './rank';
 import { emitGraph } from './emit';
 import { layoutGraph } from './layout';
 
@@ -60,6 +73,57 @@ export async function buildDataset(): Promise<void> {
 
   console.log('stage 8: emit');
   await emitGraph({ builtAt: new Date().toISOString(), nodes: placed, edges });
+
+  console.log('stages 4-5: entities + ranking + links (cold cache ≈ 3 h)');
+  let done = 0;
+  let emptyPanels = 0;
+  for (const node of placed) {
+    const candidates = await fetchEntities(node);
+    const artistListens = await fetchArtistListens(
+      node.mbid,
+      candidates.artists.map((a) => a.mbid),
+    );
+    const recordingListens = await fetchRecordingListens(
+      node.mbid,
+      candidates.recordings.map((r) => r.mbid),
+    );
+    const artists = selectEntities(candidates.artists, artistListens);
+    const tracks = selectEntities(candidates.recordings, recordingListens);
+
+    const toArtist = async (r: Ranked<CandidateArtist>) => ({
+      mbid: r.entity.mbid,
+      name: r.entity.name,
+      listens: r.listens,
+      links: await fetchArtistLinks(r.entity.mbid),
+    });
+    const toTrack = (r: Ranked<CandidateRecording>) => ({
+      mbid: r.entity.mbid,
+      title: r.entity.title,
+      artistName: r.entity.artistName,
+      listens: r.listens,
+      links: [],
+    });
+
+    const popularArtists = [];
+    for (const r of artists.popular) popularArtists.push(await toArtist(r));
+    const smallArtists = [];
+    for (const r of artists.obscure) smallArtists.push(await toArtist(r));
+
+    await emitDetail({
+      id: node.id,
+      popularArtists,
+      smallArtists,
+      popularTracks: tracks.popular.map(toTrack),
+      obscureTracks: tracks.obscure.map(toTrack),
+    });
+
+    if (popularArtists.length === 0 && tracks.popular.length === 0) emptyPanels++;
+    done++;
+    if (done % 25 === 0) console.log(`  details: ${done}/${placed.length} genres`);
+  }
+  console.log(
+    `  details done: ${placed.length} files, ${emptyPanels} with no ranked entities at all`,
+  );
 }
 
 // `import.meta.url` guard so importing this module in a test does not run it.

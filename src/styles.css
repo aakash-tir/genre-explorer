@@ -127,6 +127,50 @@ body {
   text-align: right;
 }
 
+.detail h3 {
+  margin: 1.25rem 0 0.4rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-dim);
+}
+
+.detail ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.detail li {
+  margin-bottom: 0.6rem;
+  line-height: 1.35;
+}
+
+.entity-name {
+  display: block;
+}
+
+.entity-sub {
+  display: block;
+  color: var(--ink-dim);
+  font-size: 0.8rem;
+}
+
+.links {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.links a {
+  color: #8ab4ff;
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
 .status {
   display: flex;
   flex-direction: column;

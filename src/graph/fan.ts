@@ -1,0 +1,62 @@
+/**
+ * The radial fan — where a focused genre's children sit while focus is held.
+ *
+ * From the original plan: clicking a genre zooms to it and its children fan out
+ * around it with labels. This is a RENDERING TRANSFORM ONLY: the baked layout never
+ * changes, and releasing focus lets every child fall back to its resting position.
+ * That rule is why this module returns an override map instead of mutating nodes.
+ *
+ * Pure functions in world coordinates; the canvas applies them.
+ */
+import type { GenreNode } from '../types';
+import { nodeRadius } from './lod';
+
+export interface WorldPosition {
+  x: number;
+  y: number;
+}
+
+/** Breathing room between fanned siblings, in world units. */
+export const FAN_GAP = 10;
+
+/** The ring must clear the focused node by at least this factor of its radius. */
+export const FAN_CLEARANCE = 2.2;
+
+/**
+ * Ring radius that fits every child without overlap: either the focused node's
+ * clearance or the circumference the children need, whichever is larger.
+ */
+export function fanRadius(
+  focus: Pick<GenreNode, 'popularity'>,
+  children: readonly Pick<GenreNode, 'popularity'>[],
+): number {
+  const clearance = nodeRadius(focus.popularity) * FAN_CLEARANCE;
+  const needed =
+    children.reduce((sum, child) => sum + 2 * nodeRadius(child.popularity) + FAN_GAP, 0) /
+    (2 * Math.PI);
+  return Math.max(clearance, needed);
+}
+
+/**
+ * World positions for the fanned children, evenly spaced on the ring, starting at
+ * 12 o'clock and proceeding clockwise in the order given. The order comes from
+ * `focusChildren` (structural first, then associative, dataset order), which is
+ * already stable — so the fan never reshuffles between renders.
+ */
+export function fanPositions(
+  focus: Pick<GenreNode, 'x' | 'y' | 'popularity'>,
+  children: readonly Pick<GenreNode, 'id' | 'popularity'>[],
+): Map<string, WorldPosition> {
+  const positions = new Map<string, WorldPosition>();
+  if (children.length === 0) return positions;
+  const radius = fanRadius(focus, children);
+  const step = (2 * Math.PI) / children.length;
+  children.forEach((child, index) => {
+    const angle = -Math.PI / 2 + index * step;
+    positions.set(child.id, {
+      x: focus.x + radius * Math.cos(angle),
+      y: focus.y + radius * Math.sin(angle),
+    });
+  });
+  return positions;
+}

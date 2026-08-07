@@ -13,16 +13,18 @@
  * In test environments (jsdom) `getContext('2d')` returns null; every draw is a no-op
  * and the component is just an inert <canvas>.
  */
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, type MouseEvent } from 'react';
 import { select } from 'd3-selection';
+import 'd3-transition';
 import { zoom, zoomIdentity, type ZoomBehavior, type ZoomTransform } from 'd3-zoom';
 
 import type { GraphDataset } from '../types';
 import type { AppState } from '../lib/deepLink';
 
 import { computeFit, screenRadius, worldToScreen } from './camera';
-import { edgeColor, nodeGradient } from './colors';
-import { drawnEdges } from './edges';
+import { edgeColor, nodeGradient, toCss, genreColor } from './colors';
+import { drawnEdges, focusChildren } from './edges';
+import { fanPositions, type WorldPosition } from './fan';
 import { FULL_DETAIL_ZOOM, isLabelVisible, visibilityContext, visibleNodes } from './lod';
 
 export const MIN_ZOOM = 0.5;
@@ -31,13 +33,22 @@ const BACKGROUND = '#08080c';
 const LABEL_COLOR = 'rgba(232, 232, 240, 0.87)';
 const LABEL_FONT = '12px system-ui, sans-serif';
 
+/** Zoom the camera settles at when focusing a genre from further out. */
+export const FOCUS_ZOOM = 4;
+
 interface GraphCanvasProps {
   dataset: GraphDataset;
   state: AppState;
   onZoomChange: (zoom: number) => void;
+  onFocusChange: (focusId: string | null) => void;
 }
 
-export default function GraphCanvas({ dataset, state, onZoomChange }: GraphCanvasProps) {
+export default function GraphCanvas({
+  dataset,
+  state,
+  onZoomChange,
+  onFocusChange,
+}: GraphCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const transformRef = useRef<ZoomTransform>(zoomIdentity);
   const behaviorRef = useRef<ZoomBehavior<HTMLCanvasElement, unknown> | null>(null);
@@ -48,6 +59,17 @@ export default function GraphCanvas({ dataset, state, onZoomChange }: GraphCanva
     () => new Map(dataset.nodes.map((node) => [node.id, node])),
     [dataset],
   );
+
+  // The radial fan: while focused, children render on a ring around the focus — a
+  // rendering transform only, the baked layout is untouched. See fan.ts.
+  const focusNode = state.focusId ? (nodesById.get(state.focusId) ?? null) : null;
+  const fanned = useMemo<Map<string, WorldPosition>>(() => {
+    if (!focusNode) return new Map();
+    const children = focusChildren(focusNode.id, dataset.edges)
+      .map((id) => nodesById.get(id))
+      .filter((node) => node !== undefined);
+    return fanPositions(focusNode, children);
+  }, [focusNode, dataset, nodesById]);
 
   // The draw closure reads this render's props; `drawRef` republishes it after every
   // render (first effect below) so the d3-zoom handlers — subscribed once — always
@@ -82,6 +104,20 @@ export default function GraphCanvas({ dataset, state, onZoomChange }: GraphCanva
     const visible = visibleNodes(data.nodes, context);
     const visibleIds = new Set(visible.map((node) => node.id));
 
+    // Fan override: a focused genre's children sit on the ring, everything else at
+    // its baked position.
+    const pos = (node: { id: string; x: number; y: number }): [number, number] => {
+      const override = fanned.get(node.id);
+      return worldToScreen(
+        fit,
+        t,
+        override?.x ?? node.x,
+        override?.y ?? node.y,
+        width,
+        height,
+      );
+    };
+
     // Edges first, so nodes paint over their own connection points. An edge is drawn
     // only when both ends are on screen — a line to an invisible node reads as a bug.
     ctx.lineWidth = 1;
@@ -90,8 +126,8 @@ export default function GraphCanvas({ dataset, state, onZoomChange }: GraphCanva
       const parent = nodesById.get(edge.source);
       const child = nodesById.get(edge.target);
       if (!parent || !child) continue;
-      const [px, py] = worldToScreen(fit, t, parent.x, parent.y, width, height);
-      const [cx, cy] = worldToScreen(fit, t, child.x, child.y, width, height);
+      const [px, py] = pos(parent);
+      const [cx, cy] = pos(child);
       ctx.strokeStyle = edgeColor(child.family, child.depth);
       ctx.beginPath();
       ctx.moveTo(px, py);
@@ -100,7 +136,7 @@ export default function GraphCanvas({ dataset, state, onZoomChange }: GraphCanva
     }
 
     for (const node of visible) {
-      const [sx, sy] = worldToScreen(fit, t, node.x, node.y, width, height);
+      const [sx, sy] = pos(node);
       const r = screenRadius(node.popularity, fit, t.k);
       if (sx < -r || sy < -r || sx > width + r || sy > height + r) continue;
       const stops = nodeGradient(node.family, node.depth);
@@ -113,17 +149,63 @@ export default function GraphCanvas({ dataset, state, onZoomChange }: GraphCanva
       ctx.fill();
     }
 
+    // Focus ring — a halo in the focused genre's own colour, drawn over its node.
+    if (focusNode && visibleIds.has(focusNode.id)) {
+      const [sx, sy] = pos(focusNode);
+      const r = screenRadius(focusNode.popularity, fit, t.k);
+      ctx.strokeStyle = toCss(genreColor(focusNode.family, 0), 0.9);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(sx, sy, r + 5, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.lineWidth = 1;
+    }
+
     ctx.font = LABEL_FONT;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillStyle = LABEL_COLOR;
     for (const node of visible) {
       if (!isLabelVisible(node, context)) continue;
-      const [sx, sy] = worldToScreen(fit, t, node.x, node.y, width, height);
+      const [sx, sy] = pos(node);
       const r = screenRadius(node.popularity, fit, t.k);
       if (sx < -80 || sy < -r - 20 || sx > width + 80 || sy > height + r + 20) continue;
       ctx.fillText(node.name, sx, sy + r + 4);
     }
+  };
+
+  // Click-to-focus. Hit-testing walks the draw list back to front with a small slop;
+  // clicking empty space releases focus. d3-zoom suppresses the click after a drag,
+  // so panning never focuses by accident.
+  const handleClick = (event: MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    const clickY = event.clientY - rect.top;
+    const { width, height } = sizeRef.current;
+    if (width === 0 || height === 0) return;
+    const t = transformRef.current;
+    const fit = computeFit(dataset.nodes, width, height);
+    const context = visibilityContext(
+      { zoom: t.k, focusId: state.focusId, selectedIds: state.selectedIds },
+      dataset.edges,
+    );
+    let hit: string | null = null;
+    for (const node of visibleNodes(dataset.nodes, context)) {
+      const override = fanned.get(node.id);
+      const [sx, sy] = worldToScreen(
+        fit,
+        t,
+        override?.x ?? node.x,
+        override?.y ?? node.y,
+        width,
+        height,
+      );
+      const r = screenRadius(node.popularity, fit, t.k) + 6;
+      if ((clickX - sx) ** 2 + (clickY - sy) ** 2 <= r * r) hit = node.id;
+    }
+    onFocusChange(hit === state.focusId ? null : hit);
   };
 
   // Republish the freshest draw closure. No dependency array on purpose: it must run
@@ -190,6 +272,27 @@ export default function GraphCanvas({ dataset, state, onZoomChange }: GraphCanva
     }
   }, [state.zoom]);
 
+  // Focusing a genre flies the camera to it: centre the node, and come in to at
+  // least FOCUS_ZOOM if the camera was further out. Releasing focus moves nothing —
+  // the fan collapses in place.
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const behavior = behaviorRef.current;
+    if (!canvas || !behavior || !focusNode) return;
+    const { width, height } = sizeRef.current;
+    if (width === 0 || height === 0) return;
+    const fit = computeFit(dataset.nodes, width, height);
+    const k = Math.max(transformRef.current.k, FOCUS_ZOOM);
+    const bx = (focusNode.x - fit.cx) * fit.scale + width / 2;
+    const by = (focusNode.y - fit.cy) * fit.scale + height / 2;
+    const target = zoomIdentity
+      .translate(width / 2, height / 2)
+      .scale(k)
+      .translate(-bx, -by);
+    select(canvas).transition().duration(500).call(behavior.transform, target);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.focusId]);
+
   // Focus and filter changes redraw without touching the camera.
   useEffect(() => {
     drawRef.current();
@@ -202,6 +305,7 @@ export default function GraphCanvas({ dataset, state, onZoomChange }: GraphCanva
       role="img"
       aria-label="Zoomable map of music genres"
       data-testid="graph-canvas"
+      onClick={handleClick}
     />
   );
 }
