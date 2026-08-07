@@ -20,7 +20,9 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
   milestone 2.
 - 2026-08-06 — Pipeline stages 4 (fetch-entities), 5 (rank) and 6 (previews) are not
   built. Milestone 4+.
-- 2026-08-04 — The Canvas renderer is a stub. Milestone 3.
+- 2026-08-07 — Click-to-focus and the radial child fan are not built (milestone 4);
+  the canvas ignores clicks entirely. Touch was not exercised on a real device —
+  `d3-zoom` pinch should work via the pointer-events path, verify in milestone 6.
 - 2026-08-04 — No end-to-end browser tests. Deliberate for v1; revisit if interaction
   bugs start reaching `main`.
 - 2026-08-04 — Cloudflare Pages account and repo connection not set up (manual, owner).
@@ -39,7 +41,10 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
 - 2026-08-06 — Colour families: the real tree has **179 roots, of which 131 are
   isolated singletons** (a node, no tree connections) and only ~48 are multi-node
   families. Hue-per-family is fine for the 48; the 131 singletons need a shared
-  neutral hue or another scheme. Decide in milestone 3.
+  neutral hue or another scheme. 2026-08-07: seen live on the milestone-3 map —
+  additionally, `familyHue`'s hash puts **rock and electronic on nearly the same
+  magenta**, so the two biggest families read as one. Consider assigning hues by
+  popularity rank around the wheel instead of by hash. Still open after milestone 3.
 - 2026-08-06 — The 131 isolated singleton genres (no parent, no children, popularity
   above threshold) float free on the map. Consider whether some deserve manual family
   assignment via their `influence`/`fusion` relations instead of neutral placement.
