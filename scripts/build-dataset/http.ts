@@ -70,12 +70,25 @@ async function readCache(file: string): Promise<string | null> {
  * Write-then-rename so a killed process can never leave a truncated entry — the
  * cache is shared across pipeline stages and genres, so one bad file would resurface
  * as a crash far from where it was written.
+ *
+ * The rename is retried: on Windows, antivirus/indexing briefly locks new files and
+ * throws transient EPERM (killed a run at genre 784, 2026-08-07). If it still fails,
+ * fall back to a direct write — losing atomicity for one entry beats losing the run,
+ * and the empty-file guard in {@link readCache} contains the worst case.
  */
 async function writeCache(file: string, body: string): Promise<void> {
   await mkdir(path.dirname(file), { recursive: true });
   const tmp = `${file}.tmp-${process.pid}`;
   await writeFile(tmp, body, 'utf8');
-  await rename(tmp, file);
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      await rename(tmp, file);
+      return;
+    } catch {
+      await sleep(100 * (attempt + 1));
+    }
+  }
+  await writeFile(file, body, 'utf8');
 }
 
 async function postWithRetry(url: string, body: string): Promise<string> {
