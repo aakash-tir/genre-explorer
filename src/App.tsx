@@ -16,6 +16,7 @@ import { DEFAULT_STATE, parseUrl, toUrl, type AppState } from './lib/deepLink';
 import { FULL_DETAIL_ZOOM, visibilityContext, visibleNodes } from './graph/lod';
 import { drawnEdges } from './graph/edges';
 import GraphCanvas, { MIN_ZOOM } from './graph/GraphCanvas';
+import DetailPanel from './panel/DetailPanel';
 
 export default function App() {
   const [dataset, setDataset] = useState<GraphDataset | null>(null);
@@ -53,6 +54,10 @@ export default function App() {
     setState((s) => (Math.abs(s.zoom - zoom) < 0.001 ? s : { ...s, zoom }));
   }, []);
 
+  const handleFocusChange = useCallback((focusId: string | null) => {
+    setState((s) => (s.focusId === focusId ? s : { ...s, focusId }));
+  }, []);
+
   if (error !== null) {
     return (
       <main className="status status--error">
@@ -84,7 +89,12 @@ export default function App() {
       </aside>
 
       <section className="canvas-host" aria-label="Genre map">
-        <GraphCanvas dataset={dataset} state={state} onZoomChange={handleZoomChange} />
+        <GraphCanvas
+          dataset={dataset}
+          state={state}
+          onZoomChange={handleZoomChange}
+          onFocusChange={handleFocusChange}
+        />
         <div className="map-hud">
           <div className="zoom-buttons">
             <button
@@ -118,8 +128,13 @@ export default function App() {
       </section>
 
       <aside className="detail" aria-label="Genre detail">
-        <h2>{state.focusId ?? 'No genre selected'}</h2>
-        <p className="stub">Songs, artists and previews — milestone 4.</p>
+        <DetailPanel
+          node={
+            state.focusId
+              ? (dataset.nodes.find((n) => n.id === state.focusId) ?? null)
+              : null
+          }
+        />
       </aside>
     </main>
   );

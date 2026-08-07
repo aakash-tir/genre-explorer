@@ -48,6 +48,66 @@ async function fetchWithRetry(url: string): Promise<string> {
   throw new Error(`Giving up on ${url} after ${RETRIES} attempts`, { cause: lastError });
 }
 
+async function postWithRetry(url: string, body: string): Promise<string> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < RETRIES; attempt++) {
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'User-Agent': USER_AGENT, 'Content-Type': 'application/json' },
+        body,
+      });
+      if (response.status === 503 || response.status === 429) {
+        lastError = new Error(`${url} returned ${response.status}`);
+        await sleep(RETRY_BASE_MS * (attempt + 1));
+        continue;
+      }
+      if (!response.ok) throw new Error(`${url} returned ${response.status}`);
+      return await response.text();
+    } catch (error) {
+      lastError = error;
+      await sleep(RETRY_BASE_MS * (attempt + 1));
+    }
+  }
+  throw new Error(`Giving up on ${url} after ${RETRIES} attempts`, { cause: lastError });
+}
+
+/**
+ * POST with the same caching and per-host spacing as {@link cachedFetch}. The cache
+ * key must encode the request body (e.g. a genre mbid) — the URL alone is not unique.
+ */
+export async function cachedPost(
+  url: string,
+  body: unknown,
+  cachePath: string,
+  delayMs: number,
+): Promise<string> {
+  const file = path.join(CACHE_DIR, cachePath);
+  try {
+    return await readFile(file, 'utf8');
+  } catch {
+    // Not cached yet.
+  }
+  const host = new URL(url).host;
+  const previous = hostQueues.get(host) ?? Promise.resolve();
+  let release!: () => void;
+  hostQueues.set(
+    host,
+    new Promise((resolve) => {
+      release = resolve;
+    }),
+  );
+  await previous;
+  try {
+    const text = await postWithRetry(url, JSON.stringify(body));
+    await mkdir(path.dirname(file), { recursive: true });
+    await writeFile(file, text, 'utf8');
+    return text;
+  } finally {
+    void sleep(delayMs).then(release);
+  }
+}
+
 /**
  * Fetch `url`, honouring the per-host `delayMs`, caching the body at
  * `CACHE_DIR/<cachePath>`. A cache hit makes no request and waits for nothing.

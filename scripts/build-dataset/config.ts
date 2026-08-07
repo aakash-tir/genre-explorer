@@ -34,6 +34,24 @@ export const MIN_RELEASE_GROUPS = 50;
 /** How many of each list the detail panel shows. */
 export const ENTITIES_PER_LIST = 5;
 
+/** ListenBrainz publishes no hard cap; this is self-imposed politeness. */
+export const LISTENBRAINZ_DELAY_MS = 300;
+
+/**
+ * Candidates fetched per genre per entity type before ranking. Over-fetched on
+ * purpose: many recordings have NO ListenBrainz data (verified 2026-08-07 — a Pearl
+ * Jam single returned `total_listen_count: null`), and search results carry
+ * near-duplicate recordings that need deduping before five of each band survive.
+ */
+export const SEARCH_LIMIT = 50;
+
+/**
+ * Minimum listen count for the "obscure" lists. The bottom of the distribution is
+ * data artifacts (1 listen, 1 user), not hidden gems. PROVISIONAL — the open
+ * decision in docs/future.md; tune against the real distribution.
+ */
+export const OBSCURE_MIN_LISTENS = 100;
+
 /**
  * Stage 8's sharp-drop guard: fail the build if node or edge count falls by more than
  * this fraction against the committed dataset.
