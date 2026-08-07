@@ -14,9 +14,12 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
 
 ## Known gaps
 
-- 2026-08-04 — `public/data/` holds a hand-written sample dataset, not real data.
-  Replaced in milestone 2.
-- 2026-08-04 — `scripts/build-dataset/` is a stub. The whole pipeline is milestone 2+.
+- 2026-08-06 — `public/data/genres/` still holds only the hand-written `techno.json`
+  sample. The real detail files come from pipeline stages 4–6 (milestone 4); until
+  then every other node would open to a 404. `graph.json` itself is real as of
+  milestone 2.
+- 2026-08-06 — Pipeline stages 4 (fetch-entities), 5 (rank) and 6 (previews) are not
+  built. Milestone 4+.
 - 2026-08-04 — The Canvas renderer is a stub. Milestone 3.
 - 2026-08-04 — No end-to-end browser tests. Deliberate for v1; revisit if interaction
   bugs start reaching `main`.
@@ -31,16 +34,17 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
 
 ## Decisions still open
 
-- 2026-08-04 — Exact data threshold in pipeline stage 3: release-group count, artist
-  count, or both. Decide from real numbers in milestone 2.
-- 2026-08-04 — Orphan genres with no `subgenre of` parent: one synthetic root or several
-  floating families. Decide once the tree exists.
 - 2026-08-04 — Definition of the "obscure" band. The bottom decile of listen counts is
   mostly data artifacts (1 listen, 1 user), not hidden gems. Tune in milestone 4.
-- 2026-08-04 — Number of colour families, and whether that many distinct hues stays
-  readable. Decide in milestone 3.
+- 2026-08-06 — Colour families: the real tree has **179 roots, of which 131 are
+  isolated singletons** (a node, no tree connections) and only ~48 are multi-node
+  families. Hue-per-family is fine for the 48; the 131 singletons need a shared
+  neutral hue or another scheme. Decide in milestone 3.
+- 2026-08-06 — The 131 isolated singleton genres (no parent, no children, popularity
+  above threshold) float free on the map. Consider whether some deserve manual family
+  assignment via their `influence`/`fusion` relations instead of neutral placement.
 - 2026-08-04 — Whether the long tail leaves non-Western genre families looking thin after
-  the threshold filter. Review after milestone 2.
+  the threshold filter. Review now that the filtered dataset exists (912 of 2,184 kept).
 
 ## Upstream watch
 
