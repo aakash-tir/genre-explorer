@@ -1,16 +1,16 @@
-# Graph Report - genre-explorer  (2026-08-06)
+# Graph Report - genre-explorer  (2026-08-07)
 
 ## Corpus Check
-- 57 files · ~33,773 words
+- 61 files · ~38,899 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 390 nodes · 554 edges · 29 communities (26 shown, 3 thin omitted)
+- 410 nodes · 609 edges · 30 communities (27 shown, 3 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d7b05b38`
+- Built from commit: `c2f329e9`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -38,18 +38,19 @@
 - index.ts
 - progress.md
 - 2026-08-06
+- 2026-08-07
 
 ## God Nodes (most connected - your core abstractions)
 1. `compilerOptions` - 20 edges
 2. `scripts` - 12 edges
-3. `Design System` - 10 edges
-4. `Genre Explorer — Plan` - 10 edges
-5. `cachedFetch()` - 9 edges
-6. `GenreEdge` - 9 edges
-7. `Genre Explorer` - 9 edges
-8. `Research — Where the genre, song and artist data comes from` - 9 edges
-9. `isDrawn()` - 8 edges
-10. `GraphDataset` - 8 edges
+3. `GraphCanvas()` - 11 edges
+4. `GraphDataset` - 10 edges
+5. `Design System` - 10 edges
+6. `Genre Explorer — Plan` - 10 edges
+7. `cachedFetch()` - 9 edges
+8. `visibilityContext` - 9 edges
+9. `GenreEdge` - 9 edges
+10. `Genre Explorer` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `BuiltGraph` --references--> `GenreEdge`  [EXTRACTED]
@@ -58,35 +59,35 @@
   scripts/build-dataset/emit.ts → src/types.ts
 - `MbidEdge` --references--> `RelationKind`  [EXTRACTED]
   scripts/build-dataset/fetch-hierarchy.ts → src/types.ts
-- `App()` --calls--> `drawnEdges()`  [EXTRACTED]
-  src/App.tsx → src/graph/edges.ts
-- `App()` --calls--> `visibilityContext`  [EXTRACTED]
-  src/App.tsx → src/graph/lod.ts
+- `buildDataset()` --calls--> `emitGraph()`  [EXTRACTED]
+  scripts/build-dataset/index.ts → scripts/build-dataset/emit.ts
+- `App()` --calls--> `loadGraph()`  [EXTRACTED]
+  src/App.tsx → src/lib/dataset.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (29 total, 3 thin omitted)
+## Communities (30 total, 3 thin omitted)
 
 ### Community 0 - "devDependencies"
 Cohesion: 0.04
-Nodes (45): eslint, @eslint/js, eslint-plugin-react-hooks, eslint-plugin-react-refresh, globals, jsdom, devDependencies, eslint (+37 more)
+Nodes (47): eslint, @eslint/js, eslint-plugin-react-hooks, eslint-plugin-react-refresh, globals, jsdom, devDependencies, eslint (+39 more)
 
 ### Community 1 - "lod.ts"
-Cohesion: 0.17
-Nodes (22): ASSOCIATIVE_KINDS, DRAWN_KINDS, drawnEdges(), focusChildren(), isAssociative(), isDrawn(), structuralDescendants(), structuralParent() (+14 more)
+Cohesion: 0.10
+Nodes (38): App(), CameraTransform, computeFit(), Fit, screenRadius(), worldToScreen(), ASSOCIATIVE_KINDS, DRAWN_KINDS (+30 more)
 
 ### Community 2 - "compilerOptions"
 Cohesion: 0.06
 Nodes (31): DOM, DOM.Iterable, ES2023, node, scripts, src, tests, vite.config.ts (+23 more)
 
 ### Community 3 - "scripts"
-Cohesion: 0.07
-Nodes (29): d3-force, d3-zoom, dependencies, d3-force, d3-zoom, react, react-dom, zod (+21 more)
+Cohesion: 0.06
+Nodes (31): d3-force, d3-selection, d3-zoom, dependencies, d3-force, d3-selection, d3-zoom, react (+23 more)
 
 ### Community 4 - "App.tsx"
-Cohesion: 0.13
-Nodes (21): App(), createDetailCache(), DatasetError, fetchJson(), genreDetailUrl(), indexNodes(), loadGenreDetail(), loadGraph() (+13 more)
+Cohesion: 0.19
+Nodes (14): emitGraph(), GraphCanvasProps, createDetailCache(), DatasetError, fetchJson(), genreDetailUrl(), indexNodes(), loadGenreDetail() (+6 more)
 
 ### Community 5 - "Research — Where the genre, song and artist data comes from"
 Cohesion: 0.08
@@ -146,10 +147,14 @@ Nodes (4): printWidth, semi, singleQuote, trailingComma
 
 ### Community 20 - "index.ts"
 Cohesion: 0.10
-Nodes (34): buildGraph(), BuiltGraph, slugify(), UnplacedNode, emitGraph(), fetchGenres(), GenreListPage, GenreRef (+26 more)
+Nodes (33): buildGraph(), BuiltGraph, slugify(), UnplacedNode, fetchGenres(), GenreListPage, GenreRef, dedupe() (+25 more)
+
+### Community 29 - "2026-08-07"
+Cohesion: 0.40
+Nodes (4): 2026-08-07, Fix: PR #4 merged red — prettier failure masked by a piped exit code, Milestone 3: the map renders, Post-merge chores for PR #3: knowledge graph refresh + first architecture diagram
 
 ## Knowledge Gaps
-- **182 isolated node(s):** `singleQuote`, `semi`, `printWidth`, `trailingComma`, `name` (+177 more)
+- **190 isolated node(s):** `singleQuote`, `semi`, `printWidth`, `trailingComma`, `name` (+185 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **3 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -159,14 +164,14 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `devDependencies` connect `devDependencies` to `scripts`?**
   _High betweenness centrality (0.030) - this node is a cross-community bridge._
 - **What connects `singleQuote`, `semi`, `printWidth` to the rest of the system?**
-  _182 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _190 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
-  _Cohesion score 0.044444444444444446 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0425531914893617 - nodes in this community are weakly interconnected._
+- **Should `lod.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.09869375907111756 - nodes in this community are weakly interconnected._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.0625 - nodes in this community are weakly interconnected._
 - **Should `scripts` be split into smaller, more focused modules?**
-  _Cohesion score 0.06666666666666667 - nodes in this community are weakly interconnected._
-- **Should `App.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.12701612903225806 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0625 - nodes in this community are weakly interconnected._
 - **Should `Research — Where the genre, song and artist data comes from` be split into smaller, more focused modules?**
   _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._
