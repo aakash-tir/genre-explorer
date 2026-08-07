@@ -1,19 +1,18 @@
 # Progress
 
-**Current milestone: 3 — The map renders** (complete)
+**Current milestone: 4 — Focus and the panel** (complete)
 
-The centre pane is a real map: `src/graph/GraphCanvas.tsx` (imperative Canvas 2D,
-mounted once) draws nodes with per-node radial gradients, structural edges in the
-child's dimmed colour, and LOD-gated labels; `d3-zoom` provides wheel zoom, drag pan
-and the zoom buttons; `src/graph/camera.ts` holds the pure world→screen math (fit +
-live transform, sqrt-of-zoom radius growth) with unit tests. Zoom round-trips through
-the URL (`?zoom=8`), restored on load. Verified by driving headless Chromium: 9 roots
-at zoom 1 → 523 nodes at zoom 8 → all 912 deep in, pan works, no console errors.
+The core loop works end to end: click a genre (or open `/genre/<id>`) → camera flies
+to it, focus ring, children fan onto a ring (pure `fan.ts`, rendering transform
+only) → the right-hand panel lazy-loads `public/data/genres/<id>.json` and shows
+5 popular + 5 obscure songs and 5 popular + 5 small artists with outbound links.
+Pipeline stages 4–5 are real (tag search → ListenBrainz bulk ranking → url-rels for
+chosen artists); the committed dataset covers all 912 genres with zero thin panels.
+Obscure floor: 100 listens. Track links and previews are milestone 6 (Deezer).
 
-**Next: milestone 4 — Focus and the panel.** Click-to-focus with the radial child fan
-(camera.ts + GraphCanvas hit-testing), then pipeline stages 4–5 (artists, recordings,
-links, ListenBrainz ranking) and the detail panel that reads `genres/<id>.json`.
-Known colour issue to revisit: rock and electronic hash to near-identical hues
-(`docs/future.md`).
+**Next: milestone 5 — Find your way around.** Left filter panel: search by name,
+multi-select, hide-everything-else (the pure `resolveFilter` logic already exists in
+`lod.ts`); deep links already carry `?filter=`. Then milestone 6: Deezer previews +
+audio player, touch/mobile, motion polish.
 
 Milestones are listed in `plan.md`. Open work is in `docs/future.md`.

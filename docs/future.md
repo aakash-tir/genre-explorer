@@ -36,8 +36,14 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
 
 ## Decisions still open
 
-- 2026-08-04 — Definition of the "obscure" band. The bottom decile of listen counts is
-  mostly data artifacts (1 listen, 1 user), not hidden gems. Tune in milestone 4.
+- 2026-08-07 — "Obscure" floor set at 100 listens (`OBSCURE_MIN_LISTENS`) in
+  milestone 4 — deeper cuts land in the 100–500 listen band, which reads right.
+  Revisit only if user feedback says the band is too thin or too noisy.
+- 2026-08-07 — Popular-artist lists skew to global megastars: ranking is by TOTAL
+  artist listens, so anyone ever tagged `house` (e.g. Britney Spears) can outrank
+  genuine house artists. Genre-scoped listen counts don't exist in ListenBrainz's
+  API; mitigations would be heuristic (e.g. weight by tag count). Assess after
+  living with it.
 - 2026-08-06 — Colour families: the real tree has **179 roots, of which 131 are
   isolated singletons** (a node, no tree connections) and only ~48 are multi-node
   families. Hue-per-family is fine for the 48; the 131 singletons need a shared
