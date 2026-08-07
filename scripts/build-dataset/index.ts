@@ -1,34 +1,65 @@
 /**
- * The dataset build pipeline — MILESTONE 2 ONWARDS. Currently a stub.
+ * The dataset build pipeline. Run with `npm run build:dataset`.
  *
  * Everything that touches an external service happens here, at build time, never in the
- * browser. Run with `npm run build:dataset`; in CI it runs weekly and opens a PR with the
- * refreshed `public/data/`.
+ * browser. Responses are disk-cached under `.cache/build-dataset/` — a cold run is ~80
+ * minutes (MusicBrainz is 1 req/s, not negotiable), a warm rerun is seconds, and an
+ * interrupted run resumes where it stopped.
  *
- * Stages, in order (see `.claude/project-context.md` for the full detail):
+ * Implemented (milestone 2):
  *
- *   1. fetch-genres      GET musicbrainz.org/ws/2/genre/all?fmt=txt        → 2,184 names
- *   2. fetch-hierarchy   SCRAPE the genre HTML pages, 1 req/s              → the tree
- *   3. fetch-popularity  MusicBrainz release-group tag counts              → size + FILTER
- *   4. fetch-entities    MusicBrainz artist/recording tag search + url-rels
- *   5. rank              POST listenbrainz.org/1/popularity/{artist,recording}
- *   6. previews          Deezer search                                     → 30s MP3s
- *   7. layout            d3-force, fixed seed and tick count               → baked x/y
- *   8. emit              Zod validate + sharp-drop guard                   → public/data/
+ *   1. fetch-genres      GET /ws/2/genre/all (JSON, paged)      → 2,184 {mbid, name}
+ *   2. fetch-hierarchy   SCRAPE the genre HTML pages            → subgenre/fusion/influence
+ *   3. fetch-popularity  release-group tag counts               → size + threshold filter
+ *      build-graph       one drawn parent, depth, family, slugs → nodes + edges
+ *   7. layout            d3-force, seeded, fixed ticks          → baked x/y
+ *   8. emit              Zod + sharp-drop guard                 → public/data/graph.json
  *
- * Stage 2 is the hard one and the reason this project needed research before code:
- * MusicBrainz genre relationships are NOT available from the JSON API. `inc=genre-rels`
- * returns 200 with no relations, and `/ws/2/genre?query=` answers "This hasn't been
- * implemented yet." A pipeline that trusts the API produces 2,184 orphan nodes, no tree,
- * and no error — which is why stage 8 has a guard rather than just a validator.
+ * Still stubs (milestone 4+): stage 4 fetch-entities, stage 5 rank (ListenBrainz),
+ * stage 6 previews (Deezer) — the per-genre detail files in `public/data/genres/`.
+ *
+ * Stage 2 scrapes because MusicBrainz's genre relationships are NOT in the JSON API:
+ * `inc=genre-rels` returns 200 with no relations (verified 2026-08-04). A pipeline that
+ * trusted it would emit 2,184 orphan nodes and no error — hence the fixture-tested
+ * parser and the sharp-drop guard in stage 8.
  */
-import { USER_AGENT } from './config';
+import { MIN_RELEASE_GROUPS } from './config';
+import { buildGraph } from './build-graph';
+import { fetchGenres } from './fetch-genres';
+import { fetchHierarchy } from './fetch-hierarchy';
+import { fetchPopularity } from './fetch-popularity';
+import { emitGraph } from './emit';
+import { layoutGraph } from './layout';
 
-export async function buildDataset(): Promise<never> {
-  throw new Error(
-    'The dataset pipeline is milestone 2. See plan.md and .claude/project-context.md. ' +
-      `Requests must send User-Agent: ${USER_AGENT}`,
+export async function buildDataset(): Promise<void> {
+  console.log('stage 1: genre list');
+  const genres = await fetchGenres();
+  console.log(`  ${genres.length} genres`);
+
+  console.log('stage 2: hierarchy (cold cache ≈ 40 min at 1 req/s)');
+  const mbidEdges = await fetchHierarchy(genres);
+  console.log(`  ${mbidEdges.length} raw relations`);
+
+  console.log('stage 3: popularity (cold cache ≈ 40 min at 1 req/s)');
+  const counts = await fetchPopularity(genres);
+
+  const { nodes, edges, report } = buildGraph(
+    genres,
+    mbidEdges,
+    counts,
+    MIN_RELEASE_GROUPS,
   );
+  console.log(
+    `  threshold ${MIN_RELEASE_GROUPS}: kept ${nodes.length}, dropped ${report.dropped} · ` +
+      `${report.roots} roots · ${report.multiParent} multi-parent children demoted · ` +
+      `${report.cyclesBroken} cycles broken`,
+  );
+
+  console.log('stage 7: layout');
+  const placed = layoutGraph(nodes, edges);
+
+  console.log('stage 8: emit');
+  await emitGraph({ builtAt: new Date().toISOString(), nodes: placed, edges });
 }
 
 // `import.meta.url` guard so importing this module in a test does not run it.
