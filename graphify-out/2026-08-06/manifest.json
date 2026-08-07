@@ -40,8 +40,8 @@
     "semantic_hash": ""
   },
   "public/data/graph.json": {
-    "mtime": 1786085868.969144,
-    "ast_hash": "db91c53d08c6a05aa0e6dad59aa8e8af",
+    "mtime": 1785901309.686957,
+    "ast_hash": "deeffa7c7289eb71bb6c58f8b016d068",
     "semantic_hash": ""
   },
   "scripts/build-dataset/config.ts": {
@@ -50,8 +50,8 @@
     "semantic_hash": ""
   },
   "scripts/build-dataset/index.ts": {
-    "mtime": 1786085868.9741433,
-    "ast_hash": "361d5ac5badf96a52f368cd4287f3486",
+    "mtime": 1785901351.1236458,
+    "ast_hash": "ff60ea494d46275d64121538780d0d7b",
     "semantic_hash": ""
   },
   "src/App.tsx": {
@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   ".claude/progress.md": {
-    "mtime": 1786085868.9641492,
-    "ast_hash": "f3aa2e428d96386c866aae659de0a69f",
+    "mtime": 1785901059.8031626,
+    "ast_hash": "5b97ce5b3db07579cf219c226fa2fef1",
     "semantic_hash": ""
   },
   ".claude/project-context.md": {
@@ -205,8 +205,8 @@
     "semantic_hash": ""
   },
   "docs/future.md": {
-    "mtime": 1786085868.966159,
-    "ast_hash": "e4383f014b61a9c06955d19d36e530a8",
+    "mtime": 1785902105.245903,
+    "ast_hash": "e14065f91e7e49cf9fadae927f72e9fe",
     "semantic_hash": ""
   },
   "docs/research/graph-rendering.md": {
@@ -242,86 +242,6 @@
   "plan.md": {
     "mtime": 1785901666.8475218,
     "ast_hash": "cc5c3822832e82b79463dff4787a633d",
-    "semantic_hash": ""
-  },
-  "scripts/build-dataset/build-graph.ts": {
-    "mtime": 1786085868.9701436,
-    "ast_hash": "2a8341c4a9b1c7475e972beb8f49c5fe",
-    "semantic_hash": ""
-  },
-  "scripts/build-dataset/emit.ts": {
-    "mtime": 1786085868.9711516,
-    "ast_hash": "fc35fd039be23d821bafcfa321b4345f",
-    "semantic_hash": ""
-  },
-  "scripts/build-dataset/fetch-genres.ts": {
-    "mtime": 1786085868.9721477,
-    "ast_hash": "ff28ca0ddb6500bdd8531ed055d806fd",
-    "semantic_hash": ""
-  },
-  "scripts/build-dataset/fetch-hierarchy.ts": {
-    "mtime": 1786085868.9721477,
-    "ast_hash": "5fdd47e96afa5eb5851bbc9a9cf6cf57",
-    "semantic_hash": ""
-  },
-  "scripts/build-dataset/fetch-popularity.ts": {
-    "mtime": 1786085868.9731543,
-    "ast_hash": "6821187df5e85fc50b6c8118002044ff",
-    "semantic_hash": ""
-  },
-  "scripts/build-dataset/http.ts": {
-    "mtime": 1786085868.9731543,
-    "ast_hash": "4134168ea6f26ede6fa59209bfd20f41",
-    "semantic_hash": ""
-  },
-  "scripts/build-dataset/layout.ts": {
-    "mtime": 1786085868.9751432,
-    "ast_hash": "9a0dc3f77ce7bbd1ef51765687a181a1",
-    "semantic_hash": ""
-  },
-  "scripts/build-dataset/parse-genre-page.ts": {
-    "mtime": 1786085868.9751432,
-    "ast_hash": "b815ed846e16cda0a20df40cad4186c0",
-    "semantic_hash": ""
-  },
-  "tests/scripts/build-graph.test.ts": {
-    "mtime": 1786085868.981145,
-    "ast_hash": "df9842ad2a072cb7f40709270fffe6c9",
-    "semantic_hash": ""
-  },
-  "tests/scripts/layout.test.ts": {
-    "mtime": 1786085868.9821448,
-    "ast_hash": "bd370a6fdac32cab2b91cde8c297513b",
-    "semantic_hash": ""
-  },
-  "tests/scripts/parse-genre-page.test.ts": {
-    "mtime": 1786085868.983143,
-    "ast_hash": "12f7e5a98e022fe6f3f0f67dc41c9e20",
-    "semantic_hash": ""
-  },
-  "logs/2026-08-06.md": {
-    "mtime": 1786085868.9671466,
-    "ast_hash": "d3182c8012d492a16e3396ded02ee558",
-    "semantic_hash": ""
-  },
-  "tests/fixtures/genre-acholitronix.html": {
-    "mtime": 1786085868.9761522,
-    "ast_hash": "91ce5b5267b4e65ade3766583ddfbbe5",
-    "semantic_hash": ""
-  },
-  "tests/fixtures/genre-alternative-dance.html": {
-    "mtime": 1786085868.977144,
-    "ast_hash": "9b8df51be21bf60954397688e9ea95eb",
-    "semantic_hash": ""
-  },
-  "tests/fixtures/genre-dubstep.html": {
-    "mtime": 1786085868.979142,
-    "ast_hash": "d0a98b72708b4409af0410f77dd30e46",
-    "semantic_hash": ""
-  },
-  "tests/fixtures/genre-grunge.html": {
-    "mtime": 1786085868.979142,
-    "ast_hash": "acab142272d7eef779ee43069a645afb",
     "semantic_hash": ""
   }
 }
