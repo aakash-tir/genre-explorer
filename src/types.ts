@@ -44,8 +44,14 @@ export const Track = z.object({
   artistName: z.string().min(1),
   listens: z.number().int().nonnegative(),
   links: z.array(ExternalLink),
-  /** Deezer 30s preview MP3. Absent when Deezer has no match — previews degrade. */
-  previewUrl: z.url().optional(),
+  /**
+   * Deezer track id, resolved at build time. The panel embeds Deezer's own widget
+   * player on demand with it. NOT a preview URL: Deezer preview MP3 links carry an
+   * auth token that expires in ~12 minutes (verified 2026-08-08), so a URL baked
+   * into a committed dataset would be dead before it merged. The id is stable.
+   * Absent when Deezer has no match — previews degrade, links remain.
+   */
+  deezerId: z.number().int().positive().optional(),
 });
 export type Track = z.infer<typeof Track>;
 

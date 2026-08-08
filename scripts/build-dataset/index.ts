@@ -34,6 +34,7 @@ import {
 import { fetchGenres } from './fetch-genres';
 import { fetchHierarchy } from './fetch-hierarchy';
 import { fetchArtistLinks } from './fetch-links';
+import { fetchDeezerId } from './fetch-previews';
 import { fetchPopularity } from './fetch-popularity';
 import {
   fetchArtistListens,
@@ -96,25 +97,30 @@ export async function buildDataset(): Promise<void> {
       listens: r.listens,
       links: await fetchArtistLinks(r.entity.mbid),
     });
-    const toTrack = (r: Ranked<CandidateRecording>) => ({
+    const toTrack = async (r: Ranked<CandidateRecording>) => ({
       mbid: r.entity.mbid,
       title: r.entity.title,
       artistName: r.entity.artistName,
       listens: r.listens,
       links: [],
+      deezerId: await fetchDeezerId(r.entity),
     });
 
     const popularArtists = [];
     for (const r of artists.popular) popularArtists.push(await toArtist(r));
     const smallArtists = [];
     for (const r of artists.obscure) smallArtists.push(await toArtist(r));
+    const popularTracks = [];
+    for (const r of tracks.popular) popularTracks.push(await toTrack(r));
+    const obscureTracks = [];
+    for (const r of tracks.obscure) obscureTracks.push(await toTrack(r));
 
     await emitDetail({
       id: node.id,
       popularArtists,
       smallArtists,
-      popularTracks: tracks.popular.map(toTrack),
-      obscureTracks: tracks.obscure.map(toTrack),
+      popularTracks,
+      obscureTracks,
     });
 
     if (popularArtists.length === 0 && tracks.popular.length === 0) emptyPanels++;
