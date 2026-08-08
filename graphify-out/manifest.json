@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1786178775.9567943,
-    "ast_hash": "0f7489cfd722815dd66fe75eea987854",
+    "mtime": 1786189868.231802,
+    "ast_hash": "76554a83e5d5670739d98da21b25c002",
     "semantic_hash": ""
   },
   "src/graph/colors.ts": {
@@ -75,13 +75,13 @@
     "semantic_hash": ""
   },
   "src/lib/dataset.ts": {
-    "mtime": 1785901667.0141141,
-    "ast_hash": "871c3f3900a49cfdaed9eb32db7be552",
+    "mtime": 1786189868.2328007,
+    "ast_hash": "12ea4ab92a5cfe487b84ac7f1f6f34e3",
     "semantic_hash": ""
   },
   "src/lib/deepLink.ts": {
-    "mtime": 1785901607.8543015,
-    "ast_hash": "c333a2cc6ccad74a6b4e5ce48d65cf22",
+    "mtime": 1786189868.2338004,
+    "ast_hash": "f378ac5513643b7ca5e21a441c1e8777",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -125,8 +125,8 @@
     "semantic_hash": ""
   },
   "tests/lib/deepLink.test.ts": {
-    "mtime": 1785901459.201581,
-    "ast_hash": "c34a9a3ba29e7012a2cb397b011e9080",
+    "mtime": 1786189868.2348006,
+    "ast_hash": "b12ca80f2f064c1ee182b4a83e796f74",
     "semantic_hash": ""
   },
   "tests/setup.ts": {
@@ -205,8 +205,8 @@
     "semantic_hash": ""
   },
   "docs/future.md": {
-    "mtime": 1786167750.2380555,
-    "ast_hash": "2f05a8d1b4ba4d0270397f1e9c2a50b3",
+    "mtime": 1786189868.22928,
+    "ast_hash": "31efaa6aa3eaaac155d997eb94497919",
     "semantic_hash": ""
   },
   "docs/research/graph-rendering.md": {
@@ -4969,11 +4969,6 @@
     "ast_hash": "4856e65fa7c3c09c462bad984f775a3d",
     "semantic_hash": ""
   },
-  "docs/runbooks/hosting-cloudflare-pages.md": {
-    "mtime": 1786156866.2680001,
-    "ast_hash": "e8268820cbb5516fb8894553190a56ab",
-    "semantic_hash": ""
-  },
   "src/graph/labels.ts": {
     "mtime": 1786167750.2564113,
     "ast_hash": "c5f45a4c186324db7b23c57495686f5f",
@@ -5000,8 +4995,23 @@
     "semantic_hash": ""
   },
   "logs/2026-08-08.md": {
-    "mtime": 1786178775.9557931,
-    "ast_hash": "a4194b28d372c4c8cc174a2094a1038d",
+    "mtime": 1786189868.230793,
+    "ast_hash": "2920028606d65fbc6670d91ef6202a73",
+    "semantic_hash": ""
+  },
+  "src/vite-env.d.ts": {
+    "mtime": 1786189868.2338004,
+    "ast_hash": "0352474ba2918efe13895edbc3780d94",
+    "semantic_hash": ""
+  },
+  ".github/workflows/deploy-pages.yml": {
+    "mtime": 1786189868.2272792,
+    "ast_hash": "22e1eaad6acd56321f8c947346d8a9b6",
+    "semantic_hash": ""
+  },
+  "docs/runbooks/hosting.md": {
+    "mtime": 1786189868.2297854,
+    "ast_hash": "352fa299742398b538d33dc48bedbc8f",
     "semantic_hash": ""
   }
 }
