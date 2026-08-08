@@ -22,7 +22,7 @@ import type { GraphDataset } from '../types';
 import type { AppState } from '../lib/deepLink';
 
 import { computeFit, screenRadius, worldToScreen } from './camera';
-import { edgeColor, nodeGradient, toCss, genreColor } from './colors';
+import { assignFamilyHues, edgeColor, nodeGradient, toCss, genreColor } from './colors';
 import { drawnEdges, focusChildren } from './edges';
 import { fanPositions, type WorldPosition } from './fan';
 import { FULL_DETAIL_ZOOM, isLabelVisible, visibilityContext, visibleNodes } from './lod';
@@ -59,6 +59,9 @@ export default function GraphCanvas({
     () => new Map(dataset.nodes.map((node) => [node.id, node])),
     [dataset],
   );
+  // Popularity-ranked hues; singleton families are absent → neutral (null).
+  const hues = useMemo(() => assignFamilyHues(dataset.nodes), [dataset]);
+  const hueOf = (family: string) => hues.get(family) ?? null;
 
   // The radial fan: while focused, children render on a ring around the focus — a
   // rendering transform only, the baked layout is untouched. See fan.ts.
@@ -128,7 +131,7 @@ export default function GraphCanvas({
       if (!parent || !child) continue;
       const [px, py] = pos(parent);
       const [cx, cy] = pos(child);
-      ctx.strokeStyle = edgeColor(child.family, child.depth);
+      ctx.strokeStyle = edgeColor(hueOf(child.family), child.depth);
       ctx.beginPath();
       ctx.moveTo(px, py);
       ctx.lineTo(cx, cy);
@@ -139,7 +142,7 @@ export default function GraphCanvas({
       const [sx, sy] = pos(node);
       const r = screenRadius(node.popularity, fit, t.k);
       if (sx < -r || sy < -r || sx > width + r || sy > height + r) continue;
-      const stops = nodeGradient(node.family, node.depth);
+      const stops = nodeGradient(hueOf(node.family), node.depth);
       const gradient = ctx.createRadialGradient(sx, sy, 0, sx, sy, r);
       gradient.addColorStop(0, stops.inner);
       gradient.addColorStop(1, stops.outer);
@@ -153,7 +156,7 @@ export default function GraphCanvas({
     if (focusNode && visibleIds.has(focusNode.id)) {
       const [sx, sy] = pos(focusNode);
       const r = screenRadius(focusNode.popularity, fit, t.k);
-      ctx.strokeStyle = toCss(genreColor(focusNode.family, 0), 0.9);
+      ctx.strokeStyle = toCss(genreColor(hueOf(focusNode.family), 0), 0.9);
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(sx, sy, r + 5, 0, Math.PI * 2);

@@ -14,12 +14,16 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
 
 ## Known gaps
 
+- 2026-08-07 — 28% of ranked tracks have no Deezer match, so no preview (play
+  button absent, links remain). Mostly deep cuts Deezer doesn't carry; acceptable.
+- 2026-08-07 — Deezer preview URLs expire in ~12 min (verified live), so previews
+  are the widget player embedded by stable track id — remove the old "preview MP3
+  in the dataset" wording from research docs if it resurfaces.
+
 - 2026-08-06 — `public/data/genres/` still holds only the hand-written `techno.json`
   sample. The real detail files come from pipeline stages 4–6 (milestone 4); until
   then every other node would open to a 404. `graph.json` itself is real as of
   milestone 2.
-- 2026-08-06 — Pipeline stages 4 (fetch-entities), 5 (rank) and 6 (previews) are not
-  built. Milestone 4+.
 - 2026-08-07 — Click-to-focus and the radial child fan are not built (milestone 4);
   the canvas ignores clicks entirely. Touch was not exercised on a real device —
   `d3-zoom` pinch should work via the pointer-events path, verify in milestone 6.
@@ -44,13 +48,6 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
   genuine house artists. Genre-scoped listen counts don't exist in ListenBrainz's
   API; mitigations would be heuristic (e.g. weight by tag count). Assess after
   living with it.
-- 2026-08-06 — Colour families: the real tree has **179 roots, of which 131 are
-  isolated singletons** (a node, no tree connections) and only ~48 are multi-node
-  families. Hue-per-family is fine for the 48; the 131 singletons need a shared
-  neutral hue or another scheme. 2026-08-07: seen live on the milestone-3 map —
-  additionally, `familyHue`'s hash puts **rock and electronic on nearly the same
-  magenta**, so the two biggest families read as one. Consider assigning hues by
-  popularity rank around the wheel instead of by hash. Still open after milestone 3.
 - 2026-08-06 — The 131 isolated singleton genres (no parent, no children, popularity
   above threshold) float free on the map. Consider whether some deserve manual family
   assignment via their `influence`/`fusion` relations instead of neutral placement.

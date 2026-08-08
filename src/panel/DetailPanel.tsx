@@ -47,7 +47,22 @@ function Links({ links }: { links: readonly { kind: string; url: string }[] }) {
   );
 }
 
-function TrackList({ heading, tracks }: { heading: string; tracks: readonly Track[] }) {
+/**
+ * One preview plays at a time, via Deezer's widget player embedded on demand.
+ * An embed (not an <audio> tag) because Deezer preview MP3 URLs expire in minutes
+ * and cannot live in the static dataset — only the stable track id can.
+ */
+function TrackList({
+  heading,
+  tracks,
+  playingId,
+  onPlay,
+}: {
+  heading: string;
+  tracks: readonly Track[];
+  playingId: number | null;
+  onPlay: (deezerId: number | null) => void;
+}) {
   if (tracks.length === 0) return null;
   return (
     <section>
@@ -55,11 +70,37 @@ function TrackList({ heading, tracks }: { heading: string; tracks: readonly Trac
       <ul>
         {tracks.map((track) => (
           <li key={track.mbid}>
-            <span className="entity-name">{track.title}</span>
+            <span className="entity-name">
+              {track.deezerId !== undefined && (
+                <button
+                  type="button"
+                  className="preview-toggle"
+                  aria-label={
+                    playingId === track.deezerId
+                      ? `Stop preview of ${track.title}`
+                      : `Play preview of ${track.title}`
+                  }
+                  onClick={() =>
+                    onPlay(playingId === track.deezerId ? null : (track.deezerId ?? null))
+                  }
+                >
+                  {playingId === track.deezerId ? '■' : '▶'}
+                </button>
+              )}
+              {track.title}
+            </span>
             <span className="entity-sub">
               {track.artistName} · {formatListens(track.listens)} listens
             </span>
             <Links links={track.links} />
+            {playingId === track.deezerId && track.deezerId !== undefined && (
+              <iframe
+                title={`Deezer preview: ${track.title}`}
+                className="preview-player"
+                src={`https://widget.deezer.com/widget/dark/track/${track.deezerId}?tracklist=false&autoplay=true`}
+                allow="autoplay; encrypted-media"
+              />
+            )}
           </li>
         ))}
       </ul>
@@ -98,6 +139,11 @@ type PanelResult =
 
 export default function DetailPanel({ node }: { node: GenreNode | null }) {
   const [result, setResult] = useState<PanelResult | null>(null);
+  // Tagged with the genre id so switching genres implicitly silences the preview —
+  // no reset effect needed.
+  const [playing, setPlaying] = useState<{ nodeId: string; deezerId: number } | null>(
+    null,
+  );
 
   useEffect(() => {
     if (!node) return;
@@ -150,6 +196,11 @@ export default function DetailPanel({ node }: { node: GenreNode | null }) {
     );
   }
 
+  const nodeId = node.id;
+  const handlePlay = (deezerId: number | null) => {
+    setPlaying(deezerId === null ? null : { nodeId, deezerId });
+  };
+
   const { detail } = state;
   const empty =
     detail.popularTracks.length === 0 &&
@@ -167,8 +218,18 @@ export default function DetailPanel({ node }: { node: GenreNode | null }) {
         </p>
       ) : (
         <>
-          <TrackList heading="Popular songs" tracks={detail.popularTracks} />
-          <TrackList heading="Deeper cuts" tracks={detail.obscureTracks} />
+          <TrackList
+            heading="Popular songs"
+            tracks={detail.popularTracks}
+            playingId={playing && playing.nodeId === node.id ? playing.deezerId : null}
+            onPlay={handlePlay}
+          />
+          <TrackList
+            heading="Deeper cuts"
+            tracks={detail.obscureTracks}
+            playingId={playing && playing.nodeId === node.id ? playing.deezerId : null}
+            onPlay={handlePlay}
+          />
           <ArtistList heading="Popular artists" artists={detail.popularArtists} />
           <ArtistList heading="Small artists" artists={detail.smallArtists} />
         </>
