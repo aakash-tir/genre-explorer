@@ -50,6 +50,9 @@ export const FOCUS_ZOOM = 4;
 /** Alpha for nodes unrelated to the current focus. */
 const DIMMED_ALPHA = 0.12;
 
+/** Hovered nodes swell slightly — enough to feel alive, not enough to shove labels. */
+const HOVER_SCALE = 1.18;
+
 /** Dust: sub-cutoff nodes still paint as faint motes so the map keeps its shape. */
 const DUST_RADIUS = 2;
 const DUST_ALPHA = 0.3;
@@ -223,7 +226,8 @@ export default function GraphCanvas({
     // 3. Nodes. Unrelated ones become shadows while a genre is focused.
     for (const node of visible) {
       const [sx, sy] = screen(node);
-      const r = screenRadius(node.popularity, fit, t.k);
+      const grow = node.id === hovered ? HOVER_SCALE : 1;
+      const r = screenRadius(node.popularity, fit, t.k) * grow;
       if (sx < -r || sy < -r || sx > width + r || sy > height + r) continue;
       ctx.globalAlpha = related && !related.has(node.id) ? DIMMED_ALPHA : 1;
       const stops = nodeGradient(hueOf(node.family), node.depth);
@@ -245,7 +249,8 @@ export default function GraphCanvas({
       // ringed at dust size.
       const [sx, sy] = screen(focusNode);
       const r = visibleIds.has(focusNode.id)
-        ? screenRadius(focusNode.popularity, fit, t.k)
+        ? screenRadius(focusNode.popularity, fit, t.k) *
+          (focusNode.id === hovered ? HOVER_SCALE : 1)
         : DUST_RADIUS;
       ctx.strokeStyle = toCss(genreColor(hueOf(focusNode.family), 0), 0.9);
       ctx.lineWidth = 2;
@@ -258,7 +263,7 @@ export default function GraphCanvas({
       const node = nodesById.get(hovered);
       if (node && visibleIds.has(node.id)) {
         const [sx, sy] = screen(node);
-        const r = screenRadius(node.popularity, fit, t.k);
+        const r = screenRadius(node.popularity, fit, t.k) * HOVER_SCALE;
         ctx.strokeStyle = 'rgba(232, 232, 240, 0.6)';
         ctx.beginPath();
         ctx.arc(sx, sy, r + 3, 0, Math.PI * 2);
@@ -278,7 +283,8 @@ export default function GraphCanvas({
         (isLabelVisible(node, context) && (!related || related.has(node.id)));
       if (!earned) continue;
       const [sx, sy] = screen(node);
-      const r = screenRadius(node.popularity, fit, t.k);
+      const r =
+        screenRadius(node.popularity, fit, t.k) * (node.id === hovered ? HOVER_SCALE : 1);
       if (sx < -120 || sy < -r - 24 || sx > width + 120 || sy > height + r + 24) {
         continue;
       }
