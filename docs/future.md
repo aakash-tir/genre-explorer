@@ -29,7 +29,12 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
   `d3-zoom` pinch should work via the pointer-events path, verify in milestone 6.
 - 2026-08-04 — No end-to-end browser tests. Deliberate for v1; revisit if interaction
   bugs start reaching `main`.
-- 2026-08-04 — Cloudflare Pages account and repo connection not set up (manual, owner).
+- 2026-08-07 — **Cloudflare Pages connection is the only thing between here and a
+  shipped v1.** Manual, owner-only: follow `docs/runbooks/hosting-cloudflare-pages.md`.
+- 2026-08-07 — The first scheduled refresh runs with a cold Actions cache and may
+  time out once or twice before the cache fills (the run resumes; see
+  `refresh-data.yml`). Expect the first automated data PR to take a couple of
+  Sundays or a few manual dispatches.
 - 2026-08-04 — **`main` has no server-side protection.** Both the branch-protection and
   rulesets APIs returned `403 Upgrade to GitHub Pro` — they are paid-plan features on
   private repos. Verified: `branches/main --jq '.protected'` → `false`. The local
