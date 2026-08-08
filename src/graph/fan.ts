@@ -38,6 +38,41 @@ export function fanRadius(
 }
 
 /**
+ * Nodes that are neither the focus nor its children but sit INSIDE the fan ring
+ * get displaced just outside it while focus is held — same contract as the fan
+ * itself: a rendering transform only, everything falls back on release. Without
+ * this, unrelated genres squat in the middle of the ring and the exploration view
+ * is noise exactly where the user is looking (image 3 of the UI review).
+ */
+export const CLEARANCE_MARGIN = 1.25;
+
+export function ringClearance(
+  focus: Pick<GenreNode, 'x' | 'y' | 'popularity'>,
+  ringRadius: number,
+  bystanders: readonly Pick<GenreNode, 'id' | 'x' | 'y'>[],
+): Map<string, WorldPosition> {
+  const displaced = new Map<string, WorldPosition>();
+  const clearTo = ringRadius * CLEARANCE_MARGIN;
+  bystanders.forEach((node, index) => {
+    const dx = node.x - focus.x;
+    const dy = node.y - focus.y;
+    const distance = Math.hypot(dx, dy);
+    if (distance >= clearTo) return;
+    // Push outward along the existing bearing; a node exactly on the focus gets a
+    // deterministic bearing from its list position instead of NaN.
+    const angle =
+      distance === 0
+        ? (index / Math.max(bystanders.length, 1)) * 2 * Math.PI
+        : Math.atan2(dy, dx);
+    displaced.set(node.id, {
+      x: focus.x + clearTo * Math.cos(angle),
+      y: focus.y + clearTo * Math.sin(angle),
+    });
+  });
+  return displaced;
+}
+
+/**
  * World positions for the fanned children, evenly spaced on the ring, starting at
  * 12 o'clock and proceeding clockwise in the order given. The order comes from
  * `focusChildren` (structural first, then associative, dataset order), which is

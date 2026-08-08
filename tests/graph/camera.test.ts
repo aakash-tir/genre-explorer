@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import {
   computeFit,
   FIT_PADDING,
+  RADIUS_GROWTH_EXPONENT,
   screenRadius,
   worldToScreen,
 } from '../../src/graph/camera';
@@ -74,9 +75,11 @@ describe('screenRadius', () => {
     expect(screenRadius(500000, fit, 1)).toBeGreaterThan(screenRadius(500, fit, 1));
   });
 
-  it('grows sublinearly with zoom', () => {
+  it('grows sublinearly with zoom, slower than sqrt', () => {
     const atOne = screenRadius(10000, fit, 1);
     const atSixtyFour = screenRadius(10000, fit, 64);
-    expect(atSixtyFour).toBeCloseTo(atOne * 8); // sqrt(64), not 64
+    // k^0.35: presence without outgrowing the layout's ~2.2x collision spacing.
+    expect(atSixtyFour).toBeCloseTo(atOne * Math.pow(64, RADIUS_GROWTH_EXPONENT));
+    expect(atSixtyFour).toBeLessThan(atOne * 8); // strictly slower than the old sqrt
   });
 });

@@ -32,16 +32,10 @@ describe('popularityCutoff', () => {
 });
 
 describe('node visibility by zoom', () => {
-  it('shows only the biggest genres when fully zoomed out', () => {
-    // "when zoomed out just show the big ones"
+  it('shows only the bigger genres when fully zoomed out', () => {
+    // "when zoomed out just show the big ones" — at zoom 1 the cutoff is ~20,000
+    // (10^4.3), which admits the roots and the strong mid-tier but not the tail.
     const context = visibilityContext({ zoom: 1, focusId: null, selectedIds: [] }, EDGES);
-    expect(ids(visibleNodes(NODES, context))).toEqual(['electronic', 'rock']);
-  });
-
-  it('reveals mid-sized genres partway in', () => {
-    // At zoom 2 the cutoff is ~14,700: the family roots plus the mid-tier genres, but
-    // not grunge (9,412), alternative dance (7,305) or melodic techno (4,210).
-    const context = visibilityContext({ zoom: 2, focusId: null, selectedIds: [] }, EDGES);
     expect(ids(visibleNodes(NODES, context))).toEqual([
       'alternative-rock',
       'dance',
@@ -49,6 +43,18 @@ describe('node visibility by zoom', () => {
       'rock',
       'techno',
     ]);
+    // The tail stays hidden (it renders as dust, but dust is not "visible").
+    expect(ids(visibleNodes(NODES, context))).not.toContain('grunge');
+  });
+
+  it('reveals the tail as the camera comes in', () => {
+    // At zoom 1.5 the cutoff is ~9,500: grunge (9,412) is still out, alternative
+    // dance (7,305) and melodic techno (4,210) further out still.
+    const at15 = visibilityContext({ zoom: 1.5, focusId: null, selectedIds: [] }, EDGES);
+    expect(ids(visibleNodes(NODES, at15))).not.toContain('melodic-techno');
+    // By zoom 2 the cutoff is ~3,900 and the whole fixture clears it.
+    const at2 = visibilityContext({ zoom: 2, focusId: null, selectedIds: [] }, EDGES);
+    expect(visibleNodes(NODES, at2)).toHaveLength(NODES.length);
   });
 
   it('shows everything at full detail', () => {
@@ -127,17 +133,22 @@ describe('filter', () => {
 
 describe('labels', () => {
   it('are stricter than dots — a node can be a speck before it earns a name', () => {
-    // At zoom 1.3 the node cutoff is ~48,400 and the label cutoff twice that. Alternative
-    // rock (84,210) is a drawn dot; techno and dance sit above the node cutoff too, but
-    // only the two family roots clear the label cutoff.
+    // At zoom 2.5 the node cutoff is ~2,250 and the label cutoff twice that:
+    // melodic techno (4,210) is a drawn dot without a name.
     const context = visibilityContext(
-      { zoom: 1.3, focusId: null, selectedIds: [] },
+      { zoom: 2.5, focusId: null, selectedIds: [] },
       EDGES,
     );
     const borderline = NODES.filter(
       (n) => isNodeVisible(n, context) && !isLabelVisible(n, context),
     ).map((n) => n.id);
-    expect(borderline).toEqual(['alternative-rock', 'dance', 'techno']);
+    expect(borderline).toEqual(['melodic-techno']);
+  });
+
+  it('always label a visible family root — landmarks need names', () => {
+    const context = visibilityContext({ zoom: 1, focusId: null, selectedIds: [] }, EDGES);
+    expect(isLabelVisible(nodeById('rock'), context)).toBe(true);
+    expect(isLabelVisible(nodeById('electronic'), context)).toBe(true);
   });
 
   it('always label the focused genre and its children', () => {
