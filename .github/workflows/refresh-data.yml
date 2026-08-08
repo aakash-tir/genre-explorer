@@ -4,13 +4,23 @@ name: Refresh dataset
 # the result. Never pushes to main — the dataset goes through the same review gate as
 # code, which is the whole point of the sharp-drop guard in the pipeline.
 #
-# THE SCHEDULE IS DELIBERATELY COMMENTED OUT. `npm run build:dataset` is a stub until
-# milestone 2 and would fail every Sunday, training everyone to ignore a red workflow.
-# Uncomment the cron in the PR that lands the pipeline.
+# TIMING (measured, milestone 4/6 runs): a fully cold build is ~9 hours — over the
+# 6-hour job limit. Two things make the weekly run fit anyway:
+#
+#   1. The pipeline's disk cache IS its resume mechanism. It is saved to the Actions
+#      cache even when the job fails or times out, so a rerun continues where the
+#      last one stopped. The very first run (or a run after the cache is evicted)
+#      may need one or two manual re-dispatches to fill the cache; after that the
+#      weekly run fits comfortably.
+#   2. "Prune volatile cache" below deletes the parts that must be re-fetched for a
+#      refresh to mean anything (the tree, the counts, the candidate searches, the
+#      rankings) but keeps the stable id mappings (artist streaming links, Deezer
+#      track ids — ~10k entries that change essentially never). A steady-state
+#      weekly run is ~6,000 fresh requests ≈ 2.5-3 h.
 on:
-  # schedule:
-  #   # Sundays 04:00 UTC. MusicBrainz is quietest then, and the scrape takes ~40 minutes.
-  #   - cron: '0 4 * * 0'
+  schedule:
+    # Sundays 04:00 UTC — MusicBrainz is quietest then.
+    - cron: '0 4 * * 0'
   workflow_dispatch:
 
 permissions:
@@ -25,9 +35,8 @@ jobs:
   refresh:
     name: rebuild and open PR
     runs-on: ubuntu-latest
-    # The MusicBrainz scrape is 2,184 requests at 1 req/s, so allow well over the ~40
-    # minutes it should take.
-    timeout-minutes: 120
+    # Just under the 6-hour hard limit so the cache post-step always gets to run.
+    timeout-minutes: 350
 
     steps:
       - uses: actions/checkout@v5
@@ -39,14 +48,30 @@ jobs:
 
       - run: npm ci
 
-      # Caches the upstream HTTP responses between runs so a rerun after a failure does
-      # not re-hammer MusicBrainz from scratch.
+      # Restore last run's upstream responses. The per-run key + prefix restore-keys
+      # pattern means every run saves its own snapshot and the next run starts from
+      # the newest one — including snapshots from failed/timed-out runs (resume).
       - name: Restore pipeline cache
         uses: actions/cache@v4
         with:
           path: .cache/build-dataset
           key: build-dataset-${{ github.run_id }}
           restore-keys: build-dataset-
+
+      # A refresh that reuses last week's scrape refreshes nothing. Drop everything
+      # that must be current; keep the stable id mappings (links, Deezer ids) that
+      # make the run fit in the job limit. Scheduled runs only — a manual dispatch
+      # after a timeout must RESUME, not start the volatile fetches over.
+      - name: Prune volatile cache (scheduled runs)
+        if: github.event_name == 'schedule'
+        run: |
+          rm -rf .cache/build-dataset/genre-list \
+                 .cache/build-dataset/genre-pages \
+                 .cache/build-dataset/rg-counts \
+                 .cache/build-dataset/artist-search \
+                 .cache/build-dataset/recording-search \
+                 .cache/build-dataset/lb-artists \
+                 .cache/build-dataset/lb-recordings
 
       - name: Rebuild dataset
         run: npm run build:dataset

@@ -1,17 +1,20 @@
 # Progress
 
-**Current milestone: 6 — Make it enjoyable** (complete)
+**Current milestone: 7 — Keep it alive** (code complete — v1 pending one manual step)
 
-Previews play: stage 6 resolves each ranked track to a stable Deezer track id (72%
-coverage — preview URLs themselves expire in ~12 min and can't be baked), and the
-panel embeds Deezer's widget player on demand. Mobile works: full-bleed map,
-overlay filter, bottom-sheet panel; pinch/tap via d3-zoom. Colour families are
-popularity-ranked around the golden angle (rock/electronic collision fixed) and
-the 131 singleton roots share a muted neutral.
+The weekly refresh workflow is live: Sundays 04:00 UTC, `refresh-data.yml` rebuilds
+the dataset and opens a PR. Cold runs exceed the 6-hour job limit, so the Actions
+cache doubles as cross-run resume, and scheduled runs prune only the volatile cache
+(tree, counts, searches, rankings) while keeping stable id mappings (links, Deezer
+ids) — steady state ≈ 2.5–3 h. The sharp-drop guard fails the run if the scrape
+silently empties.
 
-**Next: milestone 7 — Keep it alive.** The weekly refresh GitHub Actions workflow
-(build:dataset on schedule → PR with the refreshed dataset, sharp-drop guard as the
-gate) and Cloudflare Pages hosting. NOTE: connecting the Cloudflare Pages account to
-the repo is a manual, owner-only step (`docs/future.md`).
+**v1 ships when the repo owner connects Cloudflare Pages** — a manual dashboard
+step, documented in `docs/runbooks/hosting-cloudflare-pages.md`. Everything else in
+`plan.md` v1 scope is built and merged.
+
+**After v1:** the owner plans a UI pass. Known UI-adjacent backlog in
+`docs/future.md`: megastar skew in popular-artist lists, singleton placement,
+non-Western coverage review.
 
 Milestones are listed in `plan.md`. Open work is in `docs/future.md`.
