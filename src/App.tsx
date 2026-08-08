@@ -27,6 +27,14 @@ export default function App() {
       ? DEFAULT_STATE
       : parseUrl(window.location.pathname, window.location.search),
   );
+  /**
+   * Whether the focused genre's fan/dim view is open. SEPARATE from the selection
+   * on purpose: the panel (and whatever preview is playing) sticks to
+   * `state.focusId` until another genre is picked, while clicking empty map space
+   * merely collapses the fan so the full map is browsable mid-listen. Ephemeral —
+   * not part of the URL; a deep-linked genre opens fanned.
+   */
+  const [fanOpen, setFanOpen] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -55,9 +63,24 @@ export default function App() {
     setState((s) => (Math.abs(s.zoom - zoom) < 0.001 ? s : { ...s, zoom }));
   }, []);
 
-  const handleFocusChange = useCallback((focusId: string | null) => {
-    setState((s) => (s.focusId === focusId ? s : { ...s, focusId }));
-  }, []);
+  /**
+   * Canvas clicks. The selection is sticky: empty space only closes the fan (the
+   * music keeps playing, the panel stays, the ring outline remains); clicking the
+   * already-selected genre toggles its fan; only clicking a DIFFERENT genre
+   * switches the selection. Not memoised — the canvas re-binds onClick per render.
+   */
+  const handleFocusChange = (hitId: string | null) => {
+    if (hitId === null) {
+      setFanOpen(false);
+      return;
+    }
+    if (hitId === state.focusId) {
+      setFanOpen((open) => !open);
+      return;
+    }
+    setState((s) => ({ ...s, focusId: hitId }));
+    setFanOpen(true);
+  };
 
   const handleSelectionChange = useCallback((selectedIds: string[]) => {
     setState((s) => ({ ...s, selectedIds }));
@@ -100,6 +123,7 @@ export default function App() {
         <GraphCanvas
           dataset={dataset}
           state={state}
+          fanOpen={fanOpen}
           onZoomChange={handleZoomChange}
           onFocusChange={handleFocusChange}
         />

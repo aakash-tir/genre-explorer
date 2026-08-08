@@ -57,13 +57,18 @@ const DUST_ALPHA = 0.3;
 interface GraphCanvasProps {
   dataset: GraphDataset;
   state: AppState;
+  /** Whether the focused genre's fan/dim view is open. The selection (and its
+   * ring) outlives the fan — see App.tsx for the click semantics. */
+  fanOpen: boolean;
   onZoomChange: (zoom: number) => void;
+  /** Reports the raw hit: a node id, or null for empty space. App decides. */
   onFocusChange: (focusId: string | null) => void;
 }
 
 export default function GraphCanvas({
   dataset,
   state,
+  fanOpen,
   onZoomChange,
   onFocusChange,
 }: GraphCanvasProps) {
@@ -91,7 +96,7 @@ export default function GraphCanvas({
     overrides: Map<string, WorldPosition>;
     related: Set<string> | null;
   }>(() => {
-    if (!focusNode) return { overrides: new Map(), related: null };
+    if (!focusNode || !fanOpen) return { overrides: new Map(), related: null };
     const childIds = focusChildren(focusNode.id, dataset.edges);
     const children = childIds
       .map((id) => nodesById.get(id))
@@ -104,7 +109,7 @@ export default function GraphCanvas({
       overrides.set(id, position);
     }
     return { overrides, related };
-  }, [focusNode, dataset, nodesById]);
+  }, [focusNode, fanOpen, dataset, nodesById]);
 
   const worldPos = (node: { id: string; x: number; y: number }) => {
     const override = overlay.overrides.get(node.id);
@@ -118,7 +123,11 @@ export default function GraphCanvas({
     const t = transformRef.current;
     const fit = computeFit(dataset.nodes, width, height);
     const context = visibilityContext(
-      { zoom: t.k, focusId: state.focusId, selectedIds: state.selectedIds },
+      {
+        zoom: t.k,
+        focusId: fanOpen ? state.focusId : null,
+        selectedIds: state.selectedIds,
+      },
       dataset.edges,
     );
     let hit: string | null = null;
@@ -159,7 +168,11 @@ export default function GraphCanvas({
     ctx.fillRect(0, 0, width, height);
 
     const context = visibilityContext(
-      { zoom: t.k, focusId: state.focusId, selectedIds: state.selectedIds },
+      {
+        zoom: t.k,
+        focusId: fanOpen ? state.focusId : null,
+        selectedIds: state.selectedIds,
+      },
       dataset.edges,
     );
     const visible = visibleNodes(dataset.nodes, context);
@@ -226,9 +239,14 @@ export default function GraphCanvas({
     ctx.globalAlpha = 1;
 
     // 4. Rings: focus (solid, its family colour) and hover (subtle).
-    if (focusNode && visibleIds.has(focusNode.id)) {
+    if (focusNode) {
+      // The selection ring outlives the fan: while a preview plays and the user
+      // browses, the outline marks what's in the panel. Sub-cutoff selections are
+      // ringed at dust size.
       const [sx, sy] = screen(focusNode);
-      const r = screenRadius(focusNode.popularity, fit, t.k);
+      const r = visibleIds.has(focusNode.id)
+        ? screenRadius(focusNode.popularity, fit, t.k)
+        : DUST_RADIUS;
       ctx.strokeStyle = toCss(genreColor(hueOf(focusNode.family), 0), 0.9);
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -291,8 +309,7 @@ export default function GraphCanvas({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const hit = hitTest(event.clientX - rect.left, event.clientY - rect.top);
-    onFocusChange(hit === state.focusId ? null : hit);
+    onFocusChange(hitTest(event.clientX - rect.left, event.clientY - rect.top));
   };
 
   // Hover: re-hit-test on move, redraw only when the hovered node changes.
@@ -396,7 +413,7 @@ export default function GraphCanvas({
   // Focus and filter changes redraw without touching the camera.
   useEffect(() => {
     drawRef.current();
-  }, [state.focusId, state.selectedIds, dataset]);
+  }, [state.focusId, fanOpen, state.selectedIds, dataset]);
 
   return (
     <canvas
