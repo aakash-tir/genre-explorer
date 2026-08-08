@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   ".claude/progress.md": {
-    "mtime": 1786155580.6313314,
-    "ast_hash": "f3bb587cb419d62a6c654e97b2fb7251",
+    "mtime": 1786156866.2654912,
+    "ast_hash": "8ec4ade0e3e1adef50b27aab0d5fc00b",
     "semantic_hash": ""
   },
   ".claude/project-context.md": {
@@ -190,8 +190,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/refresh-data.yml": {
-    "mtime": 1785901725.1511278,
-    "ast_hash": "a3bc587df3d294f0b5c0775887d34d12",
+    "mtime": 1786156866.2664928,
+    "ast_hash": "d6e0042f2cbf21119689991b9724f75f",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
@@ -205,8 +205,8 @@
     "semantic_hash": ""
   },
   "docs/future.md": {
-    "mtime": 1786155580.6323388,
-    "ast_hash": "b0e3cac6c22af6bc62593b4150a24c1d",
+    "mtime": 1786156866.2664928,
+    "ast_hash": "a4bae2d9720313139e7b3e6da32eed04",
     "semantic_hash": ""
   },
   "docs/research/graph-rendering.md": {
@@ -340,13 +340,13 @@
     "semantic_hash": ""
   },
   "docs/architecture/architecture-diagram.html": {
-    "mtime": 1786150170.5053582,
-    "ast_hash": "d34a83706dac9d2657060c01e94f2252",
+    "mtime": 1786155740.1574628,
+    "ast_hash": "970d32ce1a08fe44da2b00039897d238",
     "semantic_hash": ""
   },
   "logs/2026-08-07.md": {
-    "mtime": 1786155580.6333382,
-    "ast_hash": "8d1c63e0799a9053d3e4eacdd5e6ca40",
+    "mtime": 1786156866.2690063,
+    "ast_hash": "28bfc7f3fbaff25cfe7d90da19b1e48f",
     "semantic_hash": ""
   },
   "public/data/genres/2-step.json": {
@@ -4967,6 +4967,11 @@
   "scripts/build-dataset/fetch-previews.ts": {
     "mtime": 1786155581.384223,
     "ast_hash": "4856e65fa7c3c09c462bad984f775a3d",
+    "semantic_hash": ""
+  },
+  "docs/runbooks/hosting-cloudflare-pages.md": {
+    "mtime": 1786156866.2680001,
+    "ast_hash": "e8268820cbb5516fb8894553190a56ab",
     "semantic_hash": ""
   }
 }
