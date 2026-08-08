@@ -12,7 +12,17 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { GraphDataset } from './types';
 import { loadGraph } from './lib/dataset';
-import { DEFAULT_STATE, parseUrl, toUrl, type AppState } from './lib/deepLink';
+import {
+  DEFAULT_STATE,
+  parseUrl,
+  stripBase,
+  toUrl,
+  withBase,
+  type AppState,
+} from './lib/deepLink';
+
+/** '/' in dev; '/genre-explorer/' when served from GitHub Pages. */
+const BASE = import.meta.env.BASE_URL;
 import { FULL_DETAIL_ZOOM, visibilityContext, visibleNodes } from './graph/lod';
 import { drawnEdges } from './graph/edges';
 import GraphCanvas, { MIN_ZOOM } from './graph/GraphCanvas';
@@ -25,7 +35,7 @@ export default function App() {
   const [state, setState] = useState<AppState>(() =>
     typeof window === 'undefined'
       ? DEFAULT_STATE
-      : parseUrl(window.location.pathname, window.location.search),
+      : parseUrl(stripBase(window.location.pathname, BASE), window.location.search),
   );
   /**
    * Whether the focused genre's fan/dim view is open. SEPARATE from the selection
@@ -52,7 +62,7 @@ export default function App() {
 
   // Keep the URL in step with the state so every view is shareable.
   useEffect(() => {
-    const next = toUrl(state);
+    const next = withBase(toUrl(state), BASE);
     if (window.location.pathname + window.location.search !== next) {
       window.history.replaceState(null, '', next);
     }

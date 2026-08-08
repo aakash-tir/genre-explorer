@@ -103,3 +103,22 @@ export function toUrl(state: AppState): string {
 export function isSameUrl(a: AppState, b: AppState): boolean {
   return toUrl(a) === toUrl(b);
 }
+
+/**
+ * Sub-path hosting support. GitHub Pages serves the site at /genre-explorer/, so
+ * the app-level paths this module speaks ('/genre/house') must be stripped from and
+ * re-prefixed onto `location.pathname` at the boundary. `base` is Vite's BASE_URL:
+ * '/' in dev and tests, '/<repo>/' on Pages. Pure, like everything else here.
+ */
+export function stripBase(pathname: string, base: string): string {
+  if (base === '/') return pathname;
+  const trimmed = base.endsWith('/') ? base.slice(0, -1) : base;
+  if (pathname === trimmed || pathname === base) return '/';
+  return pathname.startsWith(`${trimmed}/`) ? pathname.slice(trimmed.length) : pathname;
+}
+
+export function withBase(url: string, base: string): string {
+  if (base === '/') return url;
+  const trimmed = base.endsWith('/') ? base.slice(0, -1) : base;
+  return url === '/' ? base : `${trimmed}${url}`;
+}
