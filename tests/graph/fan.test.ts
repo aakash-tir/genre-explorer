@@ -4,7 +4,13 @@
  */
 import { describe, expect, it } from 'vitest';
 
-import { fanPositions, fanRadius, FAN_CLEARANCE } from '../../src/graph/fan';
+import {
+  CLEARANCE_MARGIN,
+  fanPositions,
+  fanRadius,
+  FAN_CLEARANCE,
+  ringClearance,
+} from '../../src/graph/fan';
 import { nodeRadius } from '../../src/graph/lod';
 
 const focus = { x: 100, y: -50, popularity: 500000 };
@@ -50,5 +56,34 @@ describe('fanPositions', () => {
 
   it('returns an empty map for a childless focus', () => {
     expect(fanPositions(focus, []).size).toBe(0);
+  });
+});
+
+describe('ringClearance', () => {
+  const ring = 100;
+
+  it('pushes nodes inside the ring just outside it, keeping their bearing', () => {
+    const displaced = ringClearance(focus, ring, [
+      { id: 'intruder', x: focus.x + 30, y: focus.y },
+    ]);
+    const p = displaced.get('intruder')!;
+    expect(p.x).toBeCloseTo(focus.x + ring * CLEARANCE_MARGIN);
+    expect(p.y).toBeCloseTo(focus.y);
+  });
+
+  it('leaves nodes already outside the clearance alone', () => {
+    const displaced = ringClearance(focus, ring, [
+      { id: 'far', x: focus.x + ring * 2, y: focus.y },
+    ]);
+    expect(displaced.size).toBe(0);
+  });
+
+  it('handles a node exactly on the focus without NaN', () => {
+    const displaced = ringClearance(focus, ring, [
+      { id: 'stacked', x: focus.x, y: focus.y },
+    ]);
+    const p = displaced.get('stacked')!;
+    expect(Number.isFinite(p.x)).toBe(true);
+    expect(Math.hypot(p.x - focus.x, p.y - focus.y)).toBeCloseTo(ring * CLEARANCE_MARGIN);
   });
 });

@@ -81,10 +81,17 @@ export function worldToScreen(
 /**
  * On-screen node radius.
  *
- * Grows with the square root of zoom rather than linearly: zooming from 1 to 64 should
- * make a node ~8x bigger, not 64x — linear growth turns family roots into walls of
- * colour long before their subgenres come into view.
+ * Grows with zoom^0.35, deliberately slower than the sqrt the first version used:
+ * the baked layout reserves ~2.2x collision spacing, and k^0.35 tops out at ~4.3x
+ * growth at full zoom — nodes gain presence as you descend without outgrowing their
+ * spacing and overlapping (the image-2 bug from the UI review).
  */
+export const RADIUS_GROWTH_EXPONENT = 0.35;
+
 export function screenRadius(popularity: number, fit: Fit, zoomK: number): number {
-  return nodeRadius(popularity) * fit.scale * Math.sqrt(Math.max(zoomK, 0.01));
+  return (
+    nodeRadius(popularity) *
+    fit.scale *
+    Math.pow(Math.max(zoomK, 0.01), RADIUS_GROWTH_EXPONENT)
+  );
 }

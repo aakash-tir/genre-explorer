@@ -53,9 +53,6 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
   genuine house artists. Genre-scoped listen counts don't exist in ListenBrainz's
   API; mitigations would be heuristic (e.g. weight by tag count). Assess after
   living with it.
-- 2026-08-06 — The 131 isolated singleton genres (no parent, no children, popularity
-  above threshold) float free on the map. Consider whether some deserve manual family
-  assignment via their `influence`/`fusion` relations instead of neutral placement.
 - 2026-08-04 — Whether the long tail leaves non-Western genre families looking thin after
   the threshold filter. Review now that the filtered dataset exists (912 of 2,184 kept).
 

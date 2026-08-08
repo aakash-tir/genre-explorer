@@ -33,8 +33,8 @@ describe('App', () => {
     await waitFor(() => {
       expect(screen.getByTestId('node-count')).toHaveTextContent('8');
     });
-    // Only the two family roots clear the cutoff at zoom 1.
-    expect(screen.getByTestId('visible-count')).toHaveTextContent('2');
+    // The roots and the strong mid-tier clear the ~20k cutoff at zoom 1.
+    expect(screen.getByTestId('visible-count')).toHaveTextContent('5');
     // Five structural edges; the two fusion edges and the influence edge are not drawn.
     expect(screen.getByTestId('edge-count')).toHaveTextContent('5');
   });

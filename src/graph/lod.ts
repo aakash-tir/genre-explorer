@@ -46,7 +46,7 @@ export interface LodState {
  * MIN_VISIBLE_EXPONENT makes the overview sparser; raising FULL_DETAIL_ZOOM makes the
  * reveal slower and the descent feel longer.
  */
-export const MIN_VISIBLE_EXPONENT = 5;
+export const MIN_VISIBLE_EXPONENT = 4.3;
 export const FULL_DETAIL_ZOOM = 64;
 
 export function popularityCutoff(zoom: number): number {
@@ -124,12 +124,16 @@ export function isNodeVisible(node: GenreNode, context: VisibilityContext): bool
 }
 
 /**
- * Labels are stricter than dots. A focused node and its children are always labelled —
- * the plan explicitly wants sub-node titles readable once you've zoomed into a genre.
+ * Labels are stricter than dots. Exceptions, both about orientation:
+ *   - a focused node and its children are always labelled (the plan wants sub-node
+ *     titles readable once you've zoomed into a genre);
+ *   - FAMILY ROOTS are always labelled while visible — they are the landmarks the
+ *     whole map is navigated by, and an unlabelled landmark is just a dot.
  */
 export function isLabelVisible(node: GenreNode, context: VisibilityContext): boolean {
   if (!isNodeVisible(node, context)) return false;
   if (context.focused.has(node.id)) return true;
+  if (node.depth === 0) return true;
   return node.popularity >= context.cutoff * LABEL_ZOOM_MULTIPLIER;
 }
 
