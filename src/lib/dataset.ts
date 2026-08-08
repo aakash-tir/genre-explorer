@@ -12,10 +12,17 @@
  */
 import { GenreDetail, GraphDataset } from '../types';
 
-export const GRAPH_URL = '/data/graph.json';
+/**
+ * Data URLs are built on Vite's BASE_URL so the same bundle works at the domain
+ * root (dev, Cloudflare) and under a sub-path (GitHub Pages serves the site at
+ * /genre-explorer/). BASE_URL is '/' in dev and tests.
+ */
+const BASE = import.meta.env.BASE_URL;
+
+export const GRAPH_URL = `${BASE}data/graph.json`;
 
 export function genreDetailUrl(genreId: string): string {
-  return `/data/genres/${genreId}.json`;
+  return `${BASE}data/genres/${genreId}.json`;
 }
 
 export class DatasetError extends Error {

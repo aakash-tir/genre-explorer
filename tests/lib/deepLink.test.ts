@@ -3,7 +3,9 @@ import {
   DEFAULT_ZOOM,
   isSameUrl,
   parseUrl,
+  stripBase,
   toUrl,
+  withBase,
   type AppState,
 } from '../../src/lib/deepLink';
 
@@ -114,5 +116,31 @@ describe('isSameUrl', () => {
     const a: AppState = { focusId: 'techno', selectedIds: [], zoom: 4 };
     const b: AppState = { focusId: 'house', selectedIds: [], zoom: 4 };
     expect(isSameUrl(a, b)).toBe(false);
+  });
+});
+
+describe('sub-path hosting (GitHub Pages serves at /genre-explorer/)', () => {
+  const BASE = '/genre-explorer/';
+
+  it('stripBase removes the prefix so parseUrl sees app-level paths', () => {
+    expect(stripBase('/genre-explorer/genre/house', BASE)).toBe('/genre/house');
+    expect(stripBase('/genre-explorer/', BASE)).toBe('/');
+    expect(stripBase('/genre-explorer', BASE)).toBe('/');
+  });
+
+  it('stripBase is a no-op at the domain root and on foreign paths', () => {
+    expect(stripBase('/genre/house', '/')).toBe('/genre/house');
+    expect(stripBase('/genre-explorers/imposter', BASE)).toBe(
+      '/genre-explorers/imposter',
+    );
+  });
+
+  it('withBase re-prefixes for history writes and round-trips', () => {
+    expect(withBase('/genre/house', BASE)).toBe('/genre-explorer/genre/house');
+    expect(withBase('/', BASE)).toBe('/genre-explorer/');
+    expect(withBase('/genre/house', '/')).toBe('/genre/house');
+    expect(stripBase(withBase('/genre/house?zoom=8'.split('?')[0], BASE), BASE)).toBe(
+      '/genre/house',
+    );
   });
 });

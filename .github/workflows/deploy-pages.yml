@@ -1,0 +1,60 @@
+name: Deploy site
+
+# Publishes the static build to GitHub Pages on every merge to main. GitHub Pages
+# became the host the moment the repo went public (2026-08-08) — its only
+# disqualifier in docs/research/hosting.md was that private repos need a paid plan.
+# Cloudflare Pages remains documented as the fallback (docs/runbooks/hosting.md).
+#
+# The site lives under /genre-explorer/, so the build passes an explicit base and
+# the app resolves data URLs and deep links against it (import.meta.env.BASE_URL).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build for the /genre-explorer/ sub-path
+        run: npx vite build --base=/genre-explorer/
+
+      # GitHub Pages serves 404.html for unknown paths; shipping the SPA there makes
+      # deep links like /genre-explorer/genre/house load the app, which then reads
+      # the real path from the address bar.
+      - name: SPA fallback
+        run: cp dist/index.html dist/404.html
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
