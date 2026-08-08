@@ -1243,8 +1243,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_build_graph",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "build-graph.ts"
     },
     {
@@ -1254,8 +1254,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "scripts_build_dataset_build_graph_unplacednode",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "unplacednode"
     },
     {
@@ -1265,8 +1265,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "scripts_build_dataset_build_graph_builtgraph",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "builtgraph"
     },
     {
@@ -1309,8 +1309,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_emit_details",
-      "community": 4,
-      "community_name": "App.tsx",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "emit-details.ts"
     },
     {
@@ -1331,8 +1331,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_emit",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "emit.ts"
     },
     {
@@ -1342,8 +1342,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "scripts_build_dataset_emit_emitgraph",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "emitgraph()"
     },
     {
@@ -1463,8 +1463,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "scripts_build_dataset_fetch_genres_genreref",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "genreref"
     },
     {
@@ -1793,8 +1793,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_layout",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "layout.ts"
     },
     {
@@ -1804,8 +1804,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "scripts_build_dataset_layout_radius",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "radius()"
     },
     {
@@ -1815,8 +1815,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "scripts_build_dataset_layout_seededrandom",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "seededrandom()"
     },
     {
@@ -1826,8 +1826,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "scripts_build_dataset_layout_layoutgraph",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "layoutgraph()"
     },
     {
@@ -2079,8 +2079,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "src_graph_graphcanvas_graphcanvasprops",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "graphcanvasprops"
     },
     {
@@ -2882,8 +2882,8 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "src_types_genreedge",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "genreedge"
     },
     {
@@ -3113,8 +3113,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "tests_graph_fan_test_child",
-      "community": 13,
-      "community_name": "colors.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "child()"
     },
     {
@@ -3278,8 +3278,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_scripts_layout_test",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "layout.test.ts"
     },
     {
@@ -3289,8 +3289,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "tests_scripts_layout_test_m",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "m()"
     },
     {
@@ -3300,8 +3300,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "tests_scripts_layout_test_nodes",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "nodes"
     },
     {
@@ -3311,8 +3311,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "tests_scripts_layout_test_edges",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "edges"
     },
     {
@@ -4452,7 +4452,7 @@
       "label": "Decisions still open",
       "file_type": "document",
       "source_file": "docs/future.md",
-      "source_location": "L41",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "docs_future_decisions_still_open",
       "community": 15,
@@ -4463,7 +4463,7 @@
       "label": "Upstream watch",
       "file_type": "document",
       "source_file": "docs/future.md",
-      "source_location": "L57",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "docs_future_upstream_watch",
       "community": 15,
@@ -4474,7 +4474,7 @@
       "label": "Scaling",
       "file_type": "document",
       "source_file": "docs/future.md",
-      "source_location": "L68",
+      "source_location": "L73",
       "_origin": "ast",
       "id": "docs_future_scaling",
       "community": 15,
@@ -4955,6 +4955,61 @@
       "norm_label": "the dataset refresh workflow"
     },
     {
+      "label": "hosting-cloudflare-pages.md",
+      "file_type": "document",
+      "source_file": "docs/runbooks/hosting-cloudflare-pages.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_runbooks_hosting_cloudflare_pages",
+      "community": 31,
+      "community_name": "Hosting: Cloudflare Pages",
+      "norm_label": "hosting-cloudflare-pages.md"
+    },
+    {
+      "label": "Hosting: Cloudflare Pages",
+      "file_type": "document",
+      "source_file": "docs/runbooks/hosting-cloudflare-pages.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_runbooks_hosting_cloudflare_pages_hosting_cloudflare_pages",
+      "community": 31,
+      "community_name": "Hosting: Cloudflare Pages",
+      "norm_label": "hosting: cloudflare pages"
+    },
+    {
+      "label": "One-time setup (repo owner, manual \u2014 cannot be automated from here)",
+      "file_type": "document",
+      "source_file": "docs/runbooks/hosting-cloudflare-pages.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "docs_runbooks_hosting_cloudflare_pages_one_time_setup_repo_owner_manual_cannot_be_automated_from_here",
+      "community": 31,
+      "community_name": "Hosting: Cloudflare Pages",
+      "norm_label": "one-time setup (repo owner, manual \u2014 cannot be automated from here)"
+    },
+    {
+      "label": "Things to check on first deploy",
+      "file_type": "document",
+      "source_file": "docs/runbooks/hosting-cloudflare-pages.md",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "docs_runbooks_hosting_cloudflare_pages_things_to_check_on_first_deploy",
+      "community": 31,
+      "community_name": "Hosting: Cloudflare Pages",
+      "norm_label": "things to check on first deploy"
+    },
+    {
+      "label": "Costs and limits",
+      "file_type": "document",
+      "source_file": "docs/runbooks/hosting-cloudflare-pages.md",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "docs_runbooks_hosting_cloudflare_pages_costs_and_limits",
+      "community": 31,
+      "community_name": "Hosting: Cloudflare Pages",
+      "norm_label": "costs and limits"
+    },
+    {
       "label": "2026-08-04.md",
       "file_type": "document",
       "source_file": "logs/2026-08-04.md",
@@ -5195,6 +5250,28 @@
       "community": 29,
       "community_name": "2026-08-07",
       "norm_label": "milestone 6: previews, mobile, and the colour fix"
+    },
+    {
+      "label": "Post-merge chores for PR #12",
+      "file_type": "document",
+      "source_file": "logs/2026-08-07.md",
+      "source_location": "L155",
+      "_origin": "ast",
+      "id": "logs_2026_08_07_post_merge_chores_for_pr_12",
+      "community": 29,
+      "community_name": "2026-08-07",
+      "norm_label": "post-merge chores for pr #12"
+    },
+    {
+      "label": "Milestone 7: the weekly refresh workflow \u2014 v1 code-complete",
+      "file_type": "document",
+      "source_file": "logs/2026-08-07.md",
+      "source_location": "L162",
+      "_origin": "ast",
+      "id": "logs_2026_08_07_milestone_7_the_weekly_refresh_workflow_v1_code_complete",
+      "community": 29,
+      "community_name": "2026-08-07",
+      "norm_label": "milestone 7: the weekly refresh workflow \u2014 v1 code-complete"
     },
     {
       "label": "plan.md",
@@ -13685,7 +13762,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/future.md",
-      "source_location": "L41",
+      "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_future_future",
@@ -13718,7 +13795,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/future.md",
-      "source_location": "L68",
+      "source_location": "L73",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_future_future",
@@ -13729,7 +13806,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/future.md",
-      "source_location": "L57",
+      "source_location": "L62",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_future_future",
@@ -14168,6 +14245,50 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "docs/runbooks/hosting-cloudflare-pages.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_runbooks_hosting_cloudflare_pages",
+      "target": "docs_runbooks_hosting_cloudflare_pages_hosting_cloudflare_pages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/runbooks/hosting-cloudflare-pages.md",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_runbooks_hosting_cloudflare_pages_hosting_cloudflare_pages",
+      "target": "docs_runbooks_hosting_cloudflare_pages_costs_and_limits",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/runbooks/hosting-cloudflare-pages.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_runbooks_hosting_cloudflare_pages_hosting_cloudflare_pages",
+      "target": "docs_runbooks_hosting_cloudflare_pages_one_time_setup_repo_owner_manual_cannot_be_automated_from_here",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/runbooks/hosting-cloudflare-pages.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_runbooks_hosting_cloudflare_pages_hosting_cloudflare_pages",
+      "target": "docs_runbooks_hosting_cloudflare_pages_things_to_check_on_first_deploy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "logs/2026-08-04.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -14334,11 +14455,33 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "logs/2026-08-07.md",
+      "source_location": "L162",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "logs_2026_08_07_2026_08_07",
+      "target": "logs_2026_08_07_milestone_7_the_weekly_refresh_workflow_v1_code_complete",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "logs/2026-08-07.md",
       "source_location": "L127",
       "weight": 1.0,
       "_origin": "ast",
       "source": "logs_2026_08_07_2026_08_07",
       "target": "logs_2026_08_07_post_merge_chores_for_pr_10",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "logs/2026-08-07.md",
+      "source_location": "L155",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "logs_2026_08_07_2026_08_07",
+      "target": "logs_2026_08_07_post_merge_chores_for_pr_12",
       "confidence_score": 1.0
     },
     {
@@ -14519,5 +14662,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "4e4c45bceb16749b37678455d18605052b5050ac"
+  "built_at_commit": "011b9cb9f1abfbbad5c8bc98abccf4d40692c41f"
 }
