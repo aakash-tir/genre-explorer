@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1786150041.5092132,
-    "ast_hash": "eb477e849839c74d055d6d2b9a3abd08",
+    "mtime": 1786178775.9567943,
+    "ast_hash": "0f7489cfd722815dd66fe75eea987854",
     "semantic_hash": ""
   },
   "src/graph/colors.ts": {
@@ -95,8 +95,8 @@
     "semantic_hash": ""
   },
   "tests/App.test.tsx": {
-    "mtime": 1786167750.2587004,
-    "ast_hash": "05a974910a57378ff3655b3739aa0c84",
+    "mtime": 1786178775.9593048,
+    "ast_hash": "2ea64e199125482e02e8242017aa899d",
     "semantic_hash": ""
   },
   "tests/fixtures.ts": {
@@ -325,8 +325,8 @@
     "semantic_hash": ""
   },
   "src/graph/GraphCanvas.tsx": {
-    "mtime": 1786167750.254044,
-    "ast_hash": "de84679e6f434ecb99e0cb0eaa89d995",
+    "mtime": 1786178775.9582982,
+    "ast_hash": "861a756b55f6f3bd0943e69800802c57",
     "semantic_hash": ""
   },
   "src/graph/camera.ts": {
@@ -340,13 +340,13 @@
     "semantic_hash": ""
   },
   "docs/architecture/architecture-diagram.html": {
-    "mtime": 1786157005.9980075,
-    "ast_hash": "3eebc870a23f1d1a67304cfaca8ac969",
+    "mtime": 1786167868.1269,
+    "ast_hash": "32e7215262fb4fea72e4cdf592541220",
     "semantic_hash": ""
   },
   "logs/2026-08-07.md": {
-    "mtime": 1786167750.2480755,
-    "ast_hash": "d63fa0a783e1e53c46051698050c65a5",
+    "mtime": 1786167868.1481507,
+    "ast_hash": "a73255d36b4c89fd8fcfde084f7c7b57",
     "semantic_hash": ""
   },
   "public/data/genres/2-step.json": {
@@ -4997,6 +4997,11 @@
   "images/3.png": {
     "mtime": 1786167750.2460742,
     "ast_hash": "4cbba98538188a9f4ece558288e13772",
+    "semantic_hash": ""
+  },
+  "logs/2026-08-08.md": {
+    "mtime": 1786178775.9557931,
+    "ast_hash": "a4194b28d372c4c8cc174a2094a1038d",
     "semantic_hash": ""
   }
 }
