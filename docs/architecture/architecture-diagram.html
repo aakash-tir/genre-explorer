@@ -242,8 +242,8 @@
           </div>
         </div>
         <p class="subtitle">
-          Build-time pipeline → committed dataset → static browser app · as of milestone 5
-          (PR #10)
+          Build-time pipeline → committed dataset → static browser app · as of milestone 6
+          (PR #12)
         </p>
       </div>
 
@@ -343,7 +343,6 @@
             y2="242"
             stroke="#64748b"
             stroke-width="1.5"
-            stroke-dasharray="5,5"
             marker-end="url(#arrowhead)"
           />
 
@@ -449,7 +448,6 @@
             y2="316"
             stroke="#34d399"
             stroke-width="1.5"
-            stroke-dasharray="5,5"
             marker-end="url(#arrowhead)"
           />
           <line
@@ -592,7 +590,6 @@
             fill="rgba(30, 41, 59, 0.5)"
             stroke="#94a3b8"
             stroke-width="1.5"
-            stroke-dasharray="4,4"
           />
           <text
             x="145"
@@ -605,7 +602,7 @@
             Deezer
           </text>
           <text x="145" y="419" fill="#94a3b8" font-size="9" text-anchor="middle">
-            30s previews · planned (m6)
+            track-id search · widget embed
           </text>
 
           <!-- ============ HTTP helper + cache ============ -->
@@ -852,7 +849,6 @@
             fill="rgba(6, 78, 59, 0.4)"
             stroke="#34d399"
             stroke-width="1.5"
-            stroke-dasharray="4,4"
           />
           <text
             x="745"
@@ -865,7 +861,7 @@
             6 · previews
           </text>
           <text x="745" y="354" fill="#94a3b8" font-size="9" text-anchor="middle">
-            Deezer · planned (m6)
+            Deezer ids · 72% coverage
           </text>
 
           <!-- ============ Dataset artifacts ============ -->
@@ -1007,7 +1003,7 @@
             • GraphCanvas — Canvas 2D + d3-zoom · gradients · LOD (built)
           </text>
           <text x="110" y="706" fill="#94a3b8" font-size="9">
-            • DetailPanel — songs / artists / links (built) · previews m6
+            • DetailPanel — songs / artists / links / previews (built)
           </text>
           <text x="110" y="724" fill="#94a3b8" font-size="9">
             • FilterPanel — search · chips · hide-the-rest (built)
@@ -1091,10 +1087,10 @@
         <div class="card">
           <div class="card-header">
             <div class="card-dot emerald"></div>
-            <h3>Pipeline — built (milestones 2 + 4)</h3>
+            <h3>Pipeline — built (milestones 2, 4, 6)</h3>
           </div>
           <ul>
-            <li>• Stages 1–5 + layout + emit are real; 6 (previews) is m6</li>
+            <li>• All stages 1–8 are real; weekly refresh workflow is m7</li>
             <li>
               • Genre tree scraped from HTML — the relations are absent from the JSON API
             </li>
@@ -1121,22 +1117,20 @@
         <div class="card">
           <div class="card-header">
             <div class="card-dot cyan"></div>
-            <h3>Runtime — next: milestone 6</h3>
+            <h3>Runtime — next: milestone 7</h3>
           </div>
           <ul>
             <li>• Static app; fetches its own JSON and nothing else</li>
             <li>• Zod re-validates on load — a bad refresh fails loudly</li>
             <li>• Canvas map is live: gradients, LOD, wheel/drag camera, URL zoom</li>
-            <li>
-              • Focus, fan, detail panel and filter are live; previews + mobile are m6
-            </li>
+            <li>• Previews via Deezer widget embed (URLs expire; ids are stable)</li>
           </ul>
         </div>
       </div>
 
       <!-- Footer -->
       <p class="footer">
-        Genre Explorer • architecture as of 2026-08-07 (milestone 5, PR #10) • updated
+        Genre Explorer • architecture as of 2026-08-07 (milestone 6, PR #12) • updated
         after every architecture-changing merge
       </p>
     </div>
