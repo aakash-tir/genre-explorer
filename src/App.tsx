@@ -17,6 +17,7 @@ import { FULL_DETAIL_ZOOM, visibilityContext, visibleNodes } from './graph/lod';
 import { drawnEdges } from './graph/edges';
 import GraphCanvas, { MIN_ZOOM } from './graph/GraphCanvas';
 import DetailPanel from './panel/DetailPanel';
+import FilterPanel from './filters/FilterPanel';
 
 export default function App() {
   const [dataset, setDataset] = useState<GraphDataset | null>(null);
@@ -58,6 +59,10 @@ export default function App() {
     setState((s) => (s.focusId === focusId ? s : { ...s, focusId }));
   }, []);
 
+  const handleSelectionChange = useCallback((selectedIds: string[]) => {
+    setState((s) => ({ ...s, selectedIds }));
+  }, []);
+
   if (error !== null) {
     return (
       <main className="status status--error">
@@ -84,8 +89,11 @@ export default function App() {
   return (
     <main className="app">
       <aside className="filters" aria-label="Genre filters">
-        <h2>Filter</h2>
-        <p className="stub">Search and multi-select — milestone 5.</p>
+        <FilterPanel
+          nodes={dataset.nodes}
+          selectedIds={state.selectedIds}
+          onSelectionChange={handleSelectionChange}
+        />
       </aside>
 
       <section className="canvas-host" aria-label="Genre map">
