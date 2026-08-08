@@ -242,8 +242,8 @@
           </div>
         </div>
         <p class="subtitle">
-          Build-time pipeline → committed dataset → static browser app · as of milestone 4
-          (PR #8)
+          Build-time pipeline → committed dataset → static browser app · as of milestone 5
+          (PR #10)
         </p>
       </div>
 
@@ -1010,10 +1010,10 @@
             • DetailPanel — songs / artists / links (built) · previews m6
           </text>
           <text x="110" y="724" fill="#94a3b8" font-size="9">
-            • FilterPanel — search / multi-select (stub — m5)
+            • FilterPanel — search · chips · hide-the-rest (built)
           </text>
           <text x="290" y="746" fill="#22d3ee" font-size="8" text-anchor="middle">
-            deep links live: /?zoom=… ⇄ AppState
+            deep links live: /genre/&lt;id&gt;?filter=…&amp;zoom=… ⇄ AppState
           </text>
 
           <!-- ============ Legend (outside all boundaries) ============ -->
@@ -1121,20 +1121,22 @@
         <div class="card">
           <div class="card-header">
             <div class="card-dot cyan"></div>
-            <h3>Runtime — next: milestone 5</h3>
+            <h3>Runtime — next: milestone 6</h3>
           </div>
           <ul>
             <li>• Static app; fetches its own JSON and nothing else</li>
             <li>• Zod re-validates on load — a bad refresh fails loudly</li>
             <li>• Canvas map is live: gradients, LOD, wheel/drag camera, URL zoom</li>
-            <li>• Focus, radial fan and detail panel are live; filter panel is m5</li>
+            <li>
+              • Focus, fan, detail panel and filter are live; previews + mobile are m6
+            </li>
           </ul>
         </div>
       </div>
 
       <!-- Footer -->
       <p class="footer">
-        Genre Explorer • architecture as of 2026-08-07 (milestone 4, PR #8) • updated
+        Genre Explorer • architecture as of 2026-08-07 (milestone 5, PR #10) • updated
         after every architecture-changing merge
       </p>
     </div>

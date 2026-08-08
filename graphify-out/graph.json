@@ -1265,8 +1265,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "scripts_build_dataset_build_graph_builtgraph",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "builtgraph"
     },
     {
@@ -1309,8 +1309,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_emit_details",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "emit-details.ts"
     },
     {
@@ -1320,8 +1320,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "scripts_build_dataset_emit_details_emitdetail",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "App.tsx",
       "norm_label": "emitdetail()"
     },
     {
@@ -1966,12 +1966,56 @@
       "label": "App()",
       "file_type": "code",
       "source_file": "src/App.tsx",
-      "source_location": "L21",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "src_app_app",
       "community": 1,
       "community_name": "lod.ts",
       "norm_label": "app()"
+    },
+    {
+      "label": "FilterPanel.tsx",
+      "file_type": "code",
+      "source_file": "src/filters/FilterPanel.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_filters_filterpanel",
+      "community": 4,
+      "community_name": "App.tsx",
+      "norm_label": "filterpanel.tsx"
+    },
+    {
+      "label": "searchGenres()",
+      "file_type": "code",
+      "source_file": "src/filters/FilterPanel.tsx",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "src_filters_filterpanel_searchgenres",
+      "community": 4,
+      "community_name": "App.tsx",
+      "norm_label": "searchgenres()"
+    },
+    {
+      "label": "FilterPanelProps",
+      "file_type": "code",
+      "source_file": "src/filters/FilterPanel.tsx",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "src_filters_filterpanel_filterpanelprops",
+      "community": 4,
+      "community_name": "App.tsx",
+      "norm_label": "filterpanelprops"
+    },
+    {
+      "label": "FilterPanel()",
+      "file_type": "code",
+      "source_file": "src/filters/FilterPanel.tsx",
+      "source_location": "L45",
+      "_origin": "ast",
+      "id": "src_filters_filterpanel_filterpanel",
+      "community": 4,
+      "community_name": "App.tsx",
+      "norm_label": "filterpanel()"
     },
     {
       "label": "GraphCanvas.tsx",
@@ -2841,6 +2885,50 @@
       "community": 1,
       "community_name": "lod.ts",
       "norm_label": "mockfetch()"
+    },
+    {
+      "label": "FilterPanel.test.tsx",
+      "file_type": "code",
+      "source_file": "tests/filters/FilterPanel.test.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_filters_filterpanel_test",
+      "community": 4,
+      "community_name": "App.tsx",
+      "norm_label": "filterpanel.test.tsx"
+    },
+    {
+      "label": "M()",
+      "file_type": "code",
+      "source_file": "tests/filters/FilterPanel.test.tsx",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "tests_filters_filterpanel_test_m",
+      "community": 4,
+      "community_name": "App.tsx",
+      "norm_label": "m()"
+    },
+    {
+      "label": "node()",
+      "file_type": "code",
+      "source_file": "tests/filters/FilterPanel.test.tsx",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "tests_filters_filterpanel_test_node",
+      "community": 4,
+      "community_name": "App.tsx",
+      "norm_label": "node()"
+    },
+    {
+      "label": "NODES",
+      "file_type": "code",
+      "source_file": "tests/filters/FilterPanel.test.tsx",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "tests_filters_filterpanel_test_nodes",
+      "community": 4,
+      "community_name": "App.tsx",
+      "norm_label": "nodes"
     },
     {
       "label": "fixtures.ts",
@@ -5008,6 +5096,28 @@
       "community": 29,
       "community_name": "2026-08-07",
       "norm_label": "milestone 4: focus and the panel \u2014 the core loop works end to end"
+    },
+    {
+      "label": "Post-merge chores for PR #8",
+      "file_type": "document",
+      "source_file": "logs/2026-08-07.md",
+      "source_location": "L104",
+      "_origin": "ast",
+      "id": "logs_2026_08_07_post_merge_chores_for_pr_8",
+      "community": 29,
+      "community_name": "2026-08-07",
+      "norm_label": "post-merge chores for pr #8"
+    },
+    {
+      "label": "Milestone 5: find your way around \u2014 the filter panel",
+      "file_type": "document",
+      "source_file": "logs/2026-08-07.md",
+      "source_location": "L111",
+      "_origin": "ast",
+      "id": "logs_2026_08_07_milestone_5_find_your_way_around_the_filter_panel",
+      "community": 29,
+      "community_name": "2026-08-07",
+      "norm_label": "milestone 5: find your way around \u2014 the filter panel"
     },
     {
       "label": "plan.md",
@@ -8847,11 +8957,35 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.tsx",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app",
       "target": "src_app_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app",
+      "target": "src_filters_filterpanel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app",
+      "target": "src_filters_filterpanel_filterpanel",
       "confidence_score": 1.0
     },
     {
@@ -9088,7 +9222,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L82",
+      "source_location": "L87",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_app",
@@ -9100,7 +9234,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L80",
+      "source_location": "L85",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_app",
@@ -9112,7 +9246,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L81",
+      "source_location": "L86",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_app",
@@ -9124,7 +9258,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L32",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_app",
@@ -9136,7 +9270,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L27",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_app",
@@ -9148,11 +9282,128 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L46",
+      "source_location": "L47",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_app",
       "target": "src_lib_deeplink_tourl"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/filters/FilterPanel.tsx",
+      "source_location": "L45",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_filters_filterpanel",
+      "target": "src_filters_filterpanel_filterpanel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/filters/FilterPanel.tsx",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_filters_filterpanel",
+      "target": "src_filters_filterpanel_filterpanelprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/filters/FilterPanel.tsx",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_filters_filterpanel",
+      "target": "src_filters_filterpanel_searchgenres",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/filters/FilterPanel.tsx",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_filters_filterpanel",
+      "target": "src_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/filters/FilterPanel.tsx",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_filters_filterpanel",
+      "target": "src_types_genrenode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/filters/FilterPanel.test.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_filters_filterpanel_test",
+      "target": "src_filters_filterpanel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/filters/FilterPanel.tsx",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_filters_filterpanel_filterpanel",
+      "target": "src_filters_filterpanel_searchgenres",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/filters/FilterPanel.test.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_filters_filterpanel_test",
+      "target": "src_filters_filterpanel_searchgenres",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/filters/FilterPanel.tsx",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_filters_filterpanel_filterpanelprops",
+      "target": "src_types_genrenode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/filters/FilterPanel.test.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_filters_filterpanel_test",
+      "target": "src_filters_filterpanel_filterpanel",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -11612,6 +11863,18 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "tests/filters/FilterPanel.test.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_filters_filterpanel_test",
+      "target": "src_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "tests/fixtures.ts",
       "source_location": "L9",
       "weight": 1.0,
@@ -11666,6 +11929,18 @@
       "_origin": "ast",
       "source": "tests_scripts_layout_test",
       "target": "src_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/filters/FilterPanel.test.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_filters_filterpanel_test",
+      "target": "src_types_genrenode",
       "confidence_score": 1.0
     },
     {
@@ -11809,6 +12084,51 @@
       "_origin": "ast",
       "source": "tests_app_test",
       "target": "tests_fixtures_dataset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/filters/FilterPanel.test.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_filters_filterpanel_test",
+      "target": "tests_filters_filterpanel_test_m",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/filters/FilterPanel.test.tsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_filters_filterpanel_test",
+      "target": "tests_filters_filterpanel_test_node",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/filters/FilterPanel.test.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_filters_filterpanel_test",
+      "target": "tests_filters_filterpanel_test_nodes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/filters/FilterPanel.test.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_filters_filterpanel_test_node",
+      "target": "tests_filters_filterpanel_test_m",
       "confidence_score": 1.0
     },
     {
@@ -13751,6 +14071,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "logs/2026-08-07.md",
+      "source_location": "L111",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "logs_2026_08_07_2026_08_07",
+      "target": "logs_2026_08_07_milestone_5_find_your_way_around_the_filter_panel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "logs/2026-08-07.md",
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
@@ -13767,6 +14098,17 @@
       "_origin": "ast",
       "source": "logs_2026_08_07_2026_08_07",
       "target": "logs_2026_08_07_post_merge_chores_for_pr_6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "logs/2026-08-07.md",
+      "source_location": "L104",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "logs_2026_08_07_2026_08_07",
+      "target": "logs_2026_08_07_post_merge_chores_for_pr_8",
       "confidence_score": 1.0
     },
     {
@@ -13914,5 +14256,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "cf80090b88a503862ed1c5de4138d4099fe6ce95"
+  "built_at_commit": "2489b8b348d5b80ce76f8212e89611b6972f7587"
 }
