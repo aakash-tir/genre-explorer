@@ -1243,8 +1243,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_build_graph",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "build-graph.ts"
     },
     {
@@ -1265,8 +1265,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "scripts_build_dataset_build_graph_builtgraph",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "builtgraph"
     },
     {
@@ -1276,8 +1276,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "scripts_build_dataset_build_graph_slugify",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "slugify()"
     },
     {
@@ -1287,8 +1287,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "scripts_build_dataset_build_graph_buildgraph",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "buildgraph()"
     },
     {
@@ -1309,8 +1309,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_emit_details",
-      "community": 32,
-      "community_name": "App.tsx",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "emit-details.ts"
     },
     {
@@ -1320,8 +1320,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "scripts_build_dataset_emit_details_emitdetail",
-      "community": 32,
-      "community_name": "App.tsx",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "emitdetail()"
     },
     {
@@ -1463,8 +1463,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "scripts_build_dataset_fetch_genres_genreref",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "genreref"
     },
     {
@@ -1485,8 +1485,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_fetch_hierarchy",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "fetch-hierarchy.ts"
     },
     {
@@ -1496,8 +1496,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "scripts_build_dataset_fetch_hierarchy_mbidedge",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "mbidedge"
     },
     {
@@ -1507,8 +1507,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "scripts_build_dataset_fetch_hierarchy_dedupe",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "dedupe()"
     },
     {
@@ -1518,8 +1518,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "scripts_build_dataset_fetch_hierarchy_fetchhierarchy",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "fetchhierarchy()"
     },
     {
@@ -1848,8 +1848,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "parse-genre-page.ts"
     },
     {
@@ -1859,8 +1859,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page_genrepageref",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "genrepageref"
     },
     {
@@ -1870,8 +1870,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page_genrepagerelations",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "genrepagerelations"
     },
     {
@@ -1881,8 +1881,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page_labels",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "labels"
     },
     {
@@ -1892,8 +1892,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page_decodeentities",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "decodeentities()"
     },
     {
@@ -1903,8 +1903,8 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page_lookslikegenrepage",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "lookslikegenrepage()"
     },
     {
@@ -1914,8 +1914,8 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page_parsegenrepage",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "parsegenrepage()"
     },
     {
@@ -2013,8 +2013,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "app.tsx"
     },
     {
@@ -2024,8 +2024,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "src_app_app",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "app()"
     },
     {
@@ -2087,18 +2087,18 @@
       "label": "GraphCanvasProps",
       "file_type": "code",
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L57",
+      "source_location": "L60",
       "_origin": "ast",
       "id": "src_graph_graphcanvas_graphcanvasprops",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "graphcanvasprops"
     },
     {
       "label": "GraphCanvas()",
       "file_type": "code",
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L68",
+      "source_location": "L71",
       "_origin": "ast",
       "id": "src_graph_graphcanvas_graphcanvas",
       "community": 13,
@@ -2684,8 +2684,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_deeplink",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "deeplink.ts"
     },
     {
@@ -2695,8 +2695,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_lib_deeplink_appstate",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "appstate"
     },
     {
@@ -2706,8 +2706,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "src_lib_deeplink_default_state",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "default_state"
     },
     {
@@ -2717,8 +2717,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_lib_deeplink_sanitiseid",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "sanitiseid()"
     },
     {
@@ -2728,8 +2728,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_lib_deeplink_parseurl",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "parseurl()"
     },
     {
@@ -2739,8 +2739,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "src_lib_deeplink_tourl",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "tourl()"
     },
     {
@@ -2750,8 +2750,8 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "src_lib_deeplink_issameurl",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "issameurl()"
     },
     {
@@ -2761,8 +2761,8 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "src_lib_deeplink_stripbase",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "stripbase()"
     },
     {
@@ -2772,8 +2772,8 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "src_lib_deeplink_withbase",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "withbase()"
     },
     {
@@ -2783,8 +2783,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_main",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "main.tsx"
     },
     {
@@ -2794,8 +2794,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_main_root",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "root"
     },
     {
@@ -2915,8 +2915,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_types_relationkind",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "relationkind"
     },
     {
@@ -2970,8 +2970,8 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "src_types_genreedge",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "genreedge"
     },
     {
@@ -3289,8 +3289,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_lib_deeplink_test",
-      "community": 31,
-      "community_name": "Hosting: Cloudflare Pages",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "deeplink.test.ts"
     },
     {
@@ -3355,8 +3355,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_scripts_build_graph_test",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "build-graph.test.ts"
     },
     {
@@ -3366,8 +3366,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "tests_scripts_build_graph_test_m",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "m()"
     },
     {
@@ -3377,8 +3377,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "tests_scripts_build_graph_test_genres",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "genres()"
     },
     {
@@ -3443,8 +3443,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_scripts_parse_genre_page_test",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "parse-genre-page.test.ts"
     },
     {
@@ -3454,8 +3454,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "tests_scripts_parse_genre_page_test_fixture",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 30,
+      "community_name": "layout.ts",
       "norm_label": "fixture()"
     },
     {
@@ -5481,6 +5481,28 @@
       "community": 4,
       "community_name": "App.tsx",
       "norm_label": "went public, real branch protection, and the site is deploying to github pages"
+    },
+    {
+      "label": "Post-merge chores for PR #20",
+      "file_type": "document",
+      "source_file": "logs/2026-08-08.md",
+      "source_location": "L55",
+      "_origin": "ast",
+      "id": "logs_2026_08_08_post_merge_chores_for_pr_20",
+      "community": 4,
+      "community_name": "App.tsx",
+      "norm_label": "post-merge chores for pr #20"
+    },
+    {
+      "label": "Hover polish: nodes swell slightly under the cursor",
+      "file_type": "document",
+      "source_file": "logs/2026-08-08.md",
+      "source_location": "L60",
+      "_origin": "ast",
+      "id": "logs_2026_08_08_hover_polish_nodes_swell_slightly_under_the_cursor",
+      "community": 4,
+      "community_name": "App.tsx",
+      "norm_label": "hover polish: nodes swell slightly under the cursor"
     },
     {
       "label": "plan.md",
@@ -10236,7 +10258,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L68",
+      "source_location": "L71",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas",
@@ -10247,7 +10269,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L57",
+      "source_location": "L60",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas",
@@ -10391,7 +10413,7 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L59",
+      "source_location": "L62",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvasprops",
@@ -10403,7 +10425,7 @@
       "context": "field",
       "confidence": "EXTRACTED",
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L58",
+      "source_location": "L61",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvasprops",
@@ -10416,7 +10438,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L124",
+      "source_location": "L127",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10428,7 +10450,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L137",
+      "source_location": "L140",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10440,7 +10462,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L136",
+      "source_location": "L139",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10452,7 +10474,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L87",
+      "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10464,7 +10486,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L216",
+      "source_location": "L219",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10476,7 +10498,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L194",
+      "source_location": "L197",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10488,7 +10510,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L229",
+      "source_location": "L233",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10500,7 +10522,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L194",
+      "source_location": "L197",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10512,7 +10534,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L81",
+      "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10524,7 +10546,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L100",
+      "source_location": "L103",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10536,7 +10558,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L104",
+      "source_location": "L107",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10548,7 +10570,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L106",
+      "source_location": "L109",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10560,7 +10582,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L108",
+      "source_location": "L111",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10572,7 +10594,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L298",
+      "source_location": "L304",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10584,7 +10606,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L278",
+      "source_location": "L283",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10596,7 +10618,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L125",
+      "source_location": "L128",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10608,7 +10630,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L134",
+      "source_location": "L137",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10620,7 +10642,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L213",
+      "source_location": "L216",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -10632,7 +10654,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src/graph/GraphCanvas.tsx",
-      "source_location": "L298",
+      "source_location": "L304",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_graph_graphcanvas_graphcanvas",
@@ -15150,11 +15172,33 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "logs/2026-08-08.md",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "logs_2026_08_08_2026_08_08",
+      "target": "logs_2026_08_08_hover_polish_nodes_swell_slightly_under_the_cursor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "logs/2026-08-08.md",
       "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
       "source": "logs_2026_08_08_2026_08_08",
       "target": "logs_2026_08_08_post_merge_chores_for_pr_18",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "logs/2026-08-08.md",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "logs_2026_08_08_2026_08_08",
+      "target": "logs_2026_08_08_post_merge_chores_for_pr_20",
       "confidence_score": 1.0
     },
     {
@@ -15324,5 +15368,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e1034424913956f9bab539e1c9f3c363d34b287c"
+  "built_at_commit": "2f4a0e556525d3cbef3b7ddd86731f6a3c86f3af"
 }
