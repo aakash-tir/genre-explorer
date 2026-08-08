@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from '../src/App';
 import { DATASET } from './fixtures';
 
@@ -54,5 +54,19 @@ describe('App', () => {
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: 'techno' })).toBeInTheDocument();
     });
+  });
+
+  it('keeps the selection (and panel) when empty map space is clicked', async () => {
+    // The panel is sticky so a playing preview survives browsing: empty-space
+    // clicks collapse the fan but never clear the selection.
+    window.history.replaceState(null, '', '/genre/techno');
+    vi.stubGlobal('fetch', mockFetch(DATASET));
+    render(<App />);
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'techno' })).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('graph-canvas'));
+    expect(screen.getByRole('heading', { name: 'techno' })).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/genre/techno');
   });
 });
