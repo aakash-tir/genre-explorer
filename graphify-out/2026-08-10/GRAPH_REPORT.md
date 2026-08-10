@@ -1,16 +1,16 @@
-# Graph Report - genre-explorer  (2026-08-10)
+# Graph Report - genre-explorer  (2026-08-08)
 
 ## Corpus Check
-- 991 files · ~104,576 words
+- 990 files · ~104,447 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 516 nodes · 844 edges · 36 communities (32 shown, 4 thin omitted)
+- 513 nodes · 842 edges · 34 communities (31 shown, 3 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 4 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `11eb0472`
+- Built from commit: `2f4a0e55`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -41,9 +41,7 @@
 - 2026-08-07
 - layout.ts
 - App.tsx
-- App.tsx
 - Hosting
-- 2026-08-10
 
 ## God Nodes (most connected - your core abstractions)
 1. `GraphCanvas()` - 21 edges
@@ -58,29 +56,29 @@
 10. `Genre Explorer — Plan` - 10 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `BuiltGraph` --references--> `GenreEdge`  [EXTRACTED]
-  scripts/build-dataset/build-graph.ts → src/types.ts
 - `buildGraph()` --indirect_call--> `child()`  [INFERRED]
   scripts/build-dataset/build-graph.ts → tests/graph/fan.test.ts
 - `GraphCanvas()` --indirect_call--> `candidates()`  [INFERRED]
   src/graph/GraphCanvas.tsx → tests/scripts/rank.test.ts
 - `structuralDescendants()` --indirect_call--> `child()`  [INFERRED]
   src/graph/edges.ts → tests/graph/fan.test.ts
-- `emitGraph()` --references--> `GraphDataset`  [EXTRACTED]
-  scripts/build-dataset/emit.ts → src/types.ts
+- `BuiltGraph` --references--> `GenreEdge`  [EXTRACTED]
+  scripts/build-dataset/build-graph.ts → src/types.ts
+- `emitDetail()` --references--> `GenreDetail`  [EXTRACTED]
+  scripts/build-dataset/emit-details.ts → src/types.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (36 total, 4 thin omitted)
+## Communities (34 total, 3 thin omitted)
 
 ### Community 0 - "devDependencies"
 Cohesion: 0.04
 Nodes (49): eslint, @eslint/js, eslint-plugin-react-hooks, eslint-plugin-react-refresh, globals, jsdom, devDependencies, eslint (+41 more)
 
 ### Community 1 - "lod.ts"
-Cohesion: 0.16
-Nodes (22): ASSOCIATIVE_KINDS, DRAWN_KINDS, drawnEdges(), focusChildren(), isAssociative(), isDrawn(), structuralDescendants(), structuralParent() (+14 more)
+Cohesion: 0.11
+Nodes (32): App(), ASSOCIATIVE_KINDS, DRAWN_KINDS, drawnEdges(), focusChildren(), isAssociative(), isDrawn(), structuralDescendants() (+24 more)
 
 ### Community 2 - "compilerOptions"
 Cohesion: 0.06
@@ -151,48 +149,44 @@ Cohesion: 0.40
 Nodes (4): printWidth, semi, singleQuote, trailingComma
 
 ### Community 20 - "index.ts"
-Cohesion: 0.07
-Nodes (55): buildGraph(), BuiltGraph, slugify(), emitGraph(), ArtistSearch, CandidateArtist, CandidateRecording, escapeLucene() (+47 more)
+Cohesion: 0.10
+Nodes (40): emitDetail(), emitGraph(), ArtistSearch, CandidateArtist, CandidateRecording, escapeLucene(), fetchEntities(), GenreCandidates (+32 more)
 
 ### Community 29 - "2026-08-07"
 Cohesion: 0.12
 Nodes (15): 2026-08-07, Fix: PR #4 merged red — prettier failure masked by a piped exit code, Milestone 3: the map renders, Milestone 4: focus and the panel — the core loop works end to end, Milestone 5: find your way around — the filter panel, Milestone 6: previews, mobile, and the colour fix, Milestone 7: the weekly refresh workflow — v1 code-complete, Post-merge chores for PR #10 (+7 more)
 
 ### Community 30 - "layout.ts"
-Cohesion: 0.29
-Nodes (7): UnplacedNode, Anchor, computeAnchors(), layoutGraph(), seededRandom(), edges, nodes
-
-### Community 31 - "App.tsx"
-Cohesion: 0.30
-Nodes (11): App(), GraphCanvasProps, AppState, DEFAULT_STATE, isSameUrl(), parseUrl(), sanitiseId(), stripBase() (+3 more)
+Cohesion: 0.11
+Nodes (24): buildGraph(), BuiltGraph, slugify(), UnplacedNode, GenreRef, dedupe(), fetchHierarchy(), MbidEdge (+16 more)
 
 ### Community 32 - "App.tsx"
 Cohesion: 0.10
-Nodes (29): emitDetail(), FilterPanel(), FilterPanelProps, searchGenres(), createDetailCache(), DatasetError, fetchJson(), genreDetailUrl() (+21 more)
+Nodes (28): FilterPanel(), FilterPanelProps, searchGenres(), createDetailCache(), DatasetError, fetchJson(), genreDetailUrl(), indexNodes() (+20 more)
 
 ### Community 33 - "Hosting"
 Cohesion: 0.40
 Nodes (4): Fallback: Cloudflare Pages (unlimited static bandwidth), Hosting, How the GitHub Pages deploy works, Limits worth knowing
 
 ## Knowledge Gaps
-- **217 isolated node(s):** `singleQuote`, `semi`, `printWidth`, `trailingComma`, `name` (+212 more)
+- **216 isolated node(s):** `singleQuote`, `semi`, `printWidth`, `trailingComma`, `name` (+211 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **3 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `devDependencies` connect `devDependencies` to `scripts`?**
   _High betweenness centrality (0.021) - this node is a cross-community bridge._
-- **Why does `GraphCanvas()` connect `colors.ts` to `lod.ts`, `index.ts`, `App.tsx`?**
+- **Why does `GraphCanvas()` connect `colors.ts` to `lod.ts`, `index.ts`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `GraphCanvas()` (e.g. with `child()` and `candidates()`) actually correct?**
   _`GraphCanvas()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `singleQuote`, `semi`, `printWidth` to the rest of the system?**
-  _217 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _216 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04081632653061224 - nodes in this community are weakly interconnected._
+- **Should `lod.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.1109936575052854 - nodes in this community are weakly interconnected._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.0625 - nodes in this community are weakly interconnected._
-- **Should `scripts` be split into smaller, more focused modules?**
-  _Cohesion score 0.058823529411764705 - nodes in this community are weakly interconnected._
