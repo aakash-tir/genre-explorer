@@ -205,8 +205,8 @@
     "semantic_hash": ""
   },
   "docs/future.md": {
-    "mtime": 1786392909.420136,
-    "ast_hash": "c885a9caae3aee2a4bb3bf5928a85c18",
+    "mtime": 1786394082.022171,
+    "ast_hash": "a8650974756ae03dae911b935c2be225",
     "semantic_hash": ""
   },
   "docs/research/graph-rendering.md": {
@@ -5015,8 +5015,13 @@
     "semantic_hash": ""
   },
   "logs/2026-08-10.md": {
-    "mtime": 1786392909.420136,
-    "ast_hash": "62e0789a0746e7da01fa11cd2044ac33",
+    "mtime": 1786394082.0241697,
+    "ast_hash": "979712734a2504ea9e4f897ce61c8f4d",
+    "semantic_hash": ""
+  },
+  "docs/research/listening-history-personalization.md": {
+    "mtime": 1786394082.0231705,
+    "ast_hash": "755707e4a68346409f07e472a67b6a52",
     "semantic_hash": ""
   }
 }
