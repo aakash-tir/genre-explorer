@@ -5,6 +5,12 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
 
 ## Deferred from v1
 
+- 2026-08-10 — Personal "your genres" subgraph from listening history: light up the
+  genres a visitor listens to and suggest adjacent ones to branch out into. Feasible
+  with no backend and no accounts — ListenBrainz as the Spotify bridge (open API,
+  MBIDs, CORS verified) plus a client-side Spotify-export upload; needs a new
+  build-time artist→genre index. Direct Spotify OAuth is closed to the public
+  (5-user dev-mode cap). Full findings: `docs/research/listening-history-personalization.md`.
 - 2026-08-04 — Genre similarity edges beyond the parent/child tree ("sounds like")
 - 2026-08-04 — User accounts, saved exploration paths, favourites
 - 2026-08-04 — Playlist export
