@@ -154,23 +154,18 @@ build time. A static site cannot hold a secret.
 
 ## Known gaps
 
-- **Nothing is built yet beyond the skeleton.** `scripts/build-dataset/` and the canvas
-  renderer are stubs. The pure logic modules and their tests are real; the pipeline is
-  milestone 2.
-- **`public/data/` holds a small hand-written sample dataset**, not real data. It exists
-  so the loader, schema and tests have something to work against. Replace it in milestone 2.
+v1 is built, merged and live at <https://aakash-tir.github.io/genre-explorer/>
+(GitHub Pages; Cloudflare Pages is the documented fallback in
+`docs/runbooks/hosting.md`). The dataset is real — 912 of 2,184 genres survived the
+threshold filter, orphans stay as floating family roots (no synthetic "music" node),
+and the obscure floor is `OBSCURE_MIN_LISTENS = 100`. What remains:
+
 - **ListenBrainz `GET /1/popularity/top-recordings-for-artist/{mbid}` and
   `top-release-groups-for-artist/{mbid}` return 500** as of 2026-08-04, despite being
   documented. The pipeline must use the working POST endpoints. Recheck occasionally —
   they would simplify stage 5.
-- **Orphan genres.** Unknown how many MusicBrainz genres have no `subgenre of` parent.
-  Whether they get one synthetic root or several floating families is undecided until
-  the tree exists.
-- **The "obscure" band is undefined.** The bottom of the listen-count distribution is
-  mostly artifacts (1 listen, 1 user), not hidden gems. Needs tuning against real data.
-- **Long-tail coverage may be uneven by region.** MusicBrainz tagging skews Western;
-  non-Western genre families may look thin after the threshold filter. Review at
-  milestone 2.
 - **No end-to-end tests.** Deliberate for v1 — they'd mostly assert a canvas painted
   something. Revisit if interaction bugs start reaching `main`.
-- **Cloudflare Pages is not connected yet.** Manual one-time setup by the repo owner.
+- **Open product questions** — megastar skew in popular-artist lists, tuning the
+  obscure band, non-Western coverage after the threshold filter — are tracked with
+  the rest of the backlog in `docs/future.md`.
