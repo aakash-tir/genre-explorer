@@ -155,13 +155,13 @@
     "semantic_hash": ""
   },
   ".claude/progress.md": {
-    "mtime": 1786392909.4180021,
-    "ast_hash": "620baf624c30e5c498ecc3b84a300aaa",
+    "mtime": 1786156866.2654912,
+    "ast_hash": "8ec4ade0e3e1adef50b27aab0d5fc00b",
     "semantic_hash": ""
   },
   ".claude/project-context.md": {
-    "mtime": 1786392909.4191234,
-    "ast_hash": "d5ea8f256236113774692f8e0009cc04",
+    "mtime": 1785901666.49199,
+    "ast_hash": "4698712c48cc348aa8724c82fa24171f",
     "semantic_hash": ""
   },
   ".claude/rules/frontend/react.md": {
@@ -205,8 +205,8 @@
     "semantic_hash": ""
   },
   "docs/future.md": {
-    "mtime": 1786392909.420136,
-    "ast_hash": "c885a9caae3aee2a4bb3bf5928a85c18",
+    "mtime": 1786189868.22928,
+    "ast_hash": "31efaa6aa3eaaac155d997eb94497919",
     "semantic_hash": ""
   },
   "docs/research/graph-rendering.md": {
@@ -5012,11 +5012,6 @@
   "docs/runbooks/hosting.md": {
     "mtime": 1786189868.2297854,
     "ast_hash": "352fa299742398b538d33dc48bedbc8f",
-    "semantic_hash": ""
-  },
-  "logs/2026-08-10.md": {
-    "mtime": 1786392909.420136,
-    "ast_hash": "62e0789a0746e7da01fa11cd2044ac33",
     "semantic_hash": ""
   }
 }
