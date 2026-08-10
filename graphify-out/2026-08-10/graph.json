@@ -1243,8 +1243,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_build_graph",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "build-graph.ts"
     },
     {
@@ -1265,8 +1265,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "scripts_build_dataset_build_graph_builtgraph",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "builtgraph"
     },
     {
@@ -1276,8 +1276,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "scripts_build_dataset_build_graph_slugify",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "slugify()"
     },
     {
@@ -1287,8 +1287,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "scripts_build_dataset_build_graph_buildgraph",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "buildgraph()"
     },
     {
@@ -1309,8 +1309,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_emit_details",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 32,
+      "community_name": "App.tsx",
       "norm_label": "emit-details.ts"
     },
     {
@@ -1320,8 +1320,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "scripts_build_dataset_emit_details_emitdetail",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 32,
+      "community_name": "App.tsx",
       "norm_label": "emitdetail()"
     },
     {
@@ -1463,8 +1463,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "scripts_build_dataset_fetch_genres_genreref",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "genreref"
     },
     {
@@ -1485,8 +1485,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_fetch_hierarchy",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "fetch-hierarchy.ts"
     },
     {
@@ -1496,8 +1496,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "scripts_build_dataset_fetch_hierarchy_mbidedge",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "mbidedge"
     },
     {
@@ -1507,8 +1507,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "scripts_build_dataset_fetch_hierarchy_dedupe",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "dedupe()"
     },
     {
@@ -1518,8 +1518,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "scripts_build_dataset_fetch_hierarchy_fetchhierarchy",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "fetchhierarchy()"
     },
     {
@@ -1848,8 +1848,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "parse-genre-page.ts"
     },
     {
@@ -1859,8 +1859,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page_genrepageref",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "genrepageref"
     },
     {
@@ -1870,8 +1870,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page_genrepagerelations",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "genrepagerelations"
     },
     {
@@ -1881,8 +1881,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page_labels",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "labels"
     },
     {
@@ -1892,8 +1892,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page_decodeentities",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "decodeentities()"
     },
     {
@@ -1903,8 +1903,8 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page_lookslikegenrepage",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "lookslikegenrepage()"
     },
     {
@@ -1914,8 +1914,8 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "scripts_build_dataset_parse_genre_page_parsegenrepage",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "parsegenrepage()"
     },
     {
@@ -2013,8 +2013,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_app",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "app.tsx"
     },
     {
@@ -2024,8 +2024,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "src_app_app",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "app()"
     },
     {
@@ -2090,8 +2090,8 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "src_graph_graphcanvas_graphcanvasprops",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "graphcanvasprops"
     },
     {
@@ -2684,8 +2684,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_deeplink",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "deeplink.ts"
     },
     {
@@ -2695,8 +2695,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_lib_deeplink_appstate",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "appstate"
     },
     {
@@ -2706,8 +2706,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "src_lib_deeplink_default_state",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "default_state"
     },
     {
@@ -2717,8 +2717,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_lib_deeplink_sanitiseid",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "sanitiseid()"
     },
     {
@@ -2728,8 +2728,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_lib_deeplink_parseurl",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "parseurl()"
     },
     {
@@ -2739,8 +2739,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "src_lib_deeplink_tourl",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "tourl()"
     },
     {
@@ -2750,8 +2750,8 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "src_lib_deeplink_issameurl",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "issameurl()"
     },
     {
@@ -2761,8 +2761,8 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "src_lib_deeplink_stripbase",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "stripbase()"
     },
     {
@@ -2772,8 +2772,8 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "src_lib_deeplink_withbase",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "withbase()"
     },
     {
@@ -2783,8 +2783,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_main",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "main.tsx"
     },
     {
@@ -2794,8 +2794,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_main_root",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "root"
     },
     {
@@ -2915,8 +2915,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_types_relationkind",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "relationkind"
     },
     {
@@ -2970,8 +2970,8 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "src_types_genreedge",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "genreedge"
     },
     {
@@ -3289,8 +3289,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_lib_deeplink_test",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "deeplink.test.ts"
     },
     {
@@ -3355,8 +3355,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_scripts_build_graph_test",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "build-graph.test.ts"
     },
     {
@@ -3366,8 +3366,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "tests_scripts_build_graph_test_m",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "m()"
     },
     {
@@ -3377,8 +3377,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "tests_scripts_build_graph_test_genres",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "genres()"
     },
     {
@@ -3443,8 +3443,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_scripts_parse_genre_page_test",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "parse-genre-page.test.ts"
     },
     {
@@ -3454,8 +3454,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "tests_scripts_parse_genre_page_test_fixture",
-      "community": 30,
-      "community_name": "layout.ts",
+      "community": 20,
+      "community_name": "index.ts",
       "norm_label": "fixture()"
     },
     {
@@ -4573,7 +4573,7 @@
       "label": "Decisions still open",
       "file_type": "document",
       "source_file": "docs/future.md",
-      "source_location": "L41",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "docs_future_decisions_still_open",
       "community": 15,
@@ -4584,7 +4584,7 @@
       "label": "Upstream watch",
       "file_type": "document",
       "source_file": "docs/future.md",
-      "source_location": "L54",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "docs_future_upstream_watch",
       "community": 15,
@@ -4595,7 +4595,7 @@
       "label": "Scaling",
       "file_type": "document",
       "source_file": "docs/future.md",
-      "source_location": "L65",
+      "source_location": "L61",
       "_origin": "ast",
       "id": "docs_future_scaling",
       "community": 15,
@@ -5503,6 +5503,39 @@
       "community": 4,
       "community_name": "App.tsx",
       "norm_label": "hover polish: nodes swell slightly under the cursor"
+    },
+    {
+      "label": "2026-08-10.md",
+      "file_type": "document",
+      "source_file": "logs/2026-08-10.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "logs_2026_08_10",
+      "community": 35,
+      "community_name": "2026-08-10",
+      "norm_label": "2026-08-10.md"
+    },
+    {
+      "label": "2026-08-10",
+      "file_type": "document",
+      "source_file": "logs/2026-08-10.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "logs_2026_08_10_2026_08_10",
+      "community": 35,
+      "community_name": "2026-08-10",
+      "norm_label": "2026-08-10"
+    },
+    {
+      "label": "Docs cleanup: status docs caught up with the GitHub Pages ship",
+      "file_type": "document",
+      "source_file": "logs/2026-08-10.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "logs_2026_08_10_docs_cleanup_status_docs_caught_up_with_the_github_pages_ship",
+      "community": 35,
+      "community_name": "2026-08-10",
+      "norm_label": "docs cleanup: status docs caught up with the github pages ship"
     },
     {
       "label": "plan.md",
@@ -14369,7 +14402,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/future.md",
-      "source_location": "L41",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_future_future",
@@ -14402,7 +14435,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/future.md",
-      "source_location": "L65",
+      "source_location": "L61",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_future_future",
@@ -14413,7 +14446,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/future.md",
-      "source_location": "L54",
+      "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_future_future",
@@ -15226,6 +15259,28 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "logs/2026-08-10.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "logs_2026_08_10",
+      "target": "logs_2026_08_10_2026_08_10",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "logs/2026-08-10.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "logs_2026_08_10_2026_08_10",
+      "target": "logs_2026_08_10_docs_cleanup_status_docs_caught_up_with_the_github_pages_ship",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "plan.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -15368,5 +15423,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "2f4a0e556525d3cbef3b7ddd86731f6a3c86f3af"
+  "built_at_commit": "11eb0472690f5f6f969fd6c4527771f11e624b9a"
 }
