@@ -34,13 +34,13 @@ at build time. **No part of the feature requires a backend.**
 
 ## 1. What the feature decomposes into
 
-| Piece                              | Needs                                            | Status                     |
-| ---------------------------------- | ------------------------------------------------ | -------------------------- |
-| Get the user's listening history   | Some intake path (§2–4)                          | Solvable, three ways       |
-| Map listened artists → our genres  | A reverse index artist → genre ids (§5)          | New build-time artifact    |
-| Show the listened subgraph         | Highlight/dim pass in the existing renderer      | Straightforward            |
-| Suggest genres to branch out into  | Adjacency scoring over existing edges (§6)       | Data already in graph.json |
-| Remember it between visits         | `localStorage` (§7)                              | No accounts needed         |
+| Piece                             | Needs                                       | Status                     |
+| --------------------------------- | ------------------------------------------- | -------------------------- |
+| Get the user's listening history  | Some intake path (§2–4)                     | Solvable, three ways       |
+| Map listened artists → our genres | A reverse index artist → genre ids (§5)     | New build-time artifact    |
+| Show the listened subgraph        | Highlight/dim pass in the existing renderer | Straightforward            |
+| Suggest genres to branch out into | Adjacency scoring over existing edges (§6)  | Data already in graph.json |
+| Remember it between visits        | `localStorage` (§7)                         | No accounts needed         |
 
 ---
 
@@ -49,7 +49,7 @@ at build time. **No part of the feature requires a backend.**
 The February 2026 purge did **not** remove the user-history endpoints. Per the
 [official changelog](https://developer.spotify.com/documentation/web-api/references/changes/february-2026),
 `GET /me/top/{type}` (top artists/tracks, scope `user-top-read`) and
-`GET /me/player/recently-played` are both listed under *endpoints still available*.
+`GET /me/player/recently-played` are both listed under _endpoints still available_.
 The Authorization-Code-with-PKCE flow needs no client secret, so a static site could
 run the whole OAuth dance client-side — no backend required.
 
@@ -90,7 +90,7 @@ GET https://api.listenbrainz.org/1/stats/user/rob/artists?count=2&range=year
 - **No authentication, no API key** — public stats by MusicBrainz username.
 - **CORS is open** — verified: `Access-Control-Allow-Origin: *`, so the browser can
   call it directly from the static site.
-- **`artist_mbid` is included** — this maps *exactly* onto the `Artist.mbid` values our
+- **`artist_mbid` is included** — this maps _exactly_ onto the `Artist.mbid` values our
   pipeline already stores. No fuzzy name matching on this path.
 - `range` supports `week/month/quarter/year/all_time` etc., `count` up to 100 per page
   with `offset` paging.
@@ -111,7 +111,7 @@ Caveats, also observed live:
 
 ## 4. Spotify data export — the zero-network fallback
 
-Spotify's GDPR export (Account → Privacy → *Download your data*) includes
+Spotify's GDPR export (Account → Privacy → _Download your data_) includes
 **extended streaming history**: a ZIP of ~12 MB JSON files, one object per playback,
 with `master_metadata_album_artist_name`, `master_metadata_track_name`,
 `spotify_track_uri`, `ms_played` and `ts`
@@ -161,7 +161,7 @@ Types go in `src/types.ts` as always, so the shape binds pipeline and app.
 
 This is the part that looked hardest and is actually already solved. `graph.json`
 carries every `subgenre`, `fusion` and `influence` edge (drawn or not). Given the set
-of listened genres with weights, a pure function can score every *unlistened* genre by
+of listened genres with weights, a pure function can score every _unlistened_ genre by
 adjacency: parents, children and siblings of listened genres, `fusion`/`influence`
 neighbours (arguably the strongest "sounds adjacent" signal — it's literally what those
 edges mean), boosted when multiple listened genres point at the same candidate.
@@ -192,7 +192,7 @@ scoped exception** — `api.listenbrainz.org`, called from the browser, only on 
 user action, with the 204/failure path degrading to "feature unavailable" (the map
 itself never depends on it). The export-upload path needs no exception at all. Every
 other principle survives untouched: the map stays identical for everyone (personal data
-is a highlight/dim *lens*, exactly like the existing filter panel — never a layout
+is a highlight/dim _lens_, exactly like the existing filter panel — never a layout
 change), the dataset stays a committed artifact, and there are still no keys, no
 accounts and no server.
 
