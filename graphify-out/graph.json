@@ -1265,8 +1265,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "scripts_build_dataset_build_graph_builtgraph",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 1,
+      "community_name": "lod.ts",
       "norm_label": "builtgraph"
     },
     {
@@ -1331,8 +1331,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_build_dataset_emit",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "emit.ts"
     },
     {
@@ -1342,8 +1342,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "scripts_build_dataset_emit_emitgraph",
-      "community": 20,
-      "community_name": "index.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "emitgraph()"
     },
     {
@@ -2585,7 +2585,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_dataset",
-      "community": 32,
+      "community": 31,
       "community_name": "App.tsx",
       "norm_label": "dataset.ts"
     },
@@ -2596,7 +2596,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_lib_dataset_genredetailurl",
-      "community": 32,
+      "community": 31,
       "community_name": "App.tsx",
       "norm_label": "genredetailurl()"
     },
@@ -2607,7 +2607,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_lib_dataset_dataseterror",
-      "community": 32,
+      "community": 31,
       "community_name": "App.tsx",
       "norm_label": "dataseterror"
     },
@@ -2618,7 +2618,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "src_lib_dataset_dataseterror_constructor",
-      "community": 32,
+      "community": 31,
       "community_name": "App.tsx",
       "norm_label": ".constructor()"
     },
@@ -2629,7 +2629,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "src_lib_dataset_fetchjson",
-      "community": 32,
+      "community": 31,
       "community_name": "App.tsx",
       "norm_label": "fetchjson()"
     },
@@ -2640,7 +2640,7 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "src_lib_dataset_loadgraph",
-      "community": 32,
+      "community": 31,
       "community_name": "App.tsx",
       "norm_label": "loadgraph()"
     },
@@ -2651,7 +2651,7 @@
       "source_location": "L71",
       "_origin": "ast",
       "id": "src_lib_dataset_loadgenredetail",
-      "community": 32,
+      "community": 31,
       "community_name": "App.tsx",
       "norm_label": "loadgenredetail()"
     },
@@ -2662,7 +2662,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "src_lib_dataset_createdetailcache",
-      "community": 32,
+      "community": 31,
       "community_name": "App.tsx",
       "norm_label": "createdetailcache()"
     },
@@ -2673,7 +2673,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "src_lib_dataset_indexnodes",
-      "community": 32,
+      "community": 31,
       "community_name": "App.tsx",
       "norm_label": "indexnodes()"
     },
@@ -2981,7 +2981,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "src_types_graphdataset",
-      "community": 32,
+      "community": 31,
       "community_name": "App.tsx",
       "norm_label": "graphdataset"
     },
@@ -3014,8 +3014,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_app_test",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "app.test.tsx"
     },
     {
@@ -3025,8 +3025,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "tests_app_test_mockfetch",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "mockfetch()"
     },
     {
@@ -3113,8 +3113,8 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "tests_fixtures_dataset",
-      "community": 1,
-      "community_name": "lod.ts",
+      "community": 31,
+      "community_name": "App.tsx",
       "norm_label": "dataset"
     },
     {
@@ -3267,7 +3267,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_lib_dataset_test",
-      "community": 32,
+      "community": 31,
       "community_name": "App.tsx",
       "norm_label": "dataset.test.ts"
     },
@@ -3278,7 +3278,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "tests_lib_dataset_test_fakefetch",
-      "community": 32,
+      "community": 31,
       "community_name": "App.tsx",
       "norm_label": "fakefetch()"
     },
@@ -4562,7 +4562,7 @@
       "label": "Known gaps",
       "file_type": "document",
       "source_file": "docs/future.md",
-      "source_location": "L15",
+      "source_location": "L21",
       "_origin": "ast",
       "id": "docs_future_known_gaps",
       "community": 15,
@@ -4573,7 +4573,7 @@
       "label": "Decisions still open",
       "file_type": "document",
       "source_file": "docs/future.md",
-      "source_location": "L37",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "docs_future_decisions_still_open",
       "community": 15,
@@ -4584,7 +4584,7 @@
       "label": "Upstream watch",
       "file_type": "document",
       "source_file": "docs/future.md",
-      "source_location": "L50",
+      "source_location": "L56",
       "_origin": "ast",
       "id": "docs_future_upstream_watch",
       "community": 15,
@@ -4595,7 +4595,7 @@
       "label": "Scaling",
       "file_type": "document",
       "source_file": "docs/future.md",
-      "source_location": "L61",
+      "source_location": "L67",
       "_origin": "ast",
       "id": "docs_future_scaling",
       "community": 15,
@@ -4788,6 +4788,138 @@
       "community": 16,
       "community_name": "Research \u2014 Hosting the site",
       "norm_label": "deployment"
+    },
+    {
+      "label": "listening-history-personalization.md",
+      "file_type": "document",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_research_listening_history_personalization",
+      "community": 36,
+      "community_name": "Research \u2014 A personal \"your genres\" subgraph from listening history",
+      "norm_label": "listening-history-personalization.md"
+    },
+    {
+      "label": "Research \u2014 A personal \"your genres\" subgraph from listening history",
+      "file_type": "document",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_research_listening_history_personalization_research_a_personal_your_genres_subgraph_from_listening_history",
+      "community": 36,
+      "community_name": "Research \u2014 A personal \"your genres\" subgraph from listening history",
+      "norm_label": "research \u2014 a personal \"your genres\" subgraph from listening history"
+    },
+    {
+      "label": "Verdict",
+      "file_type": "document",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "docs_research_listening_history_personalization_verdict",
+      "community": 36,
+      "community_name": "Research \u2014 A personal \"your genres\" subgraph from listening history",
+      "norm_label": "verdict"
+    },
+    {
+      "label": "1. What the feature decomposes into",
+      "file_type": "document",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L35",
+      "_origin": "ast",
+      "id": "docs_research_listening_history_personalization_1_what_the_feature_decomposes_into",
+      "community": 36,
+      "community_name": "Research \u2014 A personal \"your genres\" subgraph from listening history",
+      "norm_label": "1. what the feature decomposes into"
+    },
+    {
+      "label": "2. Spotify OAuth \u2014 technically alive, practically closed",
+      "file_type": "document",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "docs_research_listening_history_personalization_2_spotify_oauth_technically_alive_practically_closed",
+      "community": 36,
+      "community_name": "Research \u2014 A personal \"your genres\" subgraph from listening history",
+      "norm_label": "2. spotify oauth \u2014 technically alive, practically closed"
+    },
+    {
+      "label": "3. ListenBrainz \u2014 the recommended bridge (verified)",
+      "file_type": "document",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L70",
+      "_origin": "ast",
+      "id": "docs_research_listening_history_personalization_3_listenbrainz_the_recommended_bridge_verified",
+      "community": 36,
+      "community_name": "Research \u2014 A personal \"your genres\" subgraph from listening history",
+      "norm_label": "3. listenbrainz \u2014 the recommended bridge (verified)"
+    },
+    {
+      "label": "4. Spotify data export \u2014 the zero-network fallback",
+      "file_type": "document",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L112",
+      "_origin": "ast",
+      "id": "docs_research_listening_history_personalization_4_spotify_data_export_the_zero_network_fallback",
+      "community": 36,
+      "community_name": "Research \u2014 A personal \"your genres\" subgraph from listening history",
+      "norm_label": "4. spotify data export \u2014 the zero-network fallback"
+    },
+    {
+      "label": "5. The missing artifact: an artist \u2192 genre reverse index",
+      "file_type": "document",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L133",
+      "_origin": "ast",
+      "id": "docs_research_listening_history_personalization_5_the_missing_artifact_an_artist_genre_reverse_index",
+      "community": 36,
+      "community_name": "Research \u2014 A personal \"your genres\" subgraph from listening history",
+      "norm_label": "5. the missing artifact: an artist \u2192 genre reverse index"
+    },
+    {
+      "label": "6. \"Genres to branch out into\" needs no external API at all",
+      "file_type": "document",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L160",
+      "_origin": "ast",
+      "id": "docs_research_listening_history_personalization_6_genres_to_branch_out_into_needs_no_external_api_at_all",
+      "community": 36,
+      "community_name": "Research \u2014 A personal \"your genres\" subgraph from listening history",
+      "norm_label": "6. \"genres to branch out into\" needs no external api at all"
+    },
+    {
+      "label": "7. No accounts, no backend",
+      "file_type": "document",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L176",
+      "_origin": "ast",
+      "id": "docs_research_listening_history_personalization_7_no_accounts_no_backend",
+      "community": 36,
+      "community_name": "Research \u2014 A personal \"your genres\" subgraph from listening history",
+      "norm_label": "7. no accounts, no backend"
+    },
+    {
+      "label": "8. What this changes architecturally",
+      "file_type": "document",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L188",
+      "_origin": "ast",
+      "id": "docs_research_listening_history_personalization_8_what_this_changes_architecturally",
+      "community": 36,
+      "community_name": "Research \u2014 A personal \"your genres\" subgraph from listening history",
+      "norm_label": "8. what this changes architecturally"
+    },
+    {
+      "label": "Sources",
+      "file_type": "document",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L205",
+      "_origin": "ast",
+      "id": "docs_research_listening_history_personalization_sources",
+      "community": 36,
+      "community_name": "Research \u2014 A personal \"your genres\" subgraph from listening history",
+      "norm_label": "sources"
     },
     {
       "label": "music-data-sources.md",
@@ -5536,6 +5668,28 @@
       "community": 35,
       "community_name": "2026-08-10",
       "norm_label": "docs cleanup: status docs caught up with the github pages ship"
+    },
+    {
+      "label": "Post-merge chores for PR #24",
+      "file_type": "document",
+      "source_file": "logs/2026-08-10.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "logs_2026_08_10_post_merge_chores_for_pr_24",
+      "community": 35,
+      "community_name": "2026-08-10",
+      "norm_label": "post-merge chores for pr #24"
+    },
+    {
+      "label": "Research: personal \"your genres\" subgraph from listening history",
+      "file_type": "document",
+      "source_file": "logs/2026-08-10.md",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "logs_2026_08_10_research_personal_your_genres_subgraph_from_listening_history",
+      "community": 35,
+      "community_name": "2026-08-10",
+      "norm_label": "research: personal \"your genres\" subgraph from listening history"
     },
     {
       "label": "plan.md",
@@ -14402,7 +14556,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/future.md",
-      "source_location": "L37",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_future_future",
@@ -14424,7 +14578,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/future.md",
-      "source_location": "L15",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_future_future",
@@ -14435,7 +14589,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/future.md",
-      "source_location": "L61",
+      "source_location": "L67",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_future_future",
@@ -14446,7 +14600,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/future.md",
-      "source_location": "L50",
+      "source_location": "L56",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_future_future",
@@ -14616,6 +14770,127 @@
       "_origin": "ast",
       "source": "docs_research_hosting_research_hosting_the_site",
       "target": "docs_research_hosting_what_we_need_to_host",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_research_listening_history_personalization",
+      "target": "docs_research_listening_history_personalization_research_a_personal_your_genres_subgraph_from_listening_history",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_research_listening_history_personalization_research_a_personal_your_genres_subgraph_from_listening_history",
+      "target": "docs_research_listening_history_personalization_1_what_the_feature_decomposes_into",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_research_listening_history_personalization_research_a_personal_your_genres_subgraph_from_listening_history",
+      "target": "docs_research_listening_history_personalization_2_spotify_oauth_technically_alive_practically_closed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_research_listening_history_personalization_research_a_personal_your_genres_subgraph_from_listening_history",
+      "target": "docs_research_listening_history_personalization_3_listenbrainz_the_recommended_bridge_verified",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L112",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_research_listening_history_personalization_research_a_personal_your_genres_subgraph_from_listening_history",
+      "target": "docs_research_listening_history_personalization_4_spotify_data_export_the_zero_network_fallback",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L133",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_research_listening_history_personalization_research_a_personal_your_genres_subgraph_from_listening_history",
+      "target": "docs_research_listening_history_personalization_5_the_missing_artifact_an_artist_genre_reverse_index",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L160",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_research_listening_history_personalization_research_a_personal_your_genres_subgraph_from_listening_history",
+      "target": "docs_research_listening_history_personalization_6_genres_to_branch_out_into_needs_no_external_api_at_all",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L176",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_research_listening_history_personalization_research_a_personal_your_genres_subgraph_from_listening_history",
+      "target": "docs_research_listening_history_personalization_7_no_accounts_no_backend",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L188",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_research_listening_history_personalization_research_a_personal_your_genres_subgraph_from_listening_history",
+      "target": "docs_research_listening_history_personalization_8_what_this_changes_architecturally",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L205",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_research_listening_history_personalization_research_a_personal_your_genres_subgraph_from_listening_history",
+      "target": "docs_research_listening_history_personalization_sources",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/research/listening-history-personalization.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_research_listening_history_personalization_research_a_personal_your_genres_subgraph_from_listening_history",
+      "target": "docs_research_listening_history_personalization_verdict",
       "confidence_score": 1.0
     },
     {
@@ -15281,6 +15556,28 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "logs/2026-08-10.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "logs_2026_08_10_2026_08_10",
+      "target": "logs_2026_08_10_post_merge_chores_for_pr_24",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "logs/2026-08-10.md",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "logs_2026_08_10_2026_08_10",
+      "target": "logs_2026_08_10_research_personal_your_genres_subgraph_from_listening_history",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "plan.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -15423,5 +15720,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "11eb0472690f5f6f969fd6c4527771f11e624b9a"
+  "built_at_commit": "b94383356eacf5248fb00c7682445286407997de"
 }
