@@ -20,13 +20,9 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
   are the widget player embedded by stable track id — remove the old "preview MP3
   in the dataset" wording from research docs if it resurfaces.
 
-- 2026-08-06 — `public/data/genres/` still holds only the hand-written `techno.json`
-  sample. The real detail files come from pipeline stages 4–6 (milestone 4); until
-  then every other node would open to a 404. `graph.json` itself is real as of
-  milestone 2.
-- 2026-08-07 — Click-to-focus and the radial child fan are not built (milestone 4);
-  the canvas ignores clicks entirely. Touch was not exercised on a real device —
-  `d3-zoom` pinch should work via the pointer-events path, verify in milestone 6.
+- 2026-08-07 — Touch was not exercised on a real device. Mobile layout landed in
+  milestone 6 and `d3-zoom` speaks touch via the pointer-events path, but pinch,
+  tap-to-focus and the panel on a real phone remain unverified.
 - 2026-08-04 — No end-to-end browser tests. Deliberate for v1; revisit if interaction
   bugs start reaching `main`.
 - 2026-08-08 — Hosting is GitHub Pages (repo went public, removing its only
