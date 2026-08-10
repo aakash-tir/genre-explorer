@@ -57,12 +57,29 @@ const HOVER_SCALE = 1.18;
 const DUST_RADIUS = 2;
 const DUST_ALPHA = 0.3;
 
+/** Personal lens: bystander alpha (softer than focus dim — browsing, not framing). */
+const LENS_DIMMED_ALPHA = 0.35;
+/** Suggested-genre rings are dashed: a direction, not a fact about your history. */
+const LENS_DASH: number[] = [4, 3];
+
+/**
+ * The personal lens, precomputed by App from `usePersonal`. `matched` maps genre
+ * id → weight (0..1] and drives ring alpha; `suggested` genres get a dashed ring.
+ * Everything here is a rendering treatment — visibility comes via `lod.ts`.
+ */
+export interface PersonalLens {
+  matched: ReadonlyMap<string, number>;
+  suggested: ReadonlySet<string>;
+}
+
 interface GraphCanvasProps {
   dataset: GraphDataset;
   state: AppState;
   /** Whether the focused genre's fan/dim view is open. The selection (and its
    * ring) outlives the fan — see App.tsx for the click semantics. */
   fanOpen: boolean;
+  /** Personal lens, or null when off. */
+  lens: PersonalLens | null;
   onZoomChange: (zoom: number) => void;
   /** Reports the raw hit: a node id, or null for empty space. App decides. */
   onFocusChange: (focusId: string | null) => void;
@@ -72,6 +89,7 @@ export default function GraphCanvas({
   dataset,
   state,
   fanOpen,
+  lens,
   onZoomChange,
   onFocusChange,
 }: GraphCanvasProps) {
@@ -119,6 +137,12 @@ export default function GraphCanvas({
     return { x: override?.x ?? node.x, y: override?.y ?? node.y };
   };
 
+  // Lens genres stay visible (and clickable) below the zoom cutoff, like focus.
+  const lensVisible = useMemo<Set<string> | null>(() => {
+    if (!lens) return null;
+    return new Set([...lens.matched.keys(), ...lens.suggested]);
+  }, [lens]);
+
   // Shared by click and hover. Walks the draw list back to front with a small slop.
   const hitTest = (screenX: number, screenY: number): string | null => {
     const { width, height } = sizeRef.current;
@@ -132,6 +156,7 @@ export default function GraphCanvas({
         selectedIds: state.selectedIds,
       },
       dataset.edges,
+      lensVisible,
     );
     let hit: string | null = null;
     for (const node of visibleNodes(dataset.nodes, context)) {
@@ -177,6 +202,7 @@ export default function GraphCanvas({
         selectedIds: state.selectedIds,
       },
       dataset.edges,
+      lensVisible,
     );
     const visible = visibleNodes(dataset.nodes, context);
     const visibleIds = new Set(visible.map((node) => node.id));
@@ -223,13 +249,22 @@ export default function GraphCanvas({
       ctx.stroke();
     }
 
-    // 3. Nodes. Unrelated ones become shadows while a genre is focused.
+    // 3. Nodes. Unrelated ones become shadows while a genre is focused; with the
+    // personal lens on (and no focus dim in play) non-lens nodes soften instead.
+    const inLens = (id: string): boolean =>
+      lens !== null && (lens.matched.has(id) || lens.suggested.has(id));
     for (const node of visible) {
       const [sx, sy] = screen(node);
       const grow = node.id === hovered ? HOVER_SCALE : 1;
       const r = screenRadius(node.popularity, fit, t.k) * grow;
       if (sx < -r || sy < -r || sx > width + r || sy > height + r) continue;
-      ctx.globalAlpha = related && !related.has(node.id) ? DIMMED_ALPHA : 1;
+      ctx.globalAlpha = related
+        ? related.has(node.id)
+          ? 1
+          : DIMMED_ALPHA
+        : lens && !inLens(node.id)
+          ? LENS_DIMMED_ALPHA
+          : 1;
       const stops = nodeGradient(hueOf(node.family), node.depth);
       const gradient = ctx.createRadialGradient(sx, sy, 0, sx, sy, r);
       gradient.addColorStop(0, stops.inner);
@@ -242,7 +277,40 @@ export default function GraphCanvas({
     }
     ctx.globalAlpha = 1;
 
-    // 4. Rings: focus (solid, its family colour) and hover (subtle).
+    // 4a. Lens rings: matched genres wear a solid ring whose presence scales with
+    // weight; suggested genres wear a dashed one — a direction, not a memory.
+    // Suppressed inside focus mode: the fan is already the picture.
+    if (lens && !related) {
+      ctx.lineWidth = 1.5;
+      for (const node of visible) {
+        const weight = lens.matched.get(node.id);
+        const suggested = lens.suggested.has(node.id);
+        if (weight === undefined && !suggested) continue;
+        const [sx, sy] = screen(node);
+        const r =
+          screenRadius(node.popularity, fit, t.k) *
+          (node.id === hovered ? HOVER_SCALE : 1);
+        if (sx < -r - 8 || sy < -r - 8 || sx > width + r + 8 || sy > height + r + 8) {
+          continue;
+        }
+        if (weight !== undefined) {
+          ctx.strokeStyle = toCss(
+            genreColor(hueOf(node.family), 0),
+            0.35 + 0.55 * weight,
+          );
+        } else {
+          ctx.setLineDash(LENS_DASH);
+          ctx.strokeStyle = 'rgba(232, 232, 240, 0.55)';
+        }
+        ctx.beginPath();
+        ctx.arc(sx, sy, r + 3.5, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      ctx.lineWidth = 1;
+    }
+
+    // 4b. Rings: focus (solid, its family colour) and hover (subtle).
     if (focusNode) {
       // The selection ring outlives the fan: while a preview plays and the user
       // browses, the outline marks what's in the panel. Sub-cutoff selections are
@@ -416,10 +484,10 @@ export default function GraphCanvas({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.focusId]);
 
-  // Focus and filter changes redraw without touching the camera.
+  // Focus, filter and lens changes redraw without touching the camera.
   useEffect(() => {
     drawRef.current();
-  }, [state.focusId, fanOpen, state.selectedIds, dataset]);
+  }, [state.focusId, fanOpen, state.selectedIds, dataset, lens]);
 
   return (
     <canvas

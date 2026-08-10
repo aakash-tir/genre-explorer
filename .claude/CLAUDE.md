@@ -41,7 +41,10 @@ See `plan.md` for scope, milestones and the tech-stack rationale.
 - **The dataset is a committed artifact.** `public/data/` is checked in, produced by the
   pipeline, refreshed via PR. Never hand-edit it.
 - **Network calls happen at build time only.** Nothing in `src/` may call MusicBrainz,
-  ListenBrainz or Deezer at runtime. The app fetches its own static JSON and nothing else.
+  ListenBrainz or Deezer at runtime. The app fetches its own static JSON and nothing
+  else — with ONE scoped exception: the personal lens (`src/personal/`) may call
+  `accounts.spotify.com` / `api.spotify.com`, user-initiated only, degrading to
+  "feature unavailable". The map itself must never depend on it.
 - **Respect MusicBrainz's 1 req/s rate limit** and always send the project `User-Agent`
   with contact info. Pipeline responses are disk-cached so reruns don't re-fetch.
 - **Edge rule:** only `subgenre of` edges are ever drawn. `fusion of` and `influenced by`

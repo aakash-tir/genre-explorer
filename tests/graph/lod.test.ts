@@ -184,3 +184,43 @@ describe('nodeRadius', () => {
     expect(nodeRadius(50_000_000)).toBeLessThanOrEqual(MAX_RADIUS);
   });
 });
+
+describe('personal lens visibility', () => {
+  it('keeps lens genres visible below the zoom cutoff, like focus', () => {
+    // melodic-techno (4,210) is far below the zoom-1 cutoff (~20,000).
+    const without = visibilityContext({ zoom: 1, focusId: null, selectedIds: [] }, EDGES);
+    expect(ids(visibleNodes(NODES, without))).not.toContain('melodic-techno');
+
+    const withLens = visibilityContext(
+      { zoom: 1, focusId: null, selectedIds: [] },
+      EDGES,
+      new Set(['melodic-techno']),
+    );
+    expect(ids(visibleNodes(NODES, withLens))).toContain('melodic-techno');
+  });
+
+  it('does not override the filter — the filter stays a hard gate', () => {
+    const context = visibilityContext(
+      { zoom: 1, focusId: null, selectedIds: ['rock'] },
+      EDGES,
+      new Set(['melodic-techno']),
+    );
+    expect(ids(visibleNodes(NODES, context))).not.toContain('melodic-techno');
+  });
+
+  it('does not loosen the label rules — lens dots earn names normally', () => {
+    const context = visibilityContext(
+      { zoom: 1, focusId: null, selectedIds: [] },
+      EDGES,
+      new Set(['melodic-techno']),
+    );
+    const node = nodeById('melodic-techno');
+    expect(isNodeVisible(node, context)).toBe(true);
+    expect(isLabelVisible(node, context)).toBe(false);
+  });
+
+  it('defaults to off: the two-argument call is unchanged behaviour', () => {
+    const context = visibilityContext({ zoom: 1, focusId: null, selectedIds: [] }, EDGES);
+    expect(context.personal).toBeNull();
+  });
+});

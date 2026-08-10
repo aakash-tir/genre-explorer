@@ -207,6 +207,138 @@ body {
   cursor: pointer;
 }
 
+/* "Your music" — the personal lens panel, below the filter in the left aside. */
+.personal-panel {
+  margin-top: 1.5rem;
+  border-top: 1px solid #26263a;
+  padding-top: 0.75rem;
+}
+
+.personal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.personal-header button,
+.personal-expand {
+  border: 1px solid #26263a;
+  background: transparent;
+  color: var(--ink-dim);
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0.2rem 0.6rem;
+}
+
+.personal-expand {
+  margin-top: 1rem;
+  align-self: flex-start;
+}
+
+.personal-client-id {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+}
+
+.personal-client-id input {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #26263a;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+  margin: 0.35rem 0 0.75rem;
+  font-size: 0.85rem;
+}
+
+.personal-connect {
+  border: 1px solid #3a3a56;
+  background: rgba(38, 38, 58, 0.7);
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+}
+
+.personal-connect:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.personal-error {
+  color: #ff9b9b;
+  font-size: 0.85rem;
+}
+
+.personal-lens-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+  cursor: pointer;
+}
+
+.personal-panel h3 {
+  margin: 1rem 0 0.4rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-dim);
+}
+
+.personal-genres,
+.personal-suggestions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.personal-genres li button,
+.personal-suggestions li button {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.35rem 0.5rem;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.personal-genres li button:hover,
+.personal-suggestions li button:hover {
+  background: rgba(38, 38, 58, 0.7);
+}
+
+/* Faint weight bar behind each listened genre — magnitude at a glance. */
+.personal-weight {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: rgba(138, 180, 255, 0.12);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.personal-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.personal-actions button {
+  border: 1px solid #26263a;
+  background: transparent;
+  color: var(--ink-dim);
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
+
 .detail h3 {
   margin: 1.25rem 0 0.4rem;
   font-size: 0.8rem;

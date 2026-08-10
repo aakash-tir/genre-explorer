@@ -10,7 +10,7 @@
  * corrupts a field, this is where it surfaces as a clear error instead of as a map that
  * renders wrong in a way nobody notices.
  */
-import { GenreDetail, GraphDataset } from '../types';
+import { ArtistIndex, GenreDetail, GraphDataset } from '../types';
 
 /**
  * Data URLs are built on Vite's BASE_URL so the same bundle works at the domain
@@ -77,6 +77,24 @@ export async function loadGenreDetail(
   const parsed = GenreDetail.safeParse(raw);
   if (!parsed.success) {
     throw new DatasetError(`${url} failed validation`, url);
+  }
+  return parsed.data;
+}
+
+export const ARTIST_INDEX_URL = `${BASE}data/artist-index.json`;
+
+/**
+ * The artist → genre reverse index behind the personal lens. Deliberately NOT
+ * loaded with the graph: it is only fetched when a listening profile exists, so
+ * visitors who never touch personal mode never pay for it.
+ */
+export async function loadArtistIndex(
+  fetchImpl: typeof fetch = fetch,
+): Promise<ArtistIndex> {
+  const raw = await fetchJson(ARTIST_INDEX_URL, fetchImpl);
+  const parsed = ArtistIndex.safeParse(raw);
+  if (!parsed.success) {
+    throw new DatasetError(`artist-index.json failed validation`, ARTIST_INDEX_URL);
   }
   return parsed.data;
 }
