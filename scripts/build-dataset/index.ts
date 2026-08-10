@@ -25,6 +25,7 @@
  */
 import { MIN_RELEASE_GROUPS } from './config';
 import { buildGraph } from './build-graph';
+import { emitArtistIndex } from './emit-artist-index';
 import { emitDetail } from './emit-details';
 import {
   fetchEntities,
@@ -130,6 +131,10 @@ export async function buildDataset(): Promise<void> {
   console.log(
     `  details done: ${placed.length} files, ${emptyPanels} with no ranked entities at all`,
   );
+
+  // Stage 9 — invert the detail files just written into the artist → genre index
+  // the personal lens matches against. Pure re-read of our own output, no network.
+  await emitArtistIndex();
 }
 
 // `import.meta.url` guard so importing this module in a test does not run it.

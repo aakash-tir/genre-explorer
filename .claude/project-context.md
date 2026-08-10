@@ -136,19 +136,25 @@ simulation runs in the browser.
 
 ## Auth model
 
-There isn't one, anywhere, and that is intentional.
+There are no accounts and no server, and that is intentional.
 
-- No user accounts, no login, no sessions, no cookies.
-- No API keys in the app or the pipeline. Every upstream source (MusicBrainz,
-  ListenBrainz, Deezer) is open and unauthenticated.
+- No user accounts, no login, no sessions, no cookies. "Who you are" is
+  `localStorage` in this browser.
+- No API keys in the pipeline. Every upstream source (MusicBrainz, ListenBrainz,
+  Deezer) is open and unauthenticated.
 - The only credential in the project is the `GITHUB_TOKEN` that GitHub Actions provides
   to the refresh workflow so it can open a PR. Nothing needs to be stored as a secret.
-- Spotify has **no** presence beyond outbound links. There is no Spotify app, client ID
-  or OAuth flow — and as of Feb 2026 there could not be one at this scale even if wanted
-  (see `docs/research/music-data-sources.md`).
+- **Spotify appears exactly once**: the personal lens (`src/personal/`) runs OAuth
+  PKCE entirely client-side against the owner's **dev-mode** Spotify app — max 5
+  allowlisted users, scope `user-top-read` only, tokens in `localStorage`. The
+  client id is public by design (PKCE has no secret; it may be baked in via the
+  `SPOTIFY_CLIENT_ID` repo _variable_). This is personal mode, not a login: at
+  2026 API policy there is no public-scale path
+  (`docs/research/listening-history-personalization.md`). Everywhere else Spotify
+  is outbound links only.
 
-If a future feature needs a secret, it goes in GitHub Actions secrets and is used only at
-build time. A static site cannot hold a secret.
+If a future feature needs a real secret, it goes in GitHub Actions secrets and is used
+only at build time. A static site cannot hold a secret.
 
 ---
 

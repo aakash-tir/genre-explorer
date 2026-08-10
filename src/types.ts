@@ -110,3 +110,34 @@ export const GenreDetail = z.object({
   obscureTracks: z.array(Track),
 });
 export type GenreDetail = z.infer<typeof GenreDetail>;
+
+/**
+ * One artist in the reverse index. Derived from the genre detail files, so it only
+ * covers artists that appear in some genre's panel — an artist outside every panel
+ * simply doesn't light anything up (see
+ * `docs/research/listening-history-personalization.md` §5).
+ */
+export const ArtistIndexEntry = z.object({
+  /**
+   * Spotify artist id, extracted from the artist's `spotify` link when present
+   * (~68% of dataset artists). The exact-match key for the personal lens.
+   */
+  spotifyId: z.string().min(1).optional(),
+  /** Normalized display name (see `normalizeArtistName`) — the fallback match key. */
+  name: z.string().min(1),
+  /** Indexes into {@link ArtistIndex.genreIds}, kept as numbers for payload size. */
+  genres: z.array(z.number().int().nonnegative()).min(1),
+});
+export type ArtistIndexEntry = z.infer<typeof ArtistIndexEntry>;
+
+/**
+ * `public/data/artist-index.json` — artist → genres, inverted from the detail files
+ * at build time. Lazy-loaded only when the personal lens is activated, so it never
+ * touches first paint or the graph.json size budget.
+ */
+export const ArtistIndex = z.object({
+  builtAt: z.iso.datetime(),
+  genreIds: z.array(z.string().min(1)),
+  artists: z.array(ArtistIndexEntry),
+});
+export type ArtistIndex = z.infer<typeof ArtistIndex>;

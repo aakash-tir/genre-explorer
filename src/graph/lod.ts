@@ -102,17 +102,27 @@ export interface VisibilityContext {
   focused: Set<string>;
   /** `null` means no filter is active. */
   allowed: Set<string> | null;
+  /**
+   * Personal-lens genres (matched + suggested). Like focus they are always
+   * visible regardless of zoom — a lens over dots you can't see is no lens —
+   * but the filter still gates them, and labels follow the normal rules so a
+   * broad listening history doesn't wallpaper the overview with names.
+   * `null` means the lens is off.
+   */
+  personal: Set<string> | null;
 }
 
 /** Build the context once per frame rather than recomputing it per node. */
 export function visibilityContext(
   state: LodState,
   edges: readonly GenreEdge[],
+  personal: Set<string> | null = null,
 ): VisibilityContext {
   return {
     cutoff: popularityCutoff(state.zoom),
     focused: focusSet(state.focusId, edges),
     allowed: resolveFilter(state.selectedIds, edges),
+    personal,
   };
 }
 
@@ -120,6 +130,7 @@ export function isNodeVisible(node: GenreNode, context: VisibilityContext): bool
   // The filter is a hard gate and overrides everything, including focus.
   if (context.allowed !== null && !context.allowed.has(node.id)) return false;
   if (context.focused.has(node.id)) return true;
+  if (context.personal !== null && context.personal.has(node.id)) return true;
   return node.popularity >= context.cutoff;
 }
 

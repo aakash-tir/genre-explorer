@@ -9,9 +9,9 @@
  * URL serialises to (`src/lib/deepLink.ts`), so deep links work from the first real
  * interaction rather than being retrofitted.
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { GraphDataset } from './types';
-import { loadGraph } from './lib/dataset';
+import { indexNodes, loadGraph } from './lib/dataset';
 import {
   DEFAULT_STATE,
   parseUrl,
@@ -25,9 +25,11 @@ import {
 const BASE = import.meta.env.BASE_URL;
 import { FULL_DETAIL_ZOOM, visibilityContext, visibleNodes } from './graph/lod';
 import { drawnEdges } from './graph/edges';
-import GraphCanvas, { MIN_ZOOM } from './graph/GraphCanvas';
+import GraphCanvas, { MIN_ZOOM, type PersonalLens } from './graph/GraphCanvas';
 import DetailPanel from './panel/DetailPanel';
 import FilterPanel from './filters/FilterPanel';
+import PersonalPanel from './personal/PersonalPanel';
+import { usePersonal } from './personal/usePersonal';
 
 export default function App() {
   const [dataset, setDataset] = useState<GraphDataset | null>(null);
@@ -45,6 +47,20 @@ export default function App() {
    * not part of the URL; a deep-linked genre opens fanned.
    */
   const [fanOpen, setFanOpen] = useState(true);
+
+  const personal = usePersonal(dataset);
+  const nodesById = useMemo(
+    () => (dataset ? indexNodes(dataset) : new Map<string, never>()),
+    [dataset],
+  );
+  // The lens the canvas draws: only when toggled on and there is something to show.
+  const lens = useMemo<PersonalLens | null>(() => {
+    if (!personal.lensOn || personal.weights.length === 0) return null;
+    return {
+      matched: new Map(personal.weights.map((genre) => [genre.id, genre.weight])),
+      suggested: new Set(personal.suggestions.map((suggestion) => suggestion.id)),
+    };
+  }, [personal.lensOn, personal.weights, personal.suggestions]);
 
   useEffect(() => {
     let cancelled = false;
@@ -96,6 +112,12 @@ export default function App() {
     setState((s) => ({ ...s, selectedIds }));
   }, []);
 
+  // Panel picks (your genres / branch out) focus directly — no toggle semantics.
+  const handlePick = useCallback((genreId: string) => {
+    setState((s) => ({ ...s, focusId: genreId }));
+    setFanOpen(true);
+  }, []);
+
   if (error !== null) {
     return (
       <main className="status status--error">
@@ -127,6 +149,7 @@ export default function App() {
           selectedIds={state.selectedIds}
           onSelectionChange={handleSelectionChange}
         />
+        <PersonalPanel personal={personal} nodesById={nodesById} onPick={handlePick} />
       </aside>
 
       <section className="canvas-host" aria-label="Genre map">
@@ -134,6 +157,7 @@ export default function App() {
           dataset={dataset}
           state={state}
           fanOpen={fanOpen}
+          lens={lens}
           onZoomChange={handleZoomChange}
           onFocusChange={handleFocusChange}
         />
