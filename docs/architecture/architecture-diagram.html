@@ -242,14 +242,14 @@
           </div>
         </div>
         <p class="subtitle">
-          Build-time pipeline → committed dataset → static browser app · shipped on GitHub
-          Pages (PR #20)
+          Build-time pipeline → committed dataset → static browser app · GitHub Pages (PR
+          #20) · personal lens (PR #28)
         </p>
       </div>
 
       <!-- Main Diagram -->
       <div class="diagram-container">
-        <svg viewBox="0 0 1100 880">
+        <svg viewBox="0 0 1100 940">
           <defs>
             <marker
               id="arrowhead"
@@ -295,7 +295,7 @@
             x="30"
             y="600"
             width="1040"
-            height="210"
+            height="270"
             rx="12"
             fill="rgba(8, 51, 68, 0.06)"
             stroke="#22d3ee"
@@ -303,8 +303,8 @@
             stroke-dasharray="8,4"
           />
           <text x="42" y="622" fill="#22d3ee" font-size="10" font-weight="600">
-            RUNTIME — src/ · static app · no external calls, ever · LIVE:
-            aakash-tir.github.io/genre-explorer
+            RUNTIME — src/ · static app · one scoped exception: Spotify personal mode,
+            user-initiated · LIVE: aakash-tir.github.io/genre-explorer
           </text>
 
           <!-- ============ Arrows (drawn early, behind boxes) ============ -->
@@ -471,6 +471,36 @@
             marker-end="url(#arrowhead)"
           />
 
+          <!-- genre detail files → stage 9 (pure inversion) → artist-index.json -->
+          <line
+            x1="885"
+            y1="352"
+            x2="800"
+            y2="392"
+            stroke="#34d399"
+            stroke-width="1.5"
+            marker-end="url(#arrowhead)"
+          />
+          <line
+            x1="822"
+            y1="412"
+            x2="876"
+            y2="404"
+            stroke="#a78bfa"
+            stroke-width="1.5"
+            marker-end="url(#arrowhead)"
+          />
+
+          <!-- artist-index.json → runtime loader (lazy, lens only) -->
+          <path
+            d="M 1062 415 C 1092 480, 1092 590, 1005 657"
+            fill="none"
+            stroke="#a78bfa"
+            stroke-width="1.5"
+            stroke-dasharray="4,3"
+            marker-end="url(#arrowhead)"
+          />
+
           <!-- graph.json → runtime loader (the only runtime fetch) -->
           <line
             x1="960"
@@ -481,8 +511,8 @@
             stroke-width="1.5"
             marker-end="url(#arrowhead)"
           />
-          <text x="972" y="586" fill="#94a3b8" font-size="8">fetch on load —</text>
-          <text x="972" y="598" fill="#94a3b8" font-size="8">the app's only fetch</text>
+          <text x="950" y="586" fill="#94a3b8" font-size="8">fetch on load ·</text>
+          <text x="950" y="598" fill="#94a3b8" font-size="8">details lazy</text>
 
           <!-- runtime flow -->
           <line
@@ -503,6 +533,32 @@
             stroke-width="1.5"
             marker-end="url(#arrowhead)"
           />
+
+          <!-- personal lens → graph rules (weights feed the lod/canvas lens) -->
+          <line
+            x1="680"
+            y1="742"
+            x2="680"
+            y2="724"
+            stroke="#22d3ee"
+            stroke-width="1.5"
+            marker-end="url(#arrowhead)"
+          />
+
+          <!-- personal ⇄ Spotify: THE scoped runtime exception (OAuth, dashed rose) -->
+          <line
+            x1="802"
+            y1="772"
+            x2="846"
+            y2="772"
+            stroke="#fb7185"
+            stroke-width="1.5"
+            stroke-dasharray="4,4"
+            marker-end="url(#arrowhead)"
+          />
+          <text x="824" y="764" fill="#fb7185" font-size="7" text-anchor="middle">
+            OAuth
+          </text>
 
           <!-- ============ External services (left column) ============ -->
           <rect x="60" y="100" width="170" height="54" rx="6" fill="#0f172a" />
@@ -864,6 +920,31 @@
             Deezer ids · 72% coverage
           </text>
 
+          <rect x="670" y="394" width="150" height="48" rx="6" fill="#0f172a" />
+          <rect
+            x="670"
+            y="394"
+            width="150"
+            height="48"
+            rx="6"
+            fill="rgba(6, 78, 59, 0.4)"
+            stroke="#34d399"
+            stroke-width="1.5"
+          />
+          <text
+            x="745"
+            y="414"
+            fill="white"
+            font-size="11"
+            font-weight="600"
+            text-anchor="middle"
+          >
+            9 · artist-index
+          </text>
+          <text x="745" y="430" fill="#94a3b8" font-size="9" text-anchor="middle">
+            inverts genres/*.json · offline
+          </text>
+
           <!-- ============ Dataset artifacts ============ -->
           <rect x="880" y="290" width="180" height="60" rx="6" fill="#0f172a" />
           <rect
@@ -891,6 +972,34 @@
           </text>
           <text x="970" y="342" fill="#94a3b8" font-size="8" text-anchor="middle">
             912 files · lazy-loaded · ~4 KB
+          </text>
+
+          <rect x="880" y="370" width="180" height="60" rx="6" fill="#0f172a" />
+          <rect
+            x="880"
+            y="370"
+            width="180"
+            height="60"
+            rx="6"
+            fill="rgba(76, 29, 149, 0.4)"
+            stroke="#a78bfa"
+            stroke-width="1.5"
+          />
+          <text
+            x="970"
+            y="392"
+            fill="white"
+            font-size="11"
+            font-weight="600"
+            text-anchor="middle"
+          >
+            artist-index.json
+          </text>
+          <text x="970" y="408" fill="#94a3b8" font-size="9" text-anchor="middle">
+            artist → genres · 6,548 artists
+          </text>
+          <text x="970" y="422" fill="#94a3b8" font-size="8" text-anchor="middle">
+            430 KB · lazy — personal lens only
           </text>
 
           <rect x="880" y="460" width="180" height="64" rx="6" fill="#0f172a" />
@@ -991,7 +1100,7 @@
           />
           <text
             x="290"
-            y="664"
+            y="662"
             fill="white"
             font-size="12"
             font-weight="600"
@@ -999,25 +1108,86 @@
           >
             App.tsx — React 19 shell
           </text>
-          <text x="110" y="688" fill="#e8e8f0" font-size="9">
-            • GraphCanvas — Canvas 2D + d3-zoom · gradients · LOD (built)
+          <text x="110" y="684" fill="#e8e8f0" font-size="9">
+            • GraphCanvas — Canvas 2D + d3-zoom · LOD · personal lens rings
           </text>
-          <text x="110" y="706" fill="#94a3b8" font-size="9">
-            • DetailPanel — songs / artists / links / previews (built)
+          <text x="110" y="700" fill="#94a3b8" font-size="9">
+            • DetailPanel — songs / artists / links / previews
           </text>
-          <text x="110" y="724" fill="#94a3b8" font-size="9">
-            • FilterPanel — search · chips · hide-the-rest (built)
+          <text x="110" y="716" fill="#94a3b8" font-size="9">
+            • FilterPanel — search · chips · hide-the-rest
           </text>
-          <text x="290" y="746" fill="#22d3ee" font-size="8" text-anchor="middle">
+          <text x="110" y="732" fill="#94a3b8" font-size="9">
+            • PersonalPanel — your genres · branch out · lens toggle
+          </text>
+          <text x="290" y="750" fill="#22d3ee" font-size="8" text-anchor="middle">
             deep links live: /genre/&lt;id&gt;?filter=…&amp;zoom=… ⇄ AppState
           </text>
 
+          <!-- ============ Personal lens (runtime) + Spotify ============ -->
+          <rect x="560" y="744" width="240" height="56" rx="6" fill="#0f172a" />
+          <rect
+            x="560"
+            y="744"
+            width="240"
+            height="56"
+            rx="6"
+            fill="rgba(8, 51, 68, 0.4)"
+            stroke="#22d3ee"
+            stroke-width="1.5"
+          />
+          <text
+            x="680"
+            y="764"
+            fill="white"
+            font-size="11"
+            font-weight="600"
+            text-anchor="middle"
+          >
+            src/personal/ — lens
+          </text>
+          <text x="680" y="780" fill="#94a3b8" font-size="9" text-anchor="middle">
+            PKCE auth · match.ts · suggest.ts
+          </text>
+          <text x="680" y="793" fill="#94a3b8" font-size="8" text-anchor="middle">
+            profile + tokens in localStorage · no accounts
+          </text>
+
+          <rect x="850" y="744" width="180" height="56" rx="6" fill="#0f172a" />
+          <rect
+            x="850"
+            y="744"
+            width="180"
+            height="56"
+            rx="6"
+            fill="rgba(30, 41, 59, 0.5)"
+            stroke="#fb7185"
+            stroke-width="1.5"
+            stroke-dasharray="4,4"
+          />
+          <text
+            x="940"
+            y="764"
+            fill="white"
+            font-size="11"
+            font-weight="600"
+            text-anchor="middle"
+          >
+            Spotify (personal)
+          </text>
+          <text x="940" y="780" fill="#94a3b8" font-size="9" text-anchor="middle">
+            accounts + api · user-top-read
+          </text>
+          <text x="940" y="793" fill="#fb7185" font-size="8" text-anchor="middle">
+            dev mode · ≤5 allowlisted users
+          </text>
+
           <!-- ============ Legend (outside all boundaries) ============ -->
-          <text x="40" y="842" fill="white" font-size="10" font-weight="600">Legend</text>
+          <text x="40" y="908" fill="white" font-size="10" font-weight="600">Legend</text>
 
           <rect
             x="110"
-            y="834"
+            y="900"
             width="16"
             height="10"
             rx="2"
@@ -1025,11 +1195,11 @@
             stroke="#34d399"
             stroke-width="1"
           />
-          <text x="132" y="842" fill="#94a3b8" font-size="8">pipeline stage (built)</text>
+          <text x="132" y="908" fill="#94a3b8" font-size="8">pipeline stage (built)</text>
 
           <rect
             x="270"
-            y="834"
+            y="900"
             width="16"
             height="10"
             rx="2"
@@ -1038,13 +1208,13 @@
             stroke-width="1"
             stroke-dasharray="3,3"
           />
-          <text x="292" y="842" fill="#94a3b8" font-size="8">
+          <text x="292" y="908" fill="#94a3b8" font-size="8">
             planned (dashed = not built yet)
           </text>
 
           <rect
             x="490"
-            y="834"
+            y="900"
             width="16"
             height="10"
             rx="2"
@@ -1052,13 +1222,13 @@
             stroke="#94a3b8"
             stroke-width="1"
           />
-          <text x="512" y="842" fill="#94a3b8" font-size="8">
+          <text x="512" y="908" fill="#94a3b8" font-size="8">
             external service (free, no key)
           </text>
 
           <rect
             x="700"
-            y="834"
+            y="900"
             width="16"
             height="10"
             rx="2"
@@ -1066,11 +1236,11 @@
             stroke="#a78bfa"
             stroke-width="1"
           />
-          <text x="722" y="842" fill="#94a3b8" font-size="8">dataset artifact</text>
+          <text x="722" y="908" fill="#94a3b8" font-size="8">dataset artifact</text>
 
           <rect
             x="850"
-            y="834"
+            y="900"
             width="16"
             height="10"
             rx="2"
@@ -1078,7 +1248,18 @@
             stroke="#22d3ee"
             stroke-width="1"
           />
-          <text x="872" y="842" fill="#94a3b8" font-size="8">browser app</text>
+          <text x="872" y="908" fill="#94a3b8" font-size="8">browser app</text>
+
+          <line
+            x1="950"
+            y1="905"
+            x2="968"
+            y2="905"
+            stroke="#fb7185"
+            stroke-width="1.5"
+            stroke-dasharray="4,4"
+          />
+          <text x="974" y="908" fill="#94a3b8" font-size="8">OAuth · personal mode</text>
         </svg>
       </div>
 
@@ -1090,7 +1271,10 @@
             <h3>Pipeline — built (v1 complete)</h3>
           </div>
           <ul>
-            <li>• All stages 1–8 real · weekly refresh PR live (Sun 04:00 UTC)</li>
+            <li>• All stages 1–9 real · weekly refresh PR live (Sun 04:00 UTC)</li>
+            <li>
+              • Stage 9 inverts the detail files into artist-index.json — no network
+            </li>
             <li>
               • Genre tree scraped from HTML — the relations are absent from the JSON API
             </li>
@@ -1120,18 +1304,24 @@
             <h3>Runtime — shipped</h3>
           </div>
           <ul>
-            <li>• Static app; fetches its own JSON and nothing else</li>
+            <li>
+              • Static app; fetches its own JSON — plus ONE scoped exception: Spotify
+              personal mode (user-initiated, map never depends on it)
+            </li>
             <li>• Zod re-validates on load — a bad refresh fails loudly</li>
             <li>• Canvas map is live: gradients, LOD, wheel/drag camera, URL zoom</li>
-            <li>• Previews via Deezer widget embed (URLs expire; ids are stable)</li>
+            <li>
+              • Personal lens: PKCE (≤5 users) → top artists → weighted highlights +
+              branch-out suggestions · localStorage, no accounts
+            </li>
           </ul>
         </div>
       </div>
 
       <!-- Footer -->
       <p class="footer">
-        Genre Explorer • architecture as of 2026-08-08 (shipped, PR #20) • updated after
-        every architecture-changing merge
+        Genre Explorer • architecture as of 2026-08-10 (personal lens, PR #28) • updated
+        after every architecture-changing merge
       </p>
     </div>
 
