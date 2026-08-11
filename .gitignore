@@ -49,3 +49,4 @@ CLAUDE.local.md
 # tracked build artifacts, refreshed by PR. Only graphify's local AST cache is skipped;
 # it is regenerable and would add churn to every commit.
 graphify-out/cache/
+images/
