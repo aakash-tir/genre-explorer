@@ -43,8 +43,8 @@ describe('buildArtistIndex', () => {
     );
     expect(index.genreIds).toEqual(['techno', 'house']);
     expect(index.artists).toEqual([
-      { spotifyId: 'sidFrankie', name: 'frankie knuckles', genres: [1] },
-      { spotifyId: 'sidJeff', name: 'jeff mills', genres: [0] },
+      { mbid: M(2), spotifyId: 'sidFrankie', name: 'frankie knuckles', genres: [1] },
+      { mbid: M(1), spotifyId: 'sidJeff', name: 'jeff mills', genres: [0] },
     ]);
   });
 
@@ -60,12 +60,13 @@ describe('buildArtistIndex', () => {
     expect(index.artists[0].genres).toEqual([0, 1]);
   });
 
-  it('omits spotifyId when the artist has no spotify link, keeping the name key', () => {
+  it('omits spotifyId when the artist has no spotify link, keeping mbid + name keys', () => {
     const index = buildArtistIndex(
       [detail('gabber', [artist(3, 'Obscúre Act')])],
       BUILT_AT,
     );
     expect(index.artists[0].spotifyId).toBeUndefined();
+    expect(index.artists[0].mbid).toBe(M(3));
     expect(index.artists[0].name).toBe('obscure act');
   });
 

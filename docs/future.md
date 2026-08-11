@@ -5,11 +5,10 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
 
 ## Deferred from v1
 
-- 2026-08-10 — Personal lens, beyond Spotify personal mode (which shipped for ≤5
-  allowlisted users): ListenBrainz-username intake (open API, MBID-exact matching —
-  better than the name fallback) and a client-side Spotify GDPR-export upload for
-  everyone else. Both slot behind the same `(artistKey, weight)[]` interface the
-  matcher already uses. Findings: `docs/research/listening-history-personalization.md`.
+- 2026-08-10 — Personal lens, third intake path: a client-side Spotify GDPR-export
+  upload (ZIP drag-and-drop, parsed in-browser, name-matched) for visitors who
+  won't make a ListenBrainz account. Slots behind the same `ListenedArtist[]`
+  interface the matcher uses. Findings: `docs/research/listening-history-personalization.md` §4.
 - 2026-08-10 — Artist-index coverage: matching only sees the ~6.5k panel artists
   (top-50 candidates per genre). If personal matching feels thin, emit the index
   from a wider candidate pool (raise `SEARCH_LIMIT` or index all ranked candidates,

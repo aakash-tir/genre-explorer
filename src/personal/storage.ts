@@ -2,18 +2,20 @@
  * Persistence for the personal lens: `localStorage`, nothing else.
  *
  * There are no accounts and no server — "who you are" is "this browser". The
- * stored top-artist list (not the derived weights) is the source of truth, so
- * matching can re-run against a fresher artist index without re-asking Spotify.
+ * stored artist list (not the derived weights) is the source of truth, so
+ * matching can re-run against a fresher artist index without re-asking the
+ * source. Two sources exist, as a discriminated union:
  *
- * All reads are guarded: a corrupt or foreign value degrades to "not connected",
- * never to a crash. Session-scoped PKCE state (verifier + nonce) lives in
- * `sessionStorage` — it only needs to survive the redirect round-trip.
+ *   - `listenbrainz` — the public path: just a username.
+ *   - `spotify`      — personal mode: OAuth tokens for the owner's dev-mode app.
+ *
+ * All reads are guarded: a corrupt, foreign, or previous-schema value degrades
+ * to "not connected", never to a crash. Session-scoped PKCE state (verifier +
+ * nonce) lives in `sessionStorage` — it only survives the redirect round-trip.
  */
 import { z } from 'zod';
 
-import type { TopArtist } from './spotifyClient';
-
-const STORAGE_KEY = 'genre-explorer:personal:v1';
+const STORAGE_KEY = 'genre-explorer:personal:v2';
 const PENDING_KEY = 'genre-explorer:personal:pkce';
 
 const StoredTokens = z.object({
@@ -22,21 +24,38 @@ const StoredTokens = z.object({
   expiresAt: z.number(),
 });
 
-const StoredTopArtist = z.object({
-  spotifyId: z.string().min(1),
+const StoredArtist = z.object({
+  mbid: z.string().min(1).optional(),
+  spotifyId: z.string().min(1).optional(),
   name: z.string().min(1),
   rank: z.number().int().nonnegative(),
 });
+export type StoredArtist = z.infer<typeof StoredArtist>;
 
-const PersonalState = z.object({
-  clientId: z.string().min(1),
-  tokens: StoredTokens.nullable(),
-  topArtists: z.array(StoredTopArtist).nullable(),
-  /** ISO datetime of the last successful Spotify fetch. */
+const Shared = {
+  topArtists: z.array(StoredArtist).nullable(),
+  /** ISO datetime of the last successful fetch from the source. */
   fetchedAt: z.string().nullable(),
   lensOn: z.boolean(),
+};
+
+const SpotifyState = z.object({
+  source: z.literal('spotify'),
+  clientId: z.string().min(1),
+  tokens: StoredTokens.nullable(),
+  ...Shared,
 });
+
+const ListenBrainzState = z.object({
+  source: z.literal('listenbrainz'),
+  username: z.string().min(1),
+  ...Shared,
+});
+
+const PersonalState = z.discriminatedUnion('source', [SpotifyState, ListenBrainzState]);
 export type PersonalState = z.infer<typeof PersonalState>;
+export type SpotifyPersonalState = z.infer<typeof SpotifyState>;
+export type ListenBrainzPersonalState = z.infer<typeof ListenBrainzState>;
 
 export function loadPersonalState(storage: Storage = localStorage): PersonalState | null {
   try {
@@ -66,6 +85,27 @@ export function clearPersonalState(storage: Storage = localStorage): void {
   } catch {
     // Nothing to do; there is nothing worse to fall back to.
   }
+}
+
+export function initialSpotifyState(clientId: string): SpotifyPersonalState {
+  return {
+    source: 'spotify',
+    clientId,
+    tokens: null,
+    topArtists: null,
+    fetchedAt: null,
+    lensOn: true,
+  };
+}
+
+export function initialListenBrainzState(username: string): ListenBrainzPersonalState {
+  return {
+    source: 'listenbrainz',
+    username,
+    topArtists: null,
+    fetchedAt: null,
+    lensOn: true,
+  };
 }
 
 const PendingAuth = z.object({
@@ -98,9 +138,3 @@ export function takePendingAuth(storage: Storage = sessionStorage): PendingAuth 
     return null;
   }
 }
-
-export function initialPersonalState(clientId: string): PersonalState {
-  return { clientId, tokens: null, topArtists: null, fetchedAt: null, lensOn: true };
-}
-
-export type { TopArtist };

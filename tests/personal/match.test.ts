@@ -7,16 +7,18 @@ import { describe, expect, it } from 'vitest';
 import { artistWeight, matchGenres } from '../../src/personal/match';
 import type { ArtistIndex } from '../../src/types';
 
+const M = (n: number) => `00000000-0000-4000-8000-00000000000${n}`;
+
 const INDEX: ArtistIndex = {
   builtAt: '2026-08-10T00:00:00.000Z',
   genreIds: ['techno', 'idm', 'house'],
   artists: [
-    { spotifyId: 'sidAphex', name: 'aphex twin', genres: [0, 1] },
-    { spotifyId: 'sidMills', name: 'jeff mills', genres: [0] },
-    { name: 'no spotify act', genres: [2] },
+    { mbid: M(1), spotifyId: 'sidAphex', name: 'aphex twin', genres: [0, 1] },
+    { mbid: M(2), spotifyId: 'sidMills', name: 'jeff mills', genres: [0] },
+    { mbid: M(3), name: 'no spotify act', genres: [2] },
     // Deliberately ambiguous name, two different artists:
-    { spotifyId: 'sidBushUk', name: 'bush', genres: [0] },
-    { spotifyId: 'sidBushCa', name: 'bush', genres: [2] },
+    { mbid: M(4), spotifyId: 'sidBushUk', name: 'bush', genres: [0] },
+    { mbid: M(5), spotifyId: 'sidBushCa', name: 'bush', genres: [2] },
   ],
 };
 
@@ -54,6 +56,12 @@ describe('matchGenres', () => {
       INDEX,
     );
     expect(weights).toEqual([]);
+  });
+
+  it('matches by MusicBrainz id first — the ListenBrainz path is exact', () => {
+    // The mbid wins even when the name is ambiguous and no spotify id is given.
+    const weights = matchGenres([{ mbid: M(5), name: 'Bush', rank: 0 }], INDEX);
+    expect(weights.map((genre) => genre.id)).toEqual(['house']);
   });
 
   it('normalizes weights so the strongest genre is exactly 1', () => {
