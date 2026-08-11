@@ -1,16 +1,16 @@
 # Graph Report - genre-explorer  (2026-08-10)
 
 ## Corpus Check
-- 1008 files · ~120,257 words
+- 1010 files · ~102,039 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 619 nodes · 1068 edges · 38 communities (34 shown, 4 thin omitted)
+- 641 nodes · 1096 edges · 39 communities (35 shown, 4 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 4 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `830efeb9`
+- Built from commit: `9f8ad9ca`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -47,10 +47,11 @@
 - 2026-08-10
 - Research — A personal "your genres" subgraph from listening history
 - Runbook — Spotify personal mode (owner setup)
+- layout.ts
 
 ## God Nodes (most connected - your core abstractions)
-1. `GraphCanvas()` - 21 edges
-2. `usePersonal()` - 20 edges
+1. `usePersonal()` - 22 edges
+2. `GraphCanvas()` - 21 edges
 3. `compilerOptions` - 20 edges
 4. `cachedFetch()` - 17 edges
 5. `buildDataset()` - 15 edges
@@ -65,25 +66,25 @@
   scripts/build-dataset/build-graph.ts → tests/graph/fan.test.ts
 - `GraphCanvas()` --indirect_call--> `candidates()`  [INFERRED]
   src/graph/GraphCanvas.tsx → tests/scripts/rank.test.ts
+- `structuralDescendants()` --indirect_call--> `child()`  [INFERRED]
+  src/graph/edges.ts → tests/graph/fan.test.ts
 - `BuiltGraph` --references--> `GenreEdge`  [EXTRACTED]
   scripts/build-dataset/build-graph.ts → src/types.ts
 - `emitArtistIndex()` --references--> `GenreDetail`  [EXTRACTED]
   scripts/build-dataset/emit-artist-index.ts → src/types.ts
-- `emitDetail()` --references--> `GenreDetail`  [EXTRACTED]
-  scripts/build-dataset/emit-details.ts → src/types.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (38 total, 4 thin omitted)
+## Communities (39 total, 4 thin omitted)
 
 ### Community 0 - "devDependencies"
 Cohesion: 0.04
 Nodes (49): eslint, @eslint/js, eslint-plugin-react-hooks, eslint-plugin-react-refresh, globals, jsdom, devDependencies, eslint (+41 more)
 
 ### Community 1 - "lod.ts"
-Cohesion: 0.11
-Nodes (35): AuthorizeParams, base64Url(), buildAuthorizeUrl(), CallbackResult, codeChallenge(), exchangeCode(), generateCodeVerifier(), isExpired() (+27 more)
+Cohesion: 0.07
+Nodes (47): GenreWeight, PersonalPanel(), PersonalPanelProps, AuthorizeParams, base64Url(), buildAuthorizeUrl(), CallbackResult, codeChallenge() (+39 more)
 
 ### Community 2 - "compilerOptions"
 Cohesion: 0.06
@@ -130,8 +131,8 @@ Cohesion: 0.22
 Nodes (8): Applying it, Branch protection on `main`, ⚠️ Current state: server-side protection is NOT active, Day-to-day workflow, Runbook — CI and branch protection, The dataset refresh workflow, The gate, Verifying it took
 
 ### Community 13 - "colors.ts"
-Cohesion: 0.09
-Nodes (45): CameraTransform, computeFit(), Fit, screenRadius(), worldToScreen(), assignFamilyHues(), edgeColor(), genreColor() (+37 more)
+Cohesion: 0.13
+Nodes (25): CameraTransform, computeFit(), Fit, screenRadius(), worldToScreen(), assignFamilyHues(), edgeColor(), genreColor() (+17 more)
 
 ### Community 14 - "2026-08-04"
 Cohesion: 0.25
@@ -155,31 +156,31 @@ Nodes (4): printWidth, semi, singleQuote, trailingComma
 
 ### Community 20 - "index.ts"
 Cohesion: 0.07
-Nodes (55): buildGraph(), slugify(), emitDetail(), emitGraph(), ArtistSearch, CandidateArtist, CandidateRecording, escapeLucene() (+47 more)
+Nodes (54): buildGraph(), slugify(), emitDetail(), ArtistSearch, CandidateArtist, CandidateRecording, escapeLucene(), fetchEntities() (+46 more)
 
 ### Community 29 - "2026-08-07"
 Cohesion: 0.12
 Nodes (15): 2026-08-07, Fix: PR #4 merged red — prettier failure masked by a piped exit code, Milestone 3: the map renders, Milestone 4: focus and the panel — the core loop works end to end, Milestone 5: find your way around — the filter panel, Milestone 6: previews, mobile, and the colour fix, Milestone 7: the weekly refresh workflow — v1 code-complete, Post-merge chores for PR #10 (+7 more)
 
 ### Community 30 - "layout.ts"
-Cohesion: 0.17
-Nodes (16): ARTIST_INDEX_PATH, buildArtistIndex(), DATA_DIR, emitArtistIndex(), normalizeArtistName(), spotifyArtistIdFromUrl(), artistWeight(), buildLookup() (+8 more)
+Cohesion: 0.11
+Nodes (20): ARTIST_INDEX_PATH, buildArtistIndex(), DATA_DIR, emitArtistIndex(), normalizeArtistName(), spotifyArtistIdFromUrl(), fetchListenBrainzTopArtists(), fetchRange() (+12 more)
 
 ### Community 31 - "App.tsx"
-Cohesion: 0.13
-Nodes (23): App(), GraphCanvasProps, PersonalLens, createDetailCache(), DatasetError, fetchJson(), genreDetailUrl(), indexNodes() (+15 more)
+Cohesion: 0.11
+Nodes (34): BuiltGraph, App(), ASSOCIATIVE_KINDS, DRAWN_KINDS, drawnEdges(), focusChildren(), isAssociative(), isDrawn() (+26 more)
 
 ### Community 32 - "App.tsx"
-Cohesion: 0.07
-Nodes (33): BuiltGraph, UnplacedNode, Anchor, computeAnchors(), layoutGraph(), seededRandom(), FilterPanel(), FilterPanelProps (+25 more)
+Cohesion: 0.08
+Nodes (33): emitGraph(), FilterPanel(), FilterPanelProps, searchGenres(), GraphCanvasProps, createDetailCache(), DatasetError, fetchJson() (+25 more)
 
 ### Community 33 - "Hosting"
 Cohesion: 0.40
 Nodes (4): Fallback: Cloudflare Pages (unlimited static bandwidth), Hosting, How the GitHub Pages deploy works, Limits worth knowing
 
 ### Community 35 - "2026-08-10"
-Cohesion: 0.29
-Nodes (6): 2026-08-10, Docs cleanup: status docs caught up with the GitHub Pages ship, Personal lens: Spotify personal mode (≤5 users), your genres + branch-out, Post-merge chores for PR #24, Post-merge chores for PR #26, Research: personal "your genres" subgraph from listening history
+Cohesion: 0.22
+Nodes (8): 2026-08-10, Docs cleanup: status docs caught up with the GitHub Pages ship, Personal lens goes public: ListenBrainz username intake, Personal lens: Spotify personal mode (≤5 users), your genres + branch-out, Post-merge chores for PR #24, Post-merge chores for PR #26, Post-merge chores for PR #28, Research: personal "your genres" subgraph from listening history
 
 ### Community 36 - "Research — A personal "your genres" subgraph from listening history"
 Cohesion: 0.17
@@ -189,8 +190,12 @@ Nodes (11): 1. What the feature decomposes into, 2. Spotify OAuth — technicall
 Cohesion: 0.29
 Nodes (6): 1. Create the Spotify app, 2. Allowlist the listeners (max 5), 3. Give the app the client id (either way works), 4. What connecting looks like, Runbook — Spotify personal mode (owner setup), Troubleshooting
 
+### Community 38 - "layout.ts"
+Cohesion: 0.29
+Nodes (7): UnplacedNode, Anchor, computeAnchors(), layoutGraph(), seededRandom(), edges, nodes
+
 ## Knowledge Gaps
-- **254 isolated node(s):** `singleQuote`, `semi`, `printWidth`, `trailingComma`, `name` (+249 more)
+- **264 isolated node(s):** `singleQuote`, `semi`, `printWidth`, `trailingComma`, `name` (+259 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -198,16 +203,16 @@ Nodes (6): 1. Create the Spotify app, 2. Allowlist the listeners (max 5), 3. Giv
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `devDependencies` connect `devDependencies` to `scripts`?**
-  _High betweenness centrality (0.015) - this node is a cross-community bridge._
-- **Why does `GraphDataset` connect `App.tsx` to `App.tsx`, `lod.ts`, `index.ts`, `colors.ts`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
+- **Why does `GraphDataset` connect `App.tsx` to `lod.ts`, `colors.ts`, `App.tsx`?**
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Why does `GraphCanvas()` connect `colors.ts` to `index.ts`, `App.tsx`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `GraphCanvas()` (e.g. with `child()` and `candidates()`) actually correct?**
   _`GraphCanvas()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `singleQuote`, `semi`, `printWidth` to the rest of the system?**
-  _254 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _264 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04081632653061224 - nodes in this community are weakly interconnected._
 - **Should `lod.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.10801393728222997 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07199032062915911 - nodes in this community are weakly interconnected._
