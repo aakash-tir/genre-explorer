@@ -1,11 +1,13 @@
 /**
  * "Your music" — the personal lens's panel, below the filter in the left aside.
  *
- * Personal mode is honest about its constraints: it works for the ≤5 users on
- * the owner's Spotify dev-mode allowlist (docs/runbooks/spotify-personal-mode.md),
- * so the disconnected state explains itself instead of pretending to be a
- * public login. All decisions (matching, scoring) happen in the pure modules;
- * this component only renders their output and forwards clicks.
+ * Two ways in, honestly presented: the PUBLIC path is a ListenBrainz username
+ * (anyone; free account; auto-imports Spotify listens once linked there), and
+ * tucked behind a disclosure is Spotify personal mode — direct OAuth against
+ * the owner's dev-mode app, which platform policy caps at 5 allowlisted users
+ * (docs/runbooks/spotify-personal-mode.md). All decisions (matching, scoring)
+ * happen in the pure modules; this component renders their output and forwards
+ * clicks.
  */
 import { useState } from 'react';
 
@@ -30,6 +32,7 @@ export default function PersonalPanel({
   onPick,
 }: PersonalPanelProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [usernameDraft, setUsernameDraft] = useState(personal.username ?? '');
   const [clientIdDraft, setClientIdDraft] = useState(personal.clientId);
 
   const name = (id: string) => nodesById.get(id)?.name ?? id;
@@ -66,32 +69,65 @@ export default function PersonalPanel({
       {!personal.connected && !busy && (
         <>
           <p className="stub">
-            Connect Spotify to light up the genres you listen to and see where to branch
-            out. Personal mode: only listeners on this app&apos;s Spotify allowlist (max
-            5) can connect.
+            See the genres you listen to on the map, and where to branch out.
           </p>
-          <label className="personal-client-id">
-            Spotify app client id
+          <label className="personal-field">
+            ListenBrainz username
             <input
               type="text"
-              value={clientIdDraft}
-              onChange={(event) => setClientIdDraft(event.target.value)}
-              placeholder="from the Spotify developer dashboard"
-              aria-label="Spotify app client id"
+              value={usernameDraft}
+              onChange={(event) => setUsernameDraft(event.target.value)}
+              placeholder="your listenbrainz.org name"
+              aria-label="ListenBrainz username"
             />
           </label>
           <button
             type="button"
             className="personal-connect"
-            disabled={clientIdDraft.trim() === ''}
-            onClick={() => void personal.connect(clientIdDraft)}
+            disabled={usernameDraft.trim() === ''}
+            onClick={() => void personal.connectListenBrainz(usernameDraft)}
           >
-            Connect Spotify
+            Show my genres
           </button>
+          <p className="personal-hint">
+            No account? It&apos;s free at{' '}
+            <a href="https://listenbrainz.org" target="_blank" rel="noreferrer">
+              listenbrainz.org
+            </a>{' '}
+            — link Spotify there once and your listens flow in automatically.
+          </p>
+
+          <details className="personal-owner-mode">
+            <summary>Connect Spotify directly (owner mode, max 5 users)</summary>
+            <label className="personal-field">
+              Spotify app client id
+              <input
+                type="text"
+                value={clientIdDraft}
+                onChange={(event) => setClientIdDraft(event.target.value)}
+                placeholder="from the Spotify developer dashboard"
+                aria-label="Spotify app client id"
+              />
+            </label>
+            <button
+              type="button"
+              className="personal-connect"
+              disabled={clientIdDraft.trim() === ''}
+              onClick={() => void personal.connectSpotify(clientIdDraft)}
+            >
+              Connect Spotify
+            </button>
+          </details>
         </>
       )}
 
-      {busy && <p className="stub">Talking to Spotify…</p>}
+      {busy && (
+        <p className="stub">
+          {personal.status === 'authorizing'
+            ? 'Talking to Spotify…'
+            : 'Fetching your listening history…'}
+        </p>
+      )}
 
       {personal.error !== null && <p className="personal-error">{personal.error}</p>}
 
@@ -106,6 +142,15 @@ export default function PersonalPanel({
 
       {personal.weights.length > 0 && (
         <>
+          {personal.source === 'listenbrainz' && personal.username !== null && (
+            <p className="personal-source">
+              ListenBrainz · <strong>{personal.username}</strong>
+            </p>
+          )}
+          {personal.source === 'spotify' && (
+            <p className="personal-source">Spotify · personal mode</p>
+          )}
+
           <label className="personal-lens-toggle">
             <input
               type="checkbox"

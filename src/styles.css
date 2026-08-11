@@ -235,13 +235,13 @@ body {
   align-self: flex-start;
 }
 
-.personal-client-id {
+.personal-field {
   display: block;
   font-size: 0.8rem;
   color: var(--ink-dim);
 }
 
-.personal-client-id input {
+.personal-field input {
   width: 100%;
   padding: 0.5rem 0.65rem;
   border: 1px solid #26263a;
@@ -269,6 +269,37 @@ body {
 .personal-error {
   color: #ff9b9b;
   font-size: 0.85rem;
+}
+
+.personal-hint {
+  color: var(--ink-dim);
+  font-size: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.personal-hint a {
+  color: #8ab4ff;
+}
+
+.personal-owner-mode {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+}
+
+.personal-owner-mode summary {
+  color: var(--ink-dim);
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.personal-owner-mode[open] summary {
+  margin-bottom: 0.5rem;
+}
+
+.personal-source {
+  color: var(--ink-dim);
+  font-size: 0.75rem;
+  margin: 0.25rem 0 0.5rem;
 }
 
 .personal-lens-toggle {

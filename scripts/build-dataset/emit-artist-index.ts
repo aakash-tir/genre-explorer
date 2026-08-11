@@ -48,17 +48,14 @@ export function buildArtistIndex(
     }
   });
 
-  const artists: ArtistIndexEntry[] = [...byMbid.values()]
-    .map((entry) => ({
+  const artists: ArtistIndexEntry[] = [...byMbid.entries()]
+    .map(([mbid, entry]) => ({
+      mbid,
       ...(entry.spotifyId ? { spotifyId: entry.spotifyId } : {}),
       name: entry.name,
       genres: [...entry.genres].sort((a, b) => a - b),
     }))
-    .sort(
-      (a, b) =>
-        a.name.localeCompare(b.name) ||
-        (a.spotifyId ?? '').localeCompare(b.spotifyId ?? ''),
-    );
+    .sort((a, b) => a.name.localeCompare(b.name) || a.mbid.localeCompare(b.mbid));
 
   return ArtistIndex.parse({ builtAt, genreIds, artists });
 }

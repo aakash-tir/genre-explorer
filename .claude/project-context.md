@@ -14,13 +14,16 @@ ListenBrainz and Deezer, computes a force layout, and emits static JSON into
 `public/data/`. It runs in GitHub Actions weekly (and on demand) and opens a PR with the
 result. The emitted dataset is a **committed artifact**.
 
-**Runtime** — a static React app. It loads its own JSON and makes no other network calls,
-ever. There is no server, no database, no API route. This is deliberate: MusicBrainz's
-1 req/s rate limit and Deezer's 50 req/5s make per-visitor API calls impossible, and it
-means the site cannot break because an upstream service is down.
+**Runtime** — a static React app. It loads its own JSON and — one scoped exception
+aside — makes no other network calls. There is no server, no database, no API route.
+This is deliberate: MusicBrainz's 1 req/s rate limit and Deezer's 50 req/5s make
+per-visitor API calls impossible, and it means the site cannot break because an
+upstream service is down.
 
-If you find yourself adding a `fetch` to an external host inside `src/`, the design has
-gone wrong.
+The exception is the personal lens (`src/personal/`): user-initiated calls to
+`api.listenbrainz.org` (public path — open, CORS `*`) and to Spotify (owner mode).
+It degrades to "feature unavailable"; the map never depends on it. Any other `fetch`
+to an external host inside `src/` means the design has gone wrong.
 
 ---
 

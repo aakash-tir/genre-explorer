@@ -1,19 +1,31 @@
 /**
  * Listening history → genre weights. Pure; the personal lens's first half.
  *
- * Matching order per artist:
- *   1. Spotify artist id, exact — covers ~68% of the index and cannot false-match.
- *   2. Normalized name (see `src/lib/artistNames.ts`) — but ONLY when the name is
- *      unique in the index. Two different artists sharing a name ("Bush") would
- *      otherwise credit the wrong genres, and a wrong highlight is worse than a
- *      missing one.
+ * Every intake path (Spotify OAuth, ListenBrainz username, someday an export
+ * upload) reduces to the same shape — a ranked list of {@link ListenedArtist} —
+ * so this module is source-agnostic. Matching order per artist:
+ *
+ *   1. MusicBrainz id, exact — the ListenBrainz path; matches the dataset's own
+ *      primary key, so it cannot false-match and covers every index entry.
+ *   2. Spotify artist id, exact — the OAuth path; covers ~68% of the index.
+ *   3. Normalized name (see `src/lib/artistNames.ts`) — but ONLY when the name
+ *      is unique in the index. Two different artists sharing a name ("Bush")
+ *      would otherwise credit the wrong genres, and a wrong highlight is worse
+ *      than a missing one.
  *
  * An artist that matches nothing contributes nothing — the index only covers
  * panel artists, and that honesty is by design (research doc §5).
  */
 import type { ArtistIndex, ArtistIndexEntry } from '../types';
 import { normalizeArtistName } from '../lib/artistNames';
-import type { TopArtist } from './spotifyClient';
+
+/** One listened artist, whatever the source. `rank` is 0-based, best first. */
+export interface ListenedArtist {
+  mbid?: string;
+  spotifyId?: string;
+  name: string;
+  rank: number;
+}
 
 export interface GenreWeight {
   id: string;
@@ -34,31 +46,37 @@ export function artistWeight(rank: number): number {
 }
 
 interface IndexLookup {
+  byMbid: Map<string, ArtistIndexEntry>;
   bySpotifyId: Map<string, ArtistIndexEntry>;
   /** Normalized name → entry, or null when the name is ambiguous in the index. */
   byName: Map<string, ArtistIndexEntry | null>;
 }
 
 export function buildLookup(index: ArtistIndex): IndexLookup {
+  const byMbid = new Map<string, ArtistIndexEntry>();
   const bySpotifyId = new Map<string, ArtistIndexEntry>();
   const byName = new Map<string, ArtistIndexEntry | null>();
   for (const entry of index.artists) {
+    byMbid.set(entry.mbid, entry);
     if (entry.spotifyId !== undefined) bySpotifyId.set(entry.spotifyId, entry);
     byName.set(entry.name, byName.has(entry.name) ? null : entry);
   }
-  return { bySpotifyId, byName };
+  return { byMbid, bySpotifyId, byName };
 }
 
 export function matchGenres(
-  topArtists: readonly TopArtist[],
+  listened: readonly ListenedArtist[],
   index: ArtistIndex,
 ): GenreWeight[] {
   const lookup = buildLookup(index);
   const accumulated = new Map<string, { weight: number; artistNames: string[] }>();
 
-  for (const artist of topArtists) {
+  for (const artist of listened) {
     const entry =
-      lookup.bySpotifyId.get(artist.spotifyId) ??
+      (artist.mbid !== undefined ? lookup.byMbid.get(artist.mbid) : undefined) ??
+      (artist.spotifyId !== undefined
+        ? lookup.bySpotifyId.get(artist.spotifyId)
+        : undefined) ??
       lookup.byName.get(normalizeArtistName(artist.name)) ??
       null;
     if (entry === null) continue;

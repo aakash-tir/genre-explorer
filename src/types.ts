@@ -118,9 +118,11 @@ export type GenreDetail = z.infer<typeof GenreDetail>;
  * `docs/research/listening-history-personalization.md` §5).
  */
 export const ArtistIndexEntry = z.object({
+  /** MusicBrainz artist id — every entry has one; the ListenBrainz-path match key. */
+  mbid: z.uuid(),
   /**
    * Spotify artist id, extracted from the artist's `spotify` link when present
-   * (~68% of dataset artists). The exact-match key for the personal lens.
+   * (~68% of dataset artists). The Spotify-path exact-match key.
    */
   spotifyId: z.string().min(1).optional(),
   /** Normalized display name (see `normalizeArtistName`) — the fallback match key. */

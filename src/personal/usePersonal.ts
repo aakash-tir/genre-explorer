@@ -1,16 +1,18 @@
 /**
- * The personal lens's stateful spine: connect → OAuth round-trip → top artists →
- * weights + suggestions, persisted in localStorage.
+ * The personal lens's stateful spine: connect (ListenBrainz username or Spotify
+ * OAuth) → top artists → weights + suggestions, persisted in localStorage.
  *
- * The pure work all lives elsewhere (match.ts, suggest.ts, spotifyAuth.ts) per
- * the testing convention; this hook only sequences it. The OAuth callback params
- * are captured at module load, BEFORE React mounts — App rewrites the URL from
- * app state on its first effect, which would otherwise eat `?code=` in a race.
+ * The pure work all lives elsewhere (match.ts, suggest.ts, spotifyAuth.ts,
+ * listenbrainz.ts) per the testing convention; this hook only sequences it.
+ * The OAuth callback params are captured at module load, BEFORE React mounts —
+ * App rewrites the URL from app state on its first effect, which would
+ * otherwise eat `?code=` in a race.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type { ArtistIndex, GraphDataset } from '../types';
 import { loadArtistIndex } from '../lib/dataset';
+import { fetchListenBrainzTopArtists } from './listenbrainz';
 import { matchGenres, type GenreWeight } from './match';
 import { suggestGenres, type Suggestion } from './suggest';
 import {
@@ -24,15 +26,17 @@ import {
   refreshTokens,
   type TokenSet,
 } from './spotifyAuth';
-import { fetchTopArtists, type TopArtist } from './spotifyClient';
+import { fetchTopArtists } from './spotifyClient';
 import {
   clearPersonalState,
-  initialPersonalState,
+  initialListenBrainzState,
+  initialSpotifyState,
   loadPersonalState,
   savePendingAuth,
   savePersonalState,
   takePendingAuth,
   type PersonalState,
+  type SpotifyPersonalState,
 } from './storage';
 
 /** Captured before React renders anything — see the module doc. */
@@ -48,14 +52,20 @@ export type PersonalStatus = 'idle' | 'authorizing' | 'loading' | 'ready' | 'err
 export interface Personal {
   status: PersonalStatus;
   error: string | null;
-  /** True once tokens exist, even while a fetch is in flight. */
+  /** True once a source is wired up, even while a fetch is in flight. */
   connected: boolean;
+  source: PersonalState['source'] | null;
+  /** ListenBrainz username, when that is the source. */
+  username: string | null;
   clientId: string;
   weights: GenreWeight[];
   suggestions: Suggestion[];
   lensOn: boolean;
   fetchedAt: string | null;
-  connect: (clientId: string) => Promise<void>;
+  /** Public path: fetch a ListenBrainz user's top artists. */
+  connectListenBrainz: (username: string) => Promise<void>;
+  /** Personal mode: begin the Spotify OAuth redirect (≤5 allowlisted users). */
+  connectSpotify: (clientId: string) => Promise<void>;
   refresh: () => void;
   disconnect: () => void;
   setLensOn: (on: boolean) => void;
@@ -93,8 +103,8 @@ export function usePersonal(dataset: GraphDataset | null): Personal {
     [],
   );
 
-  const loadProfile = useCallback(
-    async (tokens: TokenSet, base: PersonalState) => {
+  const loadSpotifyProfile = useCallback(
+    async (tokens: TokenSet, base: SpotifyPersonalState) => {
       setStatus('loading');
       setError(null);
       try {
@@ -125,6 +135,26 @@ export function usePersonal(dataset: GraphDataset | null): Personal {
     [persist],
   );
 
+  const loadListenBrainzProfile = useCallback(
+    async (username: string) => {
+      setStatus('loading');
+      setError(null);
+      try {
+        const topArtists = await fetchListenBrainzTopArtists(username);
+        persist({
+          ...initialListenBrainzState(username),
+          topArtists,
+          fetchedAt: new Date().toISOString(),
+        });
+        setStatus('ready');
+      } catch (cause) {
+        setError(describeError(cause));
+        setStatus('error');
+      }
+    },
+    [persist],
+  );
+
   // Complete the OAuth round-trip if this page load IS the redirect back. All
   // state updates happen inside the async continuation, never synchronously.
   useEffect(() => {
@@ -142,7 +172,11 @@ export function usePersonal(dataset: GraphDataset | null): Personal {
         setStatus('error');
         return;
       }
-      const base = loadPersonalState() ?? initialPersonalState(pending.clientId);
+      const stored = loadPersonalState();
+      const base: SpotifyPersonalState =
+        stored?.source === 'spotify'
+          ? { ...stored, clientId: pending.clientId }
+          : initialSpotifyState(pending.clientId);
       try {
         setStatus('authorizing');
         const tokens = await exchangeCode({
@@ -151,13 +185,13 @@ export function usePersonal(dataset: GraphDataset | null): Personal {
           redirectUri: redirectUri(),
           codeVerifier: pending.codeVerifier,
         });
-        await loadProfile(tokens, { ...base, clientId: pending.clientId, tokens });
+        await loadSpotifyProfile(tokens, { ...base, tokens });
       } catch (cause) {
         setError(describeError(cause));
         setStatus('error');
       }
     })();
-  }, [loadProfile, redirectUri]);
+  }, [loadSpotifyProfile, redirectUri]);
 
   // The reverse index loads lazily, once, and only when there is a profile to match.
   useEffect(() => {
@@ -178,14 +212,27 @@ export function usePersonal(dataset: GraphDataset | null): Personal {
     };
   }, [state, index]);
 
-  const connect = useCallback(
+  const connectListenBrainz = useCallback(
+    async (username: string) => {
+      const trimmed = username.trim();
+      if (trimmed === '') return;
+      await loadListenBrainzProfile(trimmed);
+    },
+    [loadListenBrainzProfile],
+  );
+
+  const connectSpotify = useCallback(
     async (clientId: string) => {
       const trimmed = clientId.trim();
       if (trimmed === '') return;
       const codeVerifier = generateCodeVerifier();
       const nonce = generateCodeVerifier();
       savePendingAuth({ clientId: trimmed, codeVerifier, state: nonce });
-      persist({ ...(state ?? initialPersonalState(trimmed)), clientId: trimmed });
+      const base =
+        state?.source === 'spotify'
+          ? { ...state, clientId: trimmed }
+          : initialSpotifyState(trimmed);
+      persist(base);
       window.location.assign(
         buildAuthorizeUrl({
           clientId: trimmed,
@@ -199,8 +246,12 @@ export function usePersonal(dataset: GraphDataset | null): Personal {
   );
 
   const refresh = useCallback(() => {
-    if (state?.tokens) void loadProfile(state.tokens, state);
-  }, [state, loadProfile]);
+    if (state?.source === 'spotify' && state.tokens) {
+      void loadSpotifyProfile(state.tokens, state);
+    } else if (state?.source === 'listenbrainz') {
+      void loadListenBrainzProfile(state.username);
+    }
+  }, [state, loadSpotifyProfile, loadListenBrainzProfile]);
 
   const disconnect = useCallback(() => {
     persist(null);
@@ -234,17 +285,24 @@ export function usePersonal(dataset: GraphDataset | null): Personal {
     status: effectiveStatus,
     error,
     connected:
-      state?.tokens != null || (state?.topArtists != null && state.topArtists.length > 0),
-    clientId: state?.clientId ?? BUILT_IN_CLIENT_ID ?? '',
+      (state?.source === 'spotify' && state.tokens != null) ||
+      (state?.topArtists != null && state.topArtists.length > 0),
+    source: state?.source ?? null,
+    username: state?.source === 'listenbrainz' ? state.username : null,
+    clientId:
+      (state?.source === 'spotify' ? state.clientId : undefined) ??
+      BUILT_IN_CLIENT_ID ??
+      '',
     weights,
     suggestions,
     lensOn: state?.lensOn ?? false,
     fetchedAt: state?.fetchedAt ?? null,
-    connect,
+    connectListenBrainz,
+    connectSpotify,
     refresh,
     disconnect,
     setLensOn,
   };
 }
 
-export type { GenreWeight, Suggestion, TopArtist };
+export type { GenreWeight, Suggestion };
