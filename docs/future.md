@@ -22,6 +22,15 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
 
 ## Known gaps
 
+- 2026-08-12 — Song rows link to Spotify by SEARCH, not to the track's own page,
+  because no free route to an exact per-song Spotify URL exists. Probed live:
+  MusicBrainz `recording?inc=url-rels` returned zero URL relations for four real
+  dataset tracks (artist-level coverage is ~68%; recording-level is ~0), and
+  Odesli/song.link resolves a Deezer track to Amazon/Tidal/Napster/Anghami/
+  Boomplay/Yandex but omits Spotify from its unauthenticated tier — confirmed
+  against a global #1 single. An exact link needs Spotify's authenticated API,
+  i.e. a client secret in the pipeline, which the no-keys rule forbids. Revisit
+  only if that rule changes. Deezer links ARE exact (stage 6 already has the id).
 - 2026-08-07 — 28% of ranked tracks have no Deezer match, so no preview (play
   button absent, links remain). Mostly deep cuts Deezer doesn't carry; acceptable.
 - 2026-08-07 — Deezer preview URLs expire in ~12 min (verified live), so previews
