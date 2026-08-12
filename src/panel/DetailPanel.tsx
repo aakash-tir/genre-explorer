@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 
 import type { Artist, GenreDetail, GenreNode, Track } from '../types';
 import { createDetailCache } from '../lib/dataset';
+import { trackLinks } from '../lib/trackLinks';
 
 // The wrapper resolves `fetch` at call time, not module-load time — tests stub the
 // global after this module is imported.
@@ -32,14 +33,25 @@ const LINK_LABELS: Record<string, string> = {
   bandcamp: 'Bandcamp',
   youtube: 'YouTube',
   discogs: 'Discogs',
+  deezer: 'Deezer',
 };
 
-function Links({ links }: { links: readonly { kind: string; url: string }[] }) {
+function Links({
+  links,
+}: {
+  links: readonly { kind: string; url: string; title?: string }[];
+}) {
   if (links.length === 0) return null;
   return (
     <span className="links">
       {links.map((link) => (
-        <a key={link.kind} href={link.url} target="_blank" rel="noopener noreferrer">
+        <a
+          key={link.kind}
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          {...(link.title === undefined ? {} : { title: link.title })}
+        >
           {LINK_LABELS[link.kind] ?? link.kind}
         </a>
       ))}
@@ -92,7 +104,7 @@ function TrackList({
             <span className="entity-sub">
               {track.artistName} · {formatListens(track.listens)} listens
             </span>
-            <Links links={track.links} />
+            <Links links={trackLinks(track)} />
             {playingId === track.deezerId && track.deezerId !== undefined && (
               <iframe
                 title={`Deezer preview: ${track.title}`}

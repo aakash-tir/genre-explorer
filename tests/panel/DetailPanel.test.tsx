@@ -89,11 +89,45 @@ describe('DetailPanel', () => {
     // Pearl Jam appears twice by design: as the track's artist line and as an artist.
     expect(screen.getAllByText('Pearl Jam', { exact: false }).length).toBeGreaterThan(1);
     expect(screen.getByText('Deep Cut Band')).toBeInTheDocument();
-    const spotify = screen.getByRole('link', { name: 'Spotify' });
-    expect(spotify).toHaveAttribute('href', 'https://open.spotify.com/artist/1w5K');
-    expect(spotify).toHaveAttribute('target', '_blank');
+    // Two Spotify links now: the artist's real one from the dataset, and the
+    // track's derived search link (tracks never carry links — see trackLinks.ts).
+    const spotify = screen.getAllByRole('link', { name: 'Spotify' });
+    const hrefs = spotify.map((link) => link.getAttribute('href'));
+    expect(hrefs).toContain('https://open.spotify.com/artist/1w5K');
+    expect(hrefs).toContain('https://open.spotify.com/search/Pearl%20Jam%20Daughter');
+    spotify.forEach((link) => expect(link).toHaveAttribute('target', '_blank'));
     // Empty sections disappear rather than rendering empty headings.
     expect(screen.queryByText('Deeper cuts')).not.toBeInTheDocument();
+  });
+
+  it('links a track to its own Deezer page when a preview id exists', async () => {
+    vi.stubGlobal(
+      'fetch',
+      mockFetch(
+        detail('grunge-d', {
+          popularArtists: [],
+          smallArtists: [],
+          popularTracks: [
+            {
+              mbid: M(4),
+              title: 'Daughter',
+              artistName: 'Pearl Jam',
+              listens: 1200000,
+              links: [],
+              deezerId: 7173551,
+            },
+          ],
+        }),
+      ),
+    );
+    render(<DetailPanel node={node('grunge-d')} />);
+    await waitFor(() => {
+      expect(screen.getByTestId('panel-loaded')).toBeInTheDocument();
+    });
+    expect(screen.getByRole('link', { name: 'Deezer' })).toHaveAttribute(
+      'href',
+      'https://www.deezer.com/track/7173551',
+    );
   });
 
   it('says so when a genre has no ranked entities at all', async () => {

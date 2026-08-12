@@ -254,6 +254,13 @@ only puts pixels where told.
 Lazy-loads the focused genre's detail file through the session cache. Four lists with
 listen counts (formatted as magnitude signals — "1.2M", "90k") and outbound links. One
 preview plays at a time via Deezer's widget player, embedded on demand by track id.
+
+Artist links come from the dataset (MusicBrainz URL relationships). **Song links are
+derived at render time** by `src/lib/trackLinks.ts`, because `Track.links` ships empty:
+MusicBrainz records streaming URLs on artists but effectively never on recordings. Each
+song therefore gets a Spotify **search** deep link (no key, no fetch, every track
+covered, the song is normally the first hit) plus its exact Deezer page when stage 6
+resolved an id. Any real link the dataset later carries wins over the derived one.
 Explicit states: idle, loading, error, and loaded-but-thin (a real condition — a genre
 can clear the release-group threshold yet have no ranked listens).
 
