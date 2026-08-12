@@ -135,7 +135,7 @@ run offline. Deterministic: the same input produces the same map.
 validation plus the **sharp-drop guard**: the build fails if node or edge counts fall
 more than `MAX_SHRINK_RATIO = 0.2` against the committed dataset. This guard exists
 because the scariest failure is silent — a MusicBrainz HTML change that empties the
-scraper still emits a *valid* (nearly treeless) dataset; validation alone would pass it.
+scraper still emits a _valid_ (nearly treeless) dataset; validation alone would pass it.
 
 ---
 
@@ -155,7 +155,7 @@ One extra bit of ephemeral state, `fanOpen`, is deliberately **not** in the URL:
 selection is sticky (the panel and any playing preview stay on the selected genre), and
 clicking empty map space merely collapses the focus fan so the map is browsable
 mid-listen. Clicking the selected genre again toggles its fan; only clicking a
-*different* genre switches the selection.
+_different_ genre switches the selection.
 
 ### Loading (`src/lib/dataset.ts`)
 
@@ -235,7 +235,7 @@ is larger: clearance around the focused node, or the circumference the children 
 without overlapping. Unrelated nodes that happen to sit inside the ring are displaced
 just outside it while focus is held, for the same reason.
 
-`labels.ts` then decides which of the *earned* labels actually fit: greedy placement by
+`labels.ts` then decides which of the _earned_ labels actually fit: greedy placement by
 priority (popularity, focus boosted above all), dropping any label that would overlap a
 claimed rectangle. A dropped label reappears as soon as the camera gives it room.
 
@@ -246,7 +246,7 @@ subscribes to `d3-zoom` once, calls the pure modules above each frame, and draws
 Deliberately not a graph library: per-node radial gradients and zoom LOD are the
 signature visuals, and Sigma.js (WebGL/GLSL) or react-force-graph (re-simulates every
 load) would fight exactly those (see `docs/research/graph-rendering.md`). By
-convention, everything that decides *what* appears is pure and unit-tested; the canvas
+convention, everything that decides _what_ appears is pure and unit-tested; the canvas
 only puts pixels where told.
 
 ### Detail panel (`src/panel/DetailPanel.tsx`)
@@ -327,7 +327,7 @@ the pipeline, refreshed only via PR, never hand-edited.
 
 ## Testing
 
-The rule: **pure logic is unit-tested; rendering is not.** Anything deciding *what*
+The rule: **pure logic is unit-tested; rendering is not.** Anything deciding _what_
 appears on screen — `edges.ts`, `lod.ts`, `colors.ts`, `fan.ts`, `labels.ts`,
 `deepLink.ts`, `match.ts`, `suggest.ts`, `listenbrainz.ts`, the Zod schemas — is a pure
 function with tests. The canvas drawing code is verified by looking at it. The
