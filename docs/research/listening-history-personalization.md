@@ -101,6 +101,13 @@ Caveats, also observed live:
   returned `204 NO CONTENT` — a fresh account shows nothing until ListenBrainz's stats
   job runs (typically within a day). The UI must handle 204 as "come back tomorrow,"
   not as an error.
+- **The stats pipeline can lag by weeks, not a day.** Observed 2026-08-12: an account
+  with 74k listens (imported weeks earlier) returned 204 for _every_ range, while a
+  long-established account's stats carried `last_updated` of 2026-07-05 — the batch
+  job had not run in over five weeks. Mitigated in the app by falling back to the raw
+  listens feed (`/1/user/{name}/listens`, newest first, `max_ts` paging, CORS `*` like
+  the rest of the API) and counting artists client-side; mapped listens carry
+  `mbid_mapping.artists[].artist_mbid`, so matching stays exact.
 - `artist_mbid` is documented as optional; unmatched artists need a name fallback or
   get skipped.
 - The user's UX is "make a free ListenBrainz account and link Spotify there" — one-time
