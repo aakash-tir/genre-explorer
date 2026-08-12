@@ -1,228 +1,197 @@
-# Graph Report - genre-explorer  (2026-08-12)
+# Graph Report - C:\Users\aakas\personal-projects\currently-working\genre-explorer  (2026-08-12)
 
 ## Corpus Check
-- 1012 files · ~106,797 words
+- 1018 files · ~103,908 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 678 nodes · 1141 edges · 41 communities (37 shown, 4 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 4 edges (avg confidence: 0.8)
-- Token cost: 0 input · 0 output
-
-## Graph Freshness
-- Built from commit: `cd133bff`
-- Run `git rev-parse HEAD` and compare to check if the graph is stale.
-- Run `graphify update .` after code changes (no API cost).
+- 603 nodes · 1205 edges · 42 communities (27 shown, 15 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 27 edges (avg confidence: 0.88)
+- Token cost: 260,206 input · 9,800 output
 
 ## Community Hubs (Navigation)
-- devDependencies
-- lod.ts
-- compilerOptions
-- scripts
-- App.tsx
-- Research — Where the genre, song and artist data comes from
-- generate_diagram.py
-- Design System
-- Genre Explorer — Project Context
-- Genre Explorer — Plan
-- Research — How to render and lay out the graph
-- Genre Explorer
-- Runbook — CI and branch protection
-- colors.ts
-- 2026-08-04
-- Future
-- Research — Hosting the site
-- pull_request_template.md
-- .prettierrc.json
-- protect-main.sh
-- index.ts
-- progress.md
-- 2026-08-06
-- 2026-08-07
-- layout.ts
-- App.tsx
-- App.tsx
-- Hosting
-- vite-env.d.ts
-- 2026-08-10
-- Research — A personal "your genres" subgraph from listening history
-- Runbook — Spotify personal mode (owner setup)
-- layout.ts
-- The runtime app (`src/`)
-- 2026-08-12
+- Build Pipeline Stages
+- Runtime Map Rendering
+- Personal Lens and Artist Index
+- Research and Design Decisions
+- App Shell and Dataset Loading
+- TypeScript Build Config
+- Detail and Filter Panels
+- Architecture Diagram Skill
+- Package Manifest and Scripts
+- Diagram Auto-Layout Generator
+- Dev and Test Dependencies
+- Project Conventions and CI
+- Tech Stack Choices
+- Project Context and Data Sources
+- Claude Instructions and Git Guardrails
+- Backlog, Progress and Refresh Job
+- Runtime Dependencies
+- README and Auth Model
+- Plan, Scope and Milestones
+- Dataset Data Model
+- Hosting and Deploy Workflow
+- Prettier Config
+- ESLint Core
+- ESLint JS Rules
+- React Hooks Lint
+- React Refresh Lint
+- Globals Package
+- jsdom Test Environment
+- User Event Testing
+- d3-force Types
+- d3-selection Types
+- d3-transition Types
+- Node Types
+- React DOM Types
+- TypeScript Compiler
+- Vite Bundler
+- React Frontend Rules (empty)
 
 ## God Nodes (most connected - your core abstractions)
-1. `usePersonal()` - 22 edges
-2. `GraphCanvas()` - 21 edges
-3. `compilerOptions` - 20 edges
-4. `cachedFetch()` - 17 edges
-5. `buildDataset()` - 15 edges
-6. `2026-08-07` - 15 edges
+1. `GraphCanvas()` - 21 edges
+2. `compilerOptions` - 20 edges
+3. `cachedFetch()` - 17 edges
+4. `Architecture Diagram Skill` - 17 edges
+5. `The Build Pipeline (scripts/build-dataset/)` - 16 edges
+6. `buildDataset()` - 15 edges
 7. `GenreNode` - 14 edges
-8. `scripts` - 13 edges
-9. `The runtime app (`src/`)` - 12 edges
-10. `App()` - 11 edges
+8. `Genre Explorer - Claude Project Instructions` - 14 edges
+9. `Genre Explorer Plan` - 14 edges
+10. `scripts` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `GraphCanvas()` --indirect_call--> `child()`  [INFERRED]
-  src/graph/GraphCanvas.tsx → tests/graph/fan.test.ts
-- `GraphCanvas()` --indirect_call--> `candidates()`  [INFERRED]
-  src/graph/GraphCanvas.tsx → tests/scripts/rank.test.ts
-- `structuralDescendants()` --indirect_call--> `child()`  [INFERRED]
-  src/graph/edges.ts → tests/graph/fan.test.ts
-- `BuiltGraph` --references--> `GenreEdge`  [EXTRACTED]
-  scripts/build-dataset/build-graph.ts → src/types.ts
-- `buildGraph()` --indirect_call--> `child()`  [INFERRED]
-  scripts/build-dataset/build-graph.ts → tests/graph/fan.test.ts
+- `Tech Stack (choices and rejections)` --references--> `zod`  [EXTRACTED]
+  plan.md → package.json
+- `Tech Stack (choices and rejections)` --references--> `react`  [EXTRACTED]
+  plan.md → package.json
+- `Tech Stack (choices and rejections)` --references--> `tsx`  [EXTRACTED]
+  plan.md → package.json
+- `Tech Stack (choices and rejections)` --references--> `vitest`  [EXTRACTED]
+  plan.md → package.json
+- `Camera Model` --references--> `d3-force`  [EXTRACTED]
+  .claude/project-context.md → package.json
 
 ## Import Cycles
 - None detected.
 
-## Communities (41 total, 4 thin omitted)
+## Hyperedges (group relationships)
+- **Eight-Stage Dataset Build Pipeline** — scripts_build_dataset_fetch_genres, scripts_build_dataset_fetch_hierarchy, scripts_build_dataset_fetch_popularity, scripts_build_dataset_fetch_entities, scripts_build_dataset_rank, scripts_build_dataset_fetch_previews, scripts_build_dataset_layout, scripts_build_dataset_emit [EXTRACTED 1.00]
+- **Free, Unauthenticated Upstream Data Sources** — musicbrainz, listenbrainz, deezer [EXTRACTED 1.00]
+- **Pure Tested Visibility Rules Feeding GraphCanvas** — src_graph_edges, src_graph_lod, src_graph_colors, src_graph_fan, src_graph_labels, src_graph_graphcanvas [EXTRACTED 1.00]
+- **Chosen Build-time Data Pipeline (MusicBrainz + ListenBrainz + Deezer)** — docs_research_music_data_sources_musicbrainz_backbone, docs_research_music_data_sources_genre_html_scrape, docs_research_music_data_sources_listenbrainz_popularity, docs_research_music_data_sources_deezer_previews, docs_research_music_data_sources_genre_threshold_filter [EXTRACTED 1.00]
+- **Graph Rendering Decision (Canvas 2D chosen over library candidates)** — docs_research_graph_rendering_canvas_2d_d3_zoom, docs_research_graph_rendering_sigma_js, docs_research_graph_rendering_react_force_graph, docs_research_graph_rendering_cytoscape_js, docs_research_graph_rendering_offline_d3_force_layout [EXTRACTED 1.00]
+- **Personal 'Your Genres' Lens (intake, index, scoring, persistence)** — docs_research_listening_history_personalization_listenbrainz_bridge, docs_research_listening_history_personalization_spotify_export_upload, docs_research_listening_history_personalization_artist_genre_reverse_index, docs_research_listening_history_personalization_branch_out_adjacency, docs_research_listening_history_personalization_localstorage_persistence, docs_research_listening_history_personalization_runtime_network_exception [EXTRACTED 1.00]
 
-### Community 0 - "devDependencies"
-Cohesion: 0.04
-Nodes (49): eslint, @eslint/js, eslint-plugin-react-hooks, eslint-plugin-react-refresh, globals, jsdom, devDependencies, eslint (+41 more)
+## Communities (42 total, 15 thin omitted)
 
-### Community 1 - "lod.ts"
-Cohesion: 0.07
-Nodes (47): GenreWeight, PersonalPanel(), PersonalPanelProps, AuthorizeParams, base64Url(), buildAuthorizeUrl(), CallbackResult, codeChallenge() (+39 more)
+### Community 0 - "Build Pipeline Stages"
+Cohesion: 0.06
+Nodes (67): Sharp-Drop Guard, The Build Pipeline (scripts/build-dataset/), refresh job - rebuild and open PR, buildGraph(), BuiltGraph, slugify(), UnplacedNode, emitDetail() (+59 more)
 
-### Community 2 - "compilerOptions"
+### Community 1 - "Runtime Map Rendering"
+Cohesion: 0.06
+Nodes (62): Rule 1: Edges - only subgenre-of drawn, Rule 2: Level of Detail, Rule 3: Colour - family hue, depth gradient, The Three Rules That Define the Interaction, Camera (src/graph/camera.ts), Colour (src/graph/colors.ts), Detail Panel (DetailPanel.tsx), Focus Fan and Labels (fan.ts, labels.ts) (+54 more)
+
+### Community 2 - "Personal Lens and Artist Index"
+Cohesion: 0.06
+Nodes (45): The Personal Lens (src/personal/), ARTIST_INDEX_PATH, buildArtistIndex(), DATA_DIR, emitArtistIndex(), normalizeArtistName(), spotifyArtistIdFromUrl(), ArtistTally (+37 more)
+
+### Community 3 - "Research and Design Decisions"
+Cohesion: 0.06
+Nodes (59): Research: Graph Rendering and Layout, Canvas 2D + d3-zoom Rendering (chosen), Cytoscape.js (rejected), Fusion Edge Rule (structural drawn, associative hidden), Zoom Level of Detail (lod.ts rules), Offline d3-force Layout (build-time baked coordinates), Force Constellation with Radial Focus Mode, react-force-graph (rejected) (+51 more)
+
+### Community 4 - "App Shell and Dataset Loading"
+Cohesion: 0.12
+Nodes (26): Shell and State (App.tsx, deepLink.ts), Deploy build job (vite build --base=/genre-explorer/), App HTML Entry (index.html), App(), GraphCanvasProps, PersonalLens, createDetailCache(), DatasetError (+18 more)
+
+### Community 5 - "TypeScript Build Config"
 Cohesion: 0.06
 Nodes (31): DOM, DOM.Iterable, ES2023, node, scripts, src, tests, vite.config.ts (+23 more)
 
-### Community 3 - "scripts"
-Cohesion: 0.06
-Nodes (34): d3-force, d3-selection, d3-transition, d3-zoom, dependencies, d3-force, d3-selection, d3-transition (+26 more)
+### Community 6 - "Detail and Filter Panels"
+Cohesion: 0.11
+Nodes (21): Filter Panel (FilterPanel.tsx), FilterPanel(), FilterPanelProps, searchGenres(), ArtistList(), cache, DetailPanel(), formatListens() (+13 more)
 
-### Community 4 - "App.tsx"
-Cohesion: 0.29
-Nodes (6): 2026-08-08, Hover polish: nodes swell slightly under the cursor, Post-merge chores for PR #18, Post-merge chores for PR #20, Sticky selection: the panel and preview survive map browsing, Went public, real branch protection, and the site is deploying to GitHub Pages
+### Community 7 - "Architecture Diagram Skill"
+Cohesion: 0.10
+Nodes (23): After Every PR Merge (required), Architecture Diagram HTML Template, Architecture Diagram Skill, Auto-layout Scaffold (local extension v1.2), Color Palette, Component Box Pattern, Design System, Export Toolbar (built-in) (+15 more)
 
-### Community 5 - "Research — Where the genre, song and artist data comes from"
-Cohesion: 0.08
-Nodes (24): 1. Spotify is no longer a viable data source (this is the finding that shapes the project), 2. Every Noise at Once is not a maintainable source either, 3. MusicBrainz has the genre hierarchy — and it matches the plan exactly, 4. Artists per genre, with real streaming links, 5. Popularity — the popular / obscure split, 6. Genre popularity for node size, 7. Deezer — audio previews, no key required, Conclusion (+16 more)
+### Community 8 - "Package Manifest and Scripts"
+Cohesion: 0.10
+Nodes (19): engines, node, name, private, scripts, build, build:artist-index, build:dataset (+11 more)
 
-### Community 6 - "generate_diagram.py"
+### Community 9 - "Diagram Auto-Layout Generator"
 Cohesion: 0.18
 Nodes (14): assign_columns(), endpoint(), esc(), group_chain(), layout(), main(), Node, (cx, cy, left, right, top, bottom, column) for a node OR group id. (+6 more)
 
-### Community 7 - "Design System"
-Cohesion: 0.12
-Nodes (15): Architecture Diagram Skill, Auto-layout scaffold (local extension v1.2), Color Palette, Component Box Pattern, Design System, Export Toolbar (built-in), Info Card Pattern, Layout Structure (+7 more)
+### Community 10 - "Dev and Test Dependencies"
+Cohesion: 0.15
+Nodes (15): devDependencies, prettier, @testing-library/dom, @testing-library/jest-dom, @testing-library/react, @types/d3-zoom, @types/react, typescript-eslint (+7 more)
 
-### Community 8 - "Genre Explorer — Project Context"
-Cohesion: 0.14
-Nodes (13): 1. Edges — `src/graph/edges.ts`, 2. Level of detail — `src/graph/lod.ts`, 3. Colour — `src/graph/colors.ts`, Auth model, Camera model, Data model, Genre Explorer — Project Context, Known gaps (+5 more)
+### Community 11 - "Project Conventions and CI"
+Cohesion: 0.19
+Nodes (13): Conventions, Pure Logic Is Tested; Rendering Is Not, Committed Dataset Artifact, Personal Lens - Scoped Runtime Network Exception, The Shape of the System, How Genre Explorer Works, Automation (.github/workflows/), Status - v1 complete and live (+5 more)
 
-### Community 9 - "Genre Explorer — Plan"
-Cohesion: 0.14
-Nodes (13): Architecture, Edge rules, External dependencies, Genre Explorer — Plan, Known upstream breakage, Level of detail, Milestones, Open questions (+5 more)
+### Community 12 - "Tech Stack Choices"
+Cohesion: 0.17
+Nodes (13): Camera Model, d3-force, d3-zoom, Every Noise at Once, d3-force, d3-zoom, tsx, vitest (+5 more)
 
-### Community 10 - "Research — How to render and lay out the graph"
-Cohesion: 0.18
-Nodes (10): Candidates, Canvas 2D + d3-zoom + offline d3-force — **chosen**, Cytoscape.js — rejected, Layout: constellation with radial focus mode, Level of detail, react-force-graph — rejected, Research — How to render and lay out the graph, Sigma.js v3 + graphology — rejected (+2 more)
+### Community 13 - "Project Context and Data Sources"
+Cohesion: 0.27
+Nodes (12): Genre Explorer Project Context, Known Gaps, Pipeline Stages (1-8), Stage 2 Is the Fragile One (HTML scraping), Stage 3 Threshold Filter, Deezer, Upstream Watch, GitHub Actions (+4 more)
 
-### Community 11 - "Genre Explorer"
+### Community 14 - "Claude Instructions and Git Guardrails"
 Cohesion: 0.20
-Nodes (9): After every PR merge (required), Backlog (required), Change log (required), Conventions, Don't commit secrets, Genre Explorer, Git workflow (required), Tech stack (+1 more)
+Nodes (10): Root CLAUDE.md (pointer to .claude/CLAUDE.md), Genre Explorer - Claude Project Instructions, Change Log (required), Don't Commit Secrets, Genre Explorer (project overview), Git Workflow (required), Tech Stack, Where Things Belong (required) (+2 more)
 
-### Community 12 - "Runbook — CI and branch protection"
-Cohesion: 0.22
-Nodes (8): Applying it, Branch protection on `main`, ⚠️ Current state: server-side protection is NOT active, Day-to-day workflow, Runbook — CI and branch protection, The dataset refresh workflow, The gate, Verifying it took
+### Community 15 - "Backlog, Progress and Refresh Job"
+Cohesion: 0.24
+Nodes (10): Backlog (required), Progress, Progress - Milestone 7 Complete, v1 Live, Future (backlog), Decisions Still Open, Deferred from v1, Known Gaps (backlog), Refresh Dataset Workflow (refresh-data.yml) (+2 more)
 
-### Community 13 - "colors.ts"
-Cohesion: 0.14
-Nodes (24): CameraTransform, computeFit(), Fit, screenRadius(), worldToScreen(), assignFamilyHues(), edgeColor(), genreColor() (+16 more)
+### Community 16 - "Runtime Dependencies"
+Cohesion: 0.20
+Nodes (10): d3-selection, d3-transition, dependencies, d3-selection, d3-transition, react, react-dom, zod (+2 more)
 
-### Community 14 - "2026-08-04"
+### Community 17 - "README and Auth Model"
 Cohesion: 0.25
-Nodes (7): 2026-08-04, Built the skeleton and the tests that make it a gate, CI, and one deliberate omission, Decisions taken with the user, Expanded the plan from a sketch into a scaffolded project, Found the hard part: MusicBrainz hides the hierarchy from its own API, Research: Spotify turned out to be a dead end, and MusicBrainz turned out to be perfect
+Nodes (8): Auth Model - no accounts, no server, Genre Explorer README, Commands, Contributing, Genre Explorer (README overview), Notable Constraint: Spotify Is a Link Target, Not a Data Source, Quick Start, Spotify (outbound link target only)
 
-### Community 15 - "Future"
+### Community 18 - "Plan, Scope and Milestones"
 Cohesion: 0.29
-Nodes (6): Decisions still open, Deferred from v1, Future, Known gaps, Scaling, Upstream watch
+Nodes (7): Genre Explorer Plan, Known Upstream Breakage (ListenBrainz GET 500), Milestones (1-7), Open Questions, Scope (v1 / deferred / non-goals), The Hard Part - genre hierarchy extraction, What This Is
 
-### Community 16 - "Research — Hosting the site"
+### Community 19 - "Dataset Data Model"
 Cohesion: 0.33
-Nodes (5): Deployment, Options, Payload budget, Research — Hosting the site, What we need to host
+Nodes (6): Data Model (graph.json + genres/<id>.json), Scaling, artist-index.json - the personal lens's reverse index, genres/<id>.json - per-genre detail files, graph.json - everything needed to paint the map, The Dataset (public/data/)
 
-### Community 17 - "pull_request_template.md"
+### Community 20 - "Hosting and Deploy Workflow"
 Cohesion: 0.33
-Nodes (5): After merging — required artifacts, Before merging, How it was tested, What changed, Why
+Nodes (6): Cloudflare Pages (documented fallback host), The Big Picture, GitHub Pages, Deploy Site Workflow (deploy-pages.yml), Deploy job (actions/deploy-pages), SPA Fallback via 404.html
 
-### Community 18 - ".prettierrc.json"
+### Community 21 - "Prettier Config"
 Cohesion: 0.40
 Nodes (4): printWidth, semi, singleQuote, trailingComma
 
-### Community 20 - "index.ts"
-Cohesion: 0.10
-Nodes (40): emitDetail(), emitGraph(), ArtistSearch, CandidateArtist, CandidateRecording, escapeLucene(), fetchEntities(), GenreCandidates (+32 more)
-
-### Community 29 - "2026-08-07"
-Cohesion: 0.12
-Nodes (15): 2026-08-07, Fix: PR #4 merged red — prettier failure masked by a piped exit code, Milestone 3: the map renders, Milestone 4: focus and the panel — the core loop works end to end, Milestone 5: find your way around — the filter panel, Milestone 6: previews, mobile, and the colour fix, Milestone 7: the weekly refresh workflow — v1 code-complete, Post-merge chores for PR #10 (+7 more)
-
-### Community 30 - "layout.ts"
-Cohesion: 0.09
-Nodes (25): ARTIST_INDEX_PATH, buildArtistIndex(), DATA_DIR, emitArtistIndex(), normalizeArtistName(), spotifyArtistIdFromUrl(), ArtistTally, creditsOf() (+17 more)
-
-### Community 31 - "App.tsx"
-Cohesion: 0.10
-Nodes (34): App(), ASSOCIATIVE_KINDS, DRAWN_KINDS, drawnEdges(), focusChildren(), isAssociative(), isDrawn(), structuralDescendants() (+26 more)
-
-### Community 32 - "App.tsx"
-Cohesion: 0.09
-Nodes (31): FilterPanel(), FilterPanelProps, searchGenres(), createDetailCache(), DatasetError, fetchJson(), genreDetailUrl(), loadArtistIndex() (+23 more)
-
-### Community 33 - "Hosting"
-Cohesion: 0.40
-Nodes (4): Fallback: Cloudflare Pages (unlimited static bandwidth), Hosting, How the GitHub Pages deploy works, Limits worth knowing
-
-### Community 35 - "2026-08-10"
-Cohesion: 0.20
-Nodes (9): 2026-08-10, Docs cleanup: status docs caught up with the GitHub Pages ship, Personal lens goes public: ListenBrainz username intake, Personal lens: Spotify personal mode (≤5 users), your genres + branch-out, Post-merge chores for PR #24, Post-merge chores for PR #26, Post-merge chores for PR #28, Post-merge chores for PR #30 (+1 more)
-
-### Community 36 - "Research — A personal "your genres" subgraph from listening history"
-Cohesion: 0.17
-Nodes (11): 1. What the feature decomposes into, 2. Spotify OAuth — technically alive, practically closed, 3. ListenBrainz — the recommended bridge (verified), 4. Spotify data export — the zero-network fallback, 5. The missing artifact: an artist → genre reverse index, 6. "Genres to branch out into" needs no external API at all, 7. No accounts, no backend, 8. What this changes architecturally (+3 more)
-
-### Community 37 - "Runbook — Spotify personal mode (owner setup)"
-Cohesion: 0.29
-Nodes (6): 1. Create the Spotify app, 2. Allowlist the listeners (max 5), 3. Give the app the client id (either way works), 4. What connecting looks like, Runbook — Spotify personal mode (owner setup), Troubleshooting
-
-### Community 38 - "layout.ts"
-Cohesion: 0.11
-Nodes (25): buildGraph(), BuiltGraph, slugify(), UnplacedNode, GenreRef, dedupe(), fetchHierarchy(), MbidEdge (+17 more)
-
-### Community 39 - "The runtime app (`src/`)"
-Cohesion: 0.09
-Nodes (22): `artist-index.json` — the personal lens's reverse index, Automation (`.github/workflows/`), Camera (`src/graph/camera.ts`), Colour (`src/graph/colors.ts`), Detail panel (`src/panel/DetailPanel.tsx`), Filter panel (`src/filters/FilterPanel.tsx`), Focus fan and labels (`src/graph/fan.ts`, `labels.ts`), `genres/<id>.json` — what a genre sounds like (+14 more)
-
-### Community 40 - "2026-08-12"
-Cohesion: 0.50
-Nodes (3): 2026-08-12, docs: how-it-works.md — full system walkthrough, ListenBrainz fallback: count raw listens when the stats pipeline has nothing
-
 ## Knowledge Gaps
-- **288 isolated node(s):** `singleQuote`, `semi`, `printWidth`, `trailingComma`, `name` (+283 more)
+- **145 isolated node(s):** `singleQuote`, `semi`, `printWidth`, `trailingComma`, `name` (+140 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `devDependencies` connect `devDependencies` to `scripts`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **Why does `GraphDataset` connect `App.tsx` to `lod.ts`, `index.ts`, `colors.ts`, `App.tsx`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **Why does `GraphCanvas()` connect `colors.ts` to `index.ts`, `layout.ts`, `App.tsx`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
+- **Why does `Genre Explorer Plan` connect `Plan, Scope and Milestones` to `Runtime Map Rendering`, `Project Conventions and CI`, `Tech Stack Choices`, `Project Context and Data Sources`, `Claude Instructions and Git Guardrails`, `README and Auth Model`?**
+  _High betweenness centrality (0.166) - this node is a cross-community bridge._
+- **Why does `Tech Stack (choices and rejections)` connect `Tech Stack Choices` to `Runtime Dependencies`, `README and Auth Model`, `Plan, Scope and Milestones`?**
+  _High betweenness centrality (0.150) - this node is a cross-community bridge._
+- **Why does `Genre Explorer - Claude Project Instructions` connect `Claude Instructions and Git Guardrails` to `Architecture Diagram Skill`, `Project Conventions and CI`, `Project Context and Data Sources`, `Backlog, Progress and Refresh Job`, `README and Auth Model`, `Plan, Scope and Milestones`?**
+  _High betweenness centrality (0.144) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `GraphCanvas()` (e.g. with `child()` and `candidates()`) actually correct?**
   _`GraphCanvas()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `singleQuote`, `semi`, `printWidth` to the rest of the system?**
-  _288 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `devDependencies` be split into smaller, more focused modules?**
-  _Cohesion score 0.04081632653061224 - nodes in this community are weakly interconnected._
-- **Should `lod.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.07199032062915911 - nodes in this community are weakly interconnected._
+  _145 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Build Pipeline Stages` be split into smaller, more focused modules?**
+  _Cohesion score 0.05892634207240949 - nodes in this community are weakly interconnected._
+- **Should `Runtime Map Rendering` be split into smaller, more focused modules?**
+  _Cohesion score 0.06264199935086011 - nodes in this community are weakly interconnected._
