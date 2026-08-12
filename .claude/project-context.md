@@ -21,9 +21,9 @@ per-visitor API calls impossible, and it means the site cannot break because an
 upstream service is down.
 
 The exception is the personal lens (`src/personal/`): user-initiated calls to
-`api.listenbrainz.org` (public path — open, CORS `*`) and to Spotify (owner mode).
-It degrades to "feature unavailable"; the map never depends on it. Any other `fetch`
-to an external host inside `src/` means the design has gone wrong.
+`api.listenbrainz.org` (public path — open, CORS `*`). It degrades to "feature
+unavailable"; the map never depends on it. Any other `fetch` to an external host
+inside `src/` means the design has gone wrong.
 
 ---
 
@@ -147,14 +147,12 @@ There are no accounts and no server, and that is intentional.
   Deezer) is open and unauthenticated.
 - The only credential in the project is the `GITHUB_TOKEN` that GitHub Actions provides
   to the refresh workflow so it can open a PR. Nothing needs to be stored as a secret.
-- **Spotify appears exactly once**: the personal lens (`src/personal/`) runs OAuth
-  PKCE entirely client-side against the owner's **dev-mode** Spotify app — max 5
-  allowlisted users, scope `user-top-read` only, tokens in `localStorage`. The
-  client id is public by design (PKCE has no secret; it may be baked in via the
-  `SPOTIFY_CLIENT_ID` repo _variable_). This is personal mode, not a login: at
-  2026 API policy there is no public-scale path
-  (`docs/research/listening-history-personalization.md`). Everywhere else Spotify
-  is outbound links only.
+- **Spotify is outbound links only.** The app never calls Spotify's API. (A
+  client-side OAuth "owner mode" existed briefly — removed 2026-08-12, the
+  Spotify app was never registered; at 2026 API policy there was no
+  public-scale path anyway, see
+  `docs/research/listening-history-personalization.md`. The personal lens's
+  sole intake is a ListenBrainz username.)
 
 If a future feature needs a real secret, it goes in GitHub Actions secrets and is used
 only at build time. A static site cannot hold a secret.

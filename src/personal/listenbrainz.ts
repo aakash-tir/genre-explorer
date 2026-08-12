@@ -6,7 +6,7 @@
  * `Access-Control-Allow-Origin: *` (verified live 2026-08-10, research doc §3).
  *
  * Responses carry `artist_mbid` — the dataset's own primary key — so matching
- * on this path is exact, better than the Spotify path's id/name matching.
+ * on this path is exact.
  *
  * Stats are computed by a batch pipeline that can lag WEEKS behind the listen
  * store (observed 2026-08-12: accounts with 70k+ listens and every stats range

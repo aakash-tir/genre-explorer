@@ -281,21 +281,6 @@ body {
   color: #8ab4ff;
 }
 
-.personal-owner-mode {
-  margin-top: 1rem;
-  font-size: 0.8rem;
-}
-
-.personal-owner-mode summary {
-  color: var(--ink-dim);
-  cursor: pointer;
-  font-size: 0.75rem;
-}
-
-.personal-owner-mode[open] summary {
-  margin-bottom: 0.5rem;
-}
-
 .personal-source {
   color: var(--ink-dim);
   font-size: 0.75rem;
