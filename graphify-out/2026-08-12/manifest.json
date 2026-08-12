@@ -340,8 +340,8 @@
     "semantic_hash": ""
   },
   "docs/architecture/architecture-diagram.html": {
-    "mtime": 1786413090.4118907,
-    "ast_hash": "7ef6ae1168d42f57753da5781b3f6c13",
+    "mtime": 1786397413.368511,
+    "ast_hash": "b9f51ff94ac93b90167bb97c4d9b3e15",
     "semantic_hash": ""
   },
   "logs/2026-08-07.md": {
@@ -5000,13 +5000,13 @@
     "semantic_hash": ""
   },
   "logs/2026-08-10.md": {
-    "mtime": 1786413090.4316607,
-    "ast_hash": "61f91458170cf7570091066c395afaba",
+    "mtime": 1786412893.8591163,
+    "ast_hash": "efde66069d58fe495671a426f6595a63",
     "semantic_hash": ""
   },
   "docs/research/listening-history-personalization.md": {
-    "mtime": 1786574016.5793066,
-    "ast_hash": "752586fa8baa2afcab9546fe627a1189",
+    "mtime": 1786394082.0231705,
+    "ast_hash": "755707e4a68346409f07e472a67b6a52",
     "semantic_hash": ""
   },
   "public/data/artist-index.json": {
@@ -5090,23 +5090,13 @@
     "semantic_hash": ""
   },
   "src/personal/listenbrainz.ts": {
-    "mtime": 1786574016.5813086,
-    "ast_hash": "167b6a2959a4d490da90497eb3d16c27",
+    "mtime": 1786412893.868633,
+    "ast_hash": "9647f5f5debee8bad3bd07fea3910a11",
     "semantic_hash": ""
   },
   "tests/personal/listenbrainz.test.ts": {
-    "mtime": 1786574016.5823104,
-    "ast_hash": "afb64c8d42d31ca49d28aff6c7b57716",
-    "semantic_hash": ""
-  },
-  "docs/how-it-works.md": {
-    "mtime": 1786574079.6215577,
-    "ast_hash": "dba745ac7a1158942a2b85c154b03e21",
-    "semantic_hash": ""
-  },
-  "logs/2026-08-12.md": {
-    "mtime": 1786574079.6225507,
-    "ast_hash": "1890b247c157afba336ef8ac0363ce83",
+    "mtime": 1786412893.873652,
+    "ast_hash": "e31225b4ce8cc7b7ccef12440f017638",
     "semantic_hash": ""
   }
 }
