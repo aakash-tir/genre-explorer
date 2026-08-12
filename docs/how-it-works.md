@@ -265,8 +265,8 @@ selected genres plus their structural descendants and hides everything else.
 ### The personal lens (`src/personal/`)
 
 The one scoped exception to "no runtime network calls" — user-initiated, degrades to
-"feature unavailable", and the map never depends on it. Two intake paths, both reducing
-to the same `ListenedArtist[]` shape (`{mbid?, spotifyId?, name, rank}`):
+"feature unavailable", and the map never depends on it. One intake path, reducing
+to the `ListenedArtist[]` shape (`{mbid?, spotifyId?, name, rank}`):
 
 - **ListenBrainz username (public path, `listenbrainz.ts`)** — no key, no OAuth; the
   stats API is public with CORS `*`. Fetches top artists for `range=year`, falling back
@@ -277,11 +277,10 @@ to the same `ListenedArtist[]` shape (`{mbid?, spotifyId?, name, rank}`):
   `mbid_mapping.artists[].artist_mbid` — the dataset's own primary key — so matching
   stays exact; an id is kept only when all of an artist's listens agree on it, so a
   name collision degrades to name matching instead of crediting the wrong artist.
-- **Spotify owner mode (`spotifyAuth.ts`, `spotifyClient.ts`)** — OAuth PKCE entirely
-  client-side against the owner's dev-mode Spotify app (max 5 allowlisted users, scope
-  `user-top-read` only, tokens in `localStorage`). The client id is public by design;
-  it may be baked in at deploy time via the `SPOTIFY_CLIENT_ID` repo variable. There is
-  no public-scale Spotify path at 2026 API policy — this is personal mode, not a login.
+
+(A second path — "Spotify owner mode", client-side OAuth PKCE against a dev-mode
+Spotify app — shipped in PR #28 and was removed 2026-08-12: the Spotify app was never
+registered, and at 2026 API policy it could never serve more than 5 allowlisted users.)
 
 **Matching (`match.ts`, pure)** — each listened artist is looked up in the reverse
 index by MBID (exact), then Spotify id (exact), then normalized name — but name-matching

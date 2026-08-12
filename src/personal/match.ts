@@ -1,13 +1,14 @@
 /**
  * Listening history → genre weights. Pure; the personal lens's first half.
  *
- * Every intake path (Spotify OAuth, ListenBrainz username, someday an export
- * upload) reduces to the same shape — a ranked list of {@link ListenedArtist} —
+ * Every intake path (ListenBrainz username today, someday an export upload)
+ * reduces to the same shape — a ranked list of {@link ListenedArtist} —
  * so this module is source-agnostic. Matching order per artist:
  *
- *   1. MusicBrainz id, exact — the ListenBrainz path; matches the dataset's own
- *      primary key, so it cannot false-match and covers every index entry.
- *   2. Spotify artist id, exact — the OAuth path; covers ~68% of the index.
+ *   1. MusicBrainz id, exact — matches the dataset's own primary key, so it
+ *      cannot false-match and covers every index entry.
+ *   2. Spotify artist id, exact — covers ~68% of the index; supplied when a
+ *      listen's metadata carries a Spotify origin URL.
  *   3. Normalized name (see `src/lib/artistNames.ts`) — but ONLY when the name
  *      is unique in the index. Two different artists sharing a name ("Bush")
  *      would otherwise credit the wrong genres, and a wrong highlight is worse
