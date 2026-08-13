@@ -4,80 +4,12 @@
 finish importing from Spotify, then intends to work through everything below in one
 pass. Nothing here has been acted on.
 
-Ordered by what actually costs something if left alone. Item 1 is a live bug and is
-likely to recur **this Sunday**; the rest are quality and verification work.
+Ordered by what actually costs something if left alone. All four are quality and
+verification work — nothing here is currently breaking.
 
 ---
 
-## 1. The weekly dataset refresh is broken, and its failure mode will recur
-
-**Status:** live bug. No automated data PR has ever been opened.
-
-### What happened
-
-The scheduled refresh ran for the first time on **2026-08-09 05:07 UTC** (run
-`31296016002`) and failed after **33 minutes**. It has not run since; the next scheduled
-attempt is Sunday 2026-08-16.
-
-It died at page **1400 of 2184** in the stage-2 hierarchy scrape:
-
-```
-Error: Page for nu disco (351424dd-91a3-4cf2-9edb-5df647743ec0) does not look like a
-genre page — MusicBrainz layout change or error page. Delete it from the cache and
-rerun; if it persists, the parser fixtures need re-saving.
-    at fetchHierarchy (scripts/build-dataset/fetch-hierarchy.ts:48)
-```
-
-### Why it is not what the backlog predicts
-
-`docs/future.md` warns that early runs may "time out once or twice before the cache
-fills." That is not this. A timeout would burn the full 350-minute budget; this failed in
-33 minutes with a thrown error.
-
-Nor is it the layout change the error suggests. The page was re-fetched on 2026-08-12 and
-is healthy — HTTP 200, title `nu disco - Genre information - MusicBrainz`, which is
-exactly what `looksLikeGenrePage()` tests for. **MusicBrainz served a transient error page
-mid-scrape**, `cachedFetch` wrote it to disk, and the guard correctly refused to parse it.
-
-### The real problem
-
-Every scheduled run re-scrapes all 2,184 genre pages (the prune step deletes
-`genre-pages/` on `schedule` events, by design — a refresh reusing last week's scrape
-refreshes nothing). One bad response anywhere in those 2,184 sequential requests aborts a
-~3-hour job. That is a weekly lottery, and it lost on the first ticket.
-
-Manual dispatch is worse. The prune step is `if: github.event_name == 'schedule'`, so a
-`workflow_dispatch` re-run **reuses the poisoned cache entry** and fails at the same page
-every time until someone deletes it by hand — which is awkward inside Actions, since the
-cache lives in the Actions cache rather than the working tree.
-
-### Proposed fix
-
-The pattern already exists one stage over. `fetch-previews.ts` handles exactly this class
-of bug for Deezer, whose rate limit arrives as an HTTP 200 with an error body:
-
-> Rate limiting is HTTP 200 with `{"error":{"code":4}}` — must not be cached, or the slot
-> is poisoned forever. Detected, cache entry deleted, retried.
-
-It unlinks the cache entry and retries with backoff (`QUOTA_RETRIES = 5`,
-`QUOTA_BACKOFF_MS = 6000`). Stage 2 lacks the equivalent: it caches first, validates
-second, and throws.
-
-Port that shape to `fetchHierarchy` — validate with `looksLikeGenrePage()` _before_
-trusting the cached body, and on failure delete the entry and retry a few times with
-backoff, only throwing if it persists. The existing error message already tells the
-operator to "delete it from the cache and rerun"; this just does it automatically.
-
-Worth deciding at the same time: should a handful of unparseable pages out of 2,184 fail
-the whole run at all, or be collected and reported while the run completes? The
-sharp-drop guard in stage 8 already catches the case that actually matters (the scrape
-silently emptying), so aborting on the first bad page may be stricter than it needs to be.
-
-**Effort:** small — one function, mirroring code that already exists.
-
----
-
-## 2. Touch and mobile have never been tested on a real device
+## 1. Touch and mobile have never been tested on a real device
 
 **Status:** shipped but unverified.
 
@@ -92,7 +24,7 @@ minutes on a phone either closes it or finds something real.
 
 ---
 
-## 3. Popular-artist lists skew to global megastars
+## 2. Popular-artist lists skew to global megastars
 
 **Status:** open product decision, already recorded — the one that changes what users see.
 
@@ -112,7 +44,7 @@ it.
 
 ---
 
-## 4. Non-Western coverage after the threshold filter was never reviewed
+## 3. Non-Western coverage after the threshold filter was never reviewed
 
 **Status:** the review the backlog asks for has not happened.
 
@@ -129,7 +61,7 @@ possibly a per-family floor.
 
 ---
 
-## 5. Straggler: stale Deezer wording in the research doc
+## 4. Straggler: stale Deezer wording in the research doc
 
 **Status:** trivial, and already flagged by the backlog itself.
 
