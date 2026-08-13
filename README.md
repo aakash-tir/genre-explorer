@@ -103,6 +103,7 @@ docs/how-it-works.md     end-to-end walkthrough of the whole system
 docs/architecture/       the architecture diagram
 docs/research/    why each decision beat the alternatives
 docs/runbooks/    operational procedures (hosting, CI, branch protection)
+docs/review/      findings parked for a review session, with their evidence
 docs/future.md    the backlog
 logs/             dated record of what changed and why
 ```

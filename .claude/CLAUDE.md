@@ -87,6 +87,11 @@ All future work — bugs, known gaps, feature ideas, scaling items — is record
 issue, add it there; when one is COMPLETE, remove it — `logs/` and the PR history are
 the record of finished work (no Done section).
 
+`docs/review/` is a staging area for items parked for a single review session: the
+full write-up with evidence lives there, and its `docs/future.md` bullet links to it.
+`docs/future.md` stays the backlog of record — never park something in `docs/review/`
+without leaving a bullet behind. See `docs/review/README.md`.
+
 ## Where things belong (required)
 
 - `.claude/` — everything Claude reads: `CLAUDE.md`, `project-context.md`,
