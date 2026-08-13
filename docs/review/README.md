@@ -16,5 +16,5 @@ survive as a "done" list.
 
 ## Open
 
-- [`2026-08-12-open-items.md`](2026-08-12-open-items.md) — five items, one of them a live
-  bug. Waiting on the owner's ListenBrainz account to finish importing from Spotify.
+- [`2026-08-12-open-items.md`](2026-08-12-open-items.md) — four items. Waiting on the
+  owner's ListenBrainz account to finish importing from Spotify.
