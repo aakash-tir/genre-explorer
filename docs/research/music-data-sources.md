@@ -180,6 +180,42 @@ Spotify API.** This is the single most important finding for the right-hand pane
 plan's "these can be linked to spotify/soundcloud pages" requirement is satisfied by an
 open CC0 database.
 
+### ⚠️ This holds for artists only — recordings have no links (verified 2026-08-12)
+
+The same `inc=url-rels` trick does **not** work one level down. Four ranked tracks from
+the committed dataset were probed live:
+
+```
+GET /ws/2/recording/{mbid}?inc=url-rels&fmt=json
+  e19fe9a1 Jump n' Shout — Basement Jaxx        → 0 relations
+  e4c68aac Was Right Been Wrong — F. Kalkbrenner → 0 relations
+  a38c386c Intro — Fritz Kalkbrenner             → 0 relations
+  f4a560b7 Shoes (Mr Oizo remix) — Tiga          → 0 relations
+```
+
+Artist-level coverage is ~68% of dataset artists; recording-level is ~0. A
+per-recording pass would add roughly 9,000 requests at 1 req/s to the pipeline and
+return almost nothing, so it is not worth building.
+
+**The Deezer→Spotify bridge does not close the gap either.** Odesli / song.link
+(`api.song.link/v1-alpha.1/links?url=<deezer track>`) is free and needs no key, and the
+pipeline already stores a Deezer track id for every previewable song — but its
+unauthenticated tier omits Spotify:
+
+```
+DEEZER_SONG::67238735  (Daft Punk — Get Lucky)
+→ amazonMusic, amazonStore, anghami, boomplay, napster, tidal, yandex, deezer
+→ spotify: ABSENT
+```
+
+Feeding Odesli a Spotify URL returns Spotify, so it only echoes the input rather than
+resolving to it. An exact per-song Spotify URL therefore requires the authenticated
+Spotify API — i.e. a client secret in the pipeline, which the no-keys rule forbids.
+
+**Consequence for the panel:** songs link to Spotify by search
+(`open.spotify.com/search/<artist> <title>` — no fetch, no key, every track covered) and
+to their exact Deezer page. See `src/lib/trackLinks.ts`.
+
 ---
 
 ## 5. Popularity — the popular / obscure split
