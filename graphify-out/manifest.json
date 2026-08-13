@@ -45,9 +45,9 @@
     "semantic_hash": "badd164414cc6d2370410dc2133f0636"
   },
   "scripts/build-dataset/config.ts": {
-    "mtime": 1786117302.5154858,
-    "ast_hash": "0d433f556814e17ea741385b3bf3e15b",
-    "semantic_hash": "0d433f556814e17ea741385b3bf3e15b"
+    "mtime": 1786582814.7105854,
+    "ast_hash": "6241592f940ebff941bf48db7697ba6d",
+    "semantic_hash": "6241592f940ebff941bf48db7697ba6d"
   },
   "scripts/build-dataset/index.ts": {
     "mtime": 1786397120.2144709,
@@ -155,9 +155,9 @@
     "semantic_hash": "1d31e6ed660f72c8ae61ea5b7fab342a"
   },
   ".claude/progress.md": {
-    "mtime": 1786392909.4180021,
-    "ast_hash": "620baf624c30e5c498ecc3b84a300aaa",
-    "semantic_hash": "620baf624c30e5c498ecc3b84a300aaa"
+    "mtime": 1786582814.700055,
+    "ast_hash": "dad73d4ad32384951a504431cc779ba8",
+    "semantic_hash": "dad73d4ad32384951a504431cc779ba8"
   },
   ".claude/project-context.md": {
     "mtime": 1786576916.7020826,
@@ -180,9 +180,9 @@
     "semantic_hash": "cbb9fc73ac176ae1707fda6dfcced082"
   },
   ".github/pull_request_template.md": {
-    "mtime": 1785901716.331581,
-    "ast_hash": "b3666b17a9c6ca14b7e900c100d94999",
-    "semantic_hash": "b3666b17a9c6ca14b7e900c100d94999"
+    "mtime": 1786582814.7020729,
+    "ast_hash": "e9f80857db60fed3251081e284b378d2",
+    "semantic_hash": "e9f80857db60fed3251081e284b378d2"
   },
   ".github/workflows/ci.yml": {
     "mtime": 1785901694.5878446,
@@ -200,9 +200,9 @@
     "semantic_hash": "5a4de0c01d74ded43d8f1f05a26574cb"
   },
   "README.md": {
-    "mtime": 1785901666.8595424,
-    "ast_hash": "7e1e0641e2130f55e8e252f08aace92e",
-    "semantic_hash": "7e1e0641e2130f55e8e252f08aace92e"
+    "mtime": 1786582814.7030735,
+    "ast_hash": "5ef8c2ac0311818b56635ed653267948",
+    "semantic_hash": "5ef8c2ac0311818b56635ed653267948"
   },
   "docs/future.md": {
     "mtime": 1786578757.1553662,
@@ -220,14 +220,14 @@
     "semantic_hash": "4b80558f27ae5a1cb2f99c60a7ed322c"
   },
   "docs/research/music-data-sources.md": {
-    "mtime": 1785901666.800817,
-    "ast_hash": "4f20744753bf4738916d6c4d6eb6e4eb",
-    "semantic_hash": "4f20744753bf4738916d6c4d6eb6e4eb"
+    "mtime": 1786582814.706172,
+    "ast_hash": "3236be77aa33e3da5acc51b917feacc2",
+    "semantic_hash": "3236be77aa33e3da5acc51b917feacc2"
   },
   "docs/runbooks/ci-and-branch-protection.md": {
-    "mtime": 1785902105.246904,
-    "ast_hash": "7e38bc5ccd3a6807e41df7364e462ea3",
-    "semantic_hash": "7e38bc5ccd3a6807e41df7364e462ea3"
+    "mtime": 1786582814.7071707,
+    "ast_hash": "d251ac1e42bc513100f5f7487bec125b",
+    "semantic_hash": "d251ac1e42bc513100f5f7487bec125b"
   },
   "index.html": {
     "mtime": 1785901284.4992232,
@@ -240,9 +240,9 @@
     "semantic_hash": "d1897b3b9a365f65551915f8f54c0a5b"
   },
   "plan.md": {
-    "mtime": 1785901666.8475218,
-    "ast_hash": "cc5c3822832e82b79463dff4787a633d",
-    "semantic_hash": "cc5c3822832e82b79463dff4787a633d"
+    "mtime": 1786582814.7091713,
+    "ast_hash": "02352c07cfd0e24a7eef3eee1ef068c0",
+    "semantic_hash": "02352c07cfd0e24a7eef3eee1ef068c0"
   },
   "scripts/build-dataset/build-graph.ts": {
     "mtime": 1786085868.9701436,
@@ -4905,9 +4905,9 @@
     "semantic_hash": "b7bdd0b3e23031e608fb51bfbeb77bd0"
   },
   "scripts/build-dataset/emit-details.ts": {
-    "mtime": 1786117302.5164855,
-    "ast_hash": "392406778ee9525bf2a8e4bceeaff890",
-    "semantic_hash": "392406778ee9525bf2a8e4bceeaff890"
+    "mtime": 1786582814.7115855,
+    "ast_hash": "12437a2dbd7c2755e73998e8489bfe2b",
+    "semantic_hash": "12437a2dbd7c2755e73998e8489bfe2b"
   },
   "scripts/build-dataset/fetch-entities.ts": {
     "mtime": 1786117302.5174866,
@@ -5005,9 +5005,9 @@
     "semantic_hash": "61f91458170cf7570091066c395afaba"
   },
   "docs/research/listening-history-personalization.md": {
-    "mtime": 1786574016.5793066,
-    "ast_hash": "752586fa8baa2afcab9546fe627a1189",
-    "semantic_hash": "752586fa8baa2afcab9546fe627a1189"
+    "mtime": 1786582814.7051725,
+    "ast_hash": "65528a402c79198e53d011828a3b618c",
+    "semantic_hash": "65528a402c79198e53d011828a3b618c"
   },
   "public/data/artist-index.json": {
     "mtime": 1786412893.8656254,
@@ -5085,9 +5085,9 @@
     "semantic_hash": "b18a426ed8dedad4bc6b63e1d513a32e"
   },
   "logs/2026-08-12.md": {
-    "mtime": 1786578757.1581504,
-    "ast_hash": "d4f59d12f0ec48b80a48e4505dfe0c2c",
-    "semantic_hash": "d4f59d12f0ec48b80a48e4505dfe0c2c"
+    "mtime": 1786582814.7081702,
+    "ast_hash": "a203474d9b7da7394530a03977848299",
+    "semantic_hash": "a203474d9b7da7394530a03977848299"
   },
   "src/lib/trackLinks.ts": {
     "mtime": 1786578757.1591606,
