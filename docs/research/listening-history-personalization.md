@@ -65,6 +65,14 @@ What kills it is access, not endpoints (all from `music-data-sources.md`, verifi
 and ≤4 friends. It cannot be the public story. Worth keeping in mind as a dev
 convenience; not worth building UI around.
 
+> **Status update, 2026-08-12 — built, then removed.** Owner mode was implemented anyway
+> in PR #28 (`spotifyAuth.ts` / `spotifyClient.ts`, PKCE client-side, scope
+> `user-top-read`) and deleted in PR #35. The owner never registered the Spotify app, so
+> no client id ever existed and the path was unreachable by anyone. **The ListenBrainz
+> intake in §3 is now the personal lens's only way in.** The §2 conclusion above turned
+> out to be right the first time: not worth building UI around. Treat "add Spotify
+> OAuth" as decided-against, not as an open option.
+
 ---
 
 ## 3. ListenBrainz — the recommended bridge (verified)

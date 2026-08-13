@@ -123,6 +123,14 @@ update the architecture diagram if the merge changed the architecture.
 ## The dataset refresh workflow
 
 `.github/workflows/refresh-data.yml` rebuilds `public/data/` and opens a PR. Its `cron`
-schedule is **commented out** until the pipeline exists (milestone 2) — a stub that fails
-every Sunday teaches everyone to ignore a red workflow. Uncomment it in the PR that lands
-the pipeline. Until then it can be run by hand with `workflow_dispatch`.
+schedule is **live**: `0 4 * * 0`, Sundays 04:00 UTC. It can also be run by hand with
+`workflow_dispatch`.
+
+It was deliberately left commented out until the pipeline existed — a stub that fails
+every Sunday teaches everyone to ignore a red workflow — and was enabled once the
+pipeline landed.
+
+A cold run exceeds the 6-hour job limit, so the Actions cache doubles as a cross-run
+resume: scheduled runs prune only the volatile cache (tree, counts, searches, rankings)
+and keep the stable id mappings (links, Deezer ids). Steady state is ~2.5–3 h. Expect a
+run after a long gap to time out once or twice and resume on the next attempt.

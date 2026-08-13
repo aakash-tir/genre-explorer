@@ -19,7 +19,9 @@
 - [ ] `npm run verify` passes locally (lint, format, typecheck, test, build)
 - [ ] New decision logic is a pure function with tests — not buried in the render loop
 - [ ] No external API call was added anywhere under `src/` (upstream work belongs in
-      `scripts/build-dataset/`)
+      `scripts/build-dataset/`). The ONE sanctioned exception is the personal lens
+      calling `api.listenbrainz.org`, user-initiated — extending it needs a decision,
+      not a checkbox
 - [ ] `docs/future.md` updated if anything was deferred or discovered
 - [ ] Today's `logs/YYYY-MM-DD.md` entry written (what · why · how)
 

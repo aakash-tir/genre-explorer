@@ -71,11 +71,27 @@ Strictly music. Nothing else.
 | Hosting                | **Cloudflare Pages**                                                    | Unlimited free bandwidth on static assets, and works with a private repo                                                                        | **GitHub Pages** — disqualified, private repos need a paid plan. **Netlify/Vercel** — 100 GB/month caps                                                                                                                                                                                                   |
 | CI                     | **GitHub Actions**                                                      | Native to the repo, gates PRs, and runs the weekly data refresh on schedule                                                                     | —                                                                                                                                                                                                                                                                                                         |
 
+**Amendments since v1 shipped:**
+
+- **Hosting is GitHub Pages, not Cloudflare Pages** (2026-08-08). The repo went public,
+  which removed the only disqualifier. Cloudflare remains the documented fallback —
+  `docs/runbooks/hosting.md`.
+- **Search-query links, rejected above, are used for songs** (2026-08-12). The rejection
+  stands for _artists_, where MusicBrainz supplies canonical URLs. It cannot hold for
+  _tracks_: MusicBrainz records no URL relations on recordings (0 of 4 probed), and the
+  free Deezer→Spotify bridge omits Spotify, so an exact per-song Spotify URL needs the
+  authenticated API this project has no keys for. Songs therefore get a Spotify search
+  link plus their exact Deezer page. Evidence: `docs/research/music-data-sources.md` §4.
+- **The personal lens exists** and is the one scoped exception to the no-runtime-network
+  rule below — a ListenBrainz username, user-initiated. Its Spotify OAuth "owner mode"
+  was built and then removed (PR #35); ListenBrainz is the only intake.
+
 ---
 
 ## Architecture
 
-Two entirely separate halves. Nothing at runtime talks to an external API.
+Two entirely separate halves. At runtime only the personal lens talks to an external API,
+user-initiated and never on the map's critical path.
 
 ```
 BUILD TIME (GitHub Actions, weekly + on demand)
@@ -248,17 +264,23 @@ Each one ends with something you can run and look at.
 
 7. **Keep it alive**
    Weekly refresh workflow opening a PR with the new dataset, with the
-   sharp-drop guard. Cloudflare Pages connected. Ship it.
+   sharp-drop guard. Hosting connected. Ship it.
+   _(Shipped on GitHub Pages, not Cloudflare — see the amendments under Tech stack.)_
 
 ---
 
 ## Open questions
 
-| Question                                                                                                                     | Who answers                                       | When it blocks  |
-| ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | --------------- |
-| What exactly is the data threshold — release-group count, artist count, or both?                                             | Decide from real numbers during milestone 2       | Milestone 2     |
-| MusicBrainz genres with no `subgenre of` parent — one synthetic root, or several floating families?                          | Decide once we can see how many orphans there are | Milestone 2     |
-| How is the "obscure" band defined? Bottom decile is mostly data artifacts (1 listen, 1 user)                                 | Tune against real distributions                   | Milestone 4     |
-| Colour families — assign by top-level ancestor, but how many top-level genres are there, and is that too many distinct hues? | Decide when the tree exists                       | Milestone 3     |
-| Cloudflare Pages account + repo connection                                                                                   | **Repo owner** — manual, one-time                 | Milestone 7     |
-| Does the 40%-empty long tail leave the map feeling thin in some regions (e.g. non-Western genres)?                           | Review after milestone 2                          | Before shipping |
+All but the last were answered by shipping v1. Kept here with their answers, because
+each shaped the map.
+
+| Question                                                                                | Answer (as built)                                                                                                                                                              |
+| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| What exactly is the data threshold — release-group count, artist count, or both?        | **Release-group count alone.** `MIN_RELEASE_GROUPS = 50` keeps **912 of 2,184** genres, inside the predicted 800–1,200                                                         |
+| Genres with no `subgenre of` parent — one synthetic root, or several floating families? | **Several floating families.** No synthetic "music" node: 179 family roots, 131 of them isolated singletons                                                                    |
+| How is the "obscure" band defined?                                                      | A hard floor, `OBSCURE_MIN_LISTENS = 100`, so the bottom decile's 1-listen artifacts never reach a panel                                                                       |
+| Colour families — by top-level ancestor, but is that too many distinct hues?            | Yes, 179 would be. Hues go to families by **popularity rank around the golden angle** (137.508°); singleton roots get no hue and share a muted neutral (`src/graph/colors.ts`) |
+| Cloudflare Pages account + repo connection                                              | **Not connected.** The repo went public 2026-08-08, so GitHub Pages became eligible and is the live host; Cloudflare is the documented fallback (`docs/runbooks/hosting.md`)   |
+
+**Still open:** does the 40%-empty long tail leave the map feeling thin in some regions
+(e.g. non-Western genres)? Tracked with the rest of the backlog in `docs/future.md`.

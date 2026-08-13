@@ -24,10 +24,14 @@ export const DEEZER_DELAY_MS = 110;
  * Stage 3's threshold: the minimum MusicBrainz release-group count for a genre to make
  * it onto the map.
  *
- * PROVISIONAL. `acholitronix` has 0 tagged release-groups and roughly 40% of the 2,184
- * genres are similarly empty — a node that opens to a blank panel breaks the core promise
- * of the app. The real value gets set in milestone 2 once the full distribution is
- * visible; 50 is a starting guess that should yield ~800–1,200 genres.
+ * `acholitronix` has 0 tagged release-groups and roughly 40% of the 2,184 genres are
+ * similarly empty — a node that opens to a blank panel breaks the core promise of the
+ * app.
+ *
+ * CONFIRMED against the real distribution: 50 keeps 912 genres of 2,184, inside the
+ * ~800–1,200 the plan predicted. Changing it reshapes the whole map, so treat it as a
+ * product decision, not a tuning knob — and expect stage 8's sharp-drop guard to fail
+ * the build if a change shrinks the graph steeply.
  */
 export const MIN_RELEASE_GROUPS = 50;
 
