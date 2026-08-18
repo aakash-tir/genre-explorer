@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Genre Explorer">
+  <!--
+    The map in miniature: one vivid family root with its subgenres radiating out.
+    Colours follow src/graph/colors.ts rather than being picked by eye — satellite
+    hues are the first five steps of the golden-angle sequence (0, 137.5, 275, 52.5,
+    190), and every satellite sits one step down the depth ramp from the root
+    (saturation 78→67, lightness 52→58), so the icon fades outward the way the
+    real nodes do. Radial fills echo the canvas renderer's per-node gradients.
+
+    Sized for 16px first: five satellites and one root is all that survives at
+    favicon scale, so nothing smaller is drawn.
+  -->
+  <defs>
+    <radialGradient id="root" cx="38%" cy="34%" r="70%">
+      <stop offset="0%" stop-color="hsl(137.5, 85%, 74%)" />
+      <stop offset="55%" stop-color="hsl(137.5, 78%, 52%)" />
+      <stop offset="100%" stop-color="hsl(137.5, 74%, 38%)" />
+    </radialGradient>
+    <radialGradient id="n0" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="hsl(0, 74%, 72%)" />
+      <stop offset="100%" stop-color="hsl(0, 67%, 58%)" />
+    </radialGradient>
+    <radialGradient id="n1" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="hsl(137.5, 74%, 72%)" />
+      <stop offset="100%" stop-color="hsl(137.5, 67%, 58%)" />
+    </radialGradient>
+    <radialGradient id="n2" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="hsl(275, 74%, 72%)" />
+      <stop offset="100%" stop-color="hsl(275, 67%, 58%)" />
+    </radialGradient>
+    <radialGradient id="n3" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="hsl(52.5, 74%, 72%)" />
+      <stop offset="100%" stop-color="hsl(52.5, 67%, 58%)" />
+    </radialGradient>
+    <radialGradient id="n4" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="hsl(190, 74%, 72%)" />
+      <stop offset="100%" stop-color="hsl(190, 67%, 58%)" />
+    </radialGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="14" fill="#08080c" />
+
+  <!-- subgenre-of edges: the only kind the map ever draws -->
+  <g stroke="hsl(137.5, 45%, 52%)" stroke-opacity="0.55" stroke-width="2.4" stroke-linecap="round">
+    <path d="M32 32 L54.0 32.0" />
+    <path d="M32 32 L38.8 52.9" />
+    <path d="M32 32 L14.2 44.9" />
+    <path d="M32 32 L14.2 19.1" />
+    <path d="M32 32 L38.8 11.1" />
+  </g>
+
+  <circle cx="54.0" cy="32.0" r="5.6" fill="url(#n0)" />
+  <circle cx="38.8" cy="52.9" r="5.6" fill="url(#n1)" />
+  <circle cx="14.2" cy="44.9" r="5.6" fill="url(#n2)" />
+  <circle cx="14.2" cy="19.1" r="5.6" fill="url(#n3)" />
+  <circle cx="38.8" cy="11.1" r="5.6" fill="url(#n4)" />
+
+  <circle cx="32" cy="32" r="11" fill="url(#root)" />
+</svg>
