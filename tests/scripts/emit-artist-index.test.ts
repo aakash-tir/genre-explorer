@@ -11,11 +11,12 @@ import type { Artist, GenreDetail } from '../../src/types';
 const M = (n: number) => `00000000-0000-4000-8000-00000000000${n}`;
 const BUILT_AT = '2026-08-10T00:00:00.000Z';
 
-function artist(n: number, name: string, spotifyId?: string): Artist {
+function artist(n: number, name: string, spotifyId?: string, tagVotes = 5): Artist {
   return {
     mbid: M(n),
     name,
     listens: 100,
+    tagVotes,
     links: spotifyId
       ? [{ kind: 'spotify', url: `https://open.spotify.com/artist/${spotifyId}` }]
       : [{ kind: 'bandcamp', url: 'https://example.bandcamp.com' }],

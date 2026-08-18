@@ -28,7 +28,7 @@ export function buildArtistIndex(
   const genreIds = details.map((detail) => detail.id);
   const byMbid = new Map<
     string,
-    { spotifyId?: string; name: string; genres: Set<number> }
+    { spotifyId?: string; name: string; votesByGenre: Map<number, number> }
   >();
 
   details.forEach((detail, genreIndex) => {
@@ -40,21 +40,34 @@ export function buildArtistIndex(
         entry = {
           ...(spotifyId ? { spotifyId } : {}),
           name: normalizeArtistName(artist.name),
-          genres: new Set(),
+          votesByGenre: new Map(),
         };
         byMbid.set(artist.mbid, entry);
       }
-      entry.genres.add(genreIndex);
+      // An artist can reach one genre through both the popular and obscure lists;
+      // the vote count is a property of the (artist, genre) pair, so it is identical
+      // either way and the max is just a belt-and-braces against a future change
+      // that lets the two lists disagree.
+      const seen = entry.votesByGenre.get(genreIndex);
+      entry.votesByGenre.set(
+        genreIndex,
+        seen === undefined ? artist.tagVotes : Math.max(seen, artist.tagVotes),
+      );
     }
   });
 
   const artists: ArtistIndexEntry[] = [...byMbid.entries()]
-    .map(([mbid, entry]) => ({
-      mbid,
-      ...(entry.spotifyId ? { spotifyId: entry.spotifyId } : {}),
-      name: entry.name,
-      genres: [...entry.genres].sort((a, b) => a - b),
-    }))
+    .map(([mbid, entry]) => {
+      // Sort the pairs together so `genres` and `votes` stay positionally aligned.
+      const pairs = [...entry.votesByGenre.entries()].sort((a, b) => a[0] - b[0]);
+      return {
+        mbid,
+        ...(entry.spotifyId ? { spotifyId: entry.spotifyId } : {}),
+        name: entry.name,
+        genres: pairs.map(([genreIndex]) => genreIndex),
+        votes: pairs.map(([, votes]) => votes),
+      };
+    })
     .sort((a, b) => a.name.localeCompare(b.name) || a.mbid.localeCompare(b.mbid));
 
   return ArtistIndex.parse({ builtAt, genreIds, artists });
