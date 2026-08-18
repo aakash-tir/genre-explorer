@@ -90,6 +90,20 @@ export interface Selection<T> {
  * Tangerine Dream, Moby (was Radiohead, Coldplay); and rock is unchanged at The
  * Beatles, Queen, The Rolling Stones — the megastars keep the genres they really
  * do define.
+ *
+ * NO SMOOTHING ON THE VOTE TERM, and this is deliberate — `sqrt(votes + k)` was tried
+ * and rejected. About a third of panels are thin enough that every member sits at 1-2
+ * votes, and there a single extra vote outweighs an order of magnitude of listens,
+ * which looks arbitrary: `boogie` ranks Dua Lipa (2 votes, 1.7M) above Michael Jackson
+ * (1 vote, 29M). Smoothing fixes that case and breaks a worse one. In `bolero`,
+ * `sqrt(votes + 2)` promotes Gloria Estefan (1 vote, 871k listens) over Gilberto Santa
+ * Rosa (2 votes, 116k) and Julio Jaramillo (2 votes, 36k) — a famous outsider
+ * displacing two canonical members, which is the megastar bug in miniature and lands
+ * hardest on exactly the non-Western genres the backlog already worries about.
+ *
+ * So the thin-tag jitter is the accepted cost. Protecting regional genres from
+ * Anglo-American megastars is worth more than ordering two marginal boogie tags
+ * correctly.
  */
 export function panelScore(tagVotes: number, listens: number): number {
   return Math.sqrt(Math.max(tagVotes, 0)) * Math.log10(listens + 1);

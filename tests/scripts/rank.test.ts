@@ -42,6 +42,17 @@ describe('panelScore', () => {
     expect(panelScore(47, 1000) / panelScore(1, 1000)).toBeLessThan(10);
   });
 
+  it('keeps a canonical thin-tag member above a famous outsider', () => {
+    // Real bolero numbers. This is the case that rules out smoothing the vote term:
+    // sqrt(votes + 2) would put Gloria Estefan above both genuine members, which is
+    // the megastar bug in miniature and hits non-Western genres hardest.
+    const santaRosa = panelScore(2, 116_425); // Gilberto Santa Rosa
+    const jaramillo = panelScore(2, 36_342); // Julio Jaramillo
+    const estefan = panelScore(1, 870_546); // Gloria Estefan
+    expect(santaRosa).toBeGreaterThan(estefan);
+    expect(jaramillo).toBeGreaterThan(estefan);
+  });
+
   it('treats a zero-listen candidate as scoreless whatever its tags', () => {
     expect(panelScore(50, 0)).toBe(0);
   });
