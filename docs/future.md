@@ -3,7 +3,7 @@
 Backlog. Dated bullets under the matching section. Remove an item when it's complete —
 `logs/` and the PR history are the record of finished work.
 
-> **Parked for a review session:** four of the items below are written up with their
+> **Parked for a review session:** three of the items below are written up with their
 > evidence in [`docs/review/2026-08-12-open-items.md`](review/2026-08-12-open-items.md),
 > to be worked through in one pass once the owner's ListenBrainz account finishes
 > importing from Spotify. Bullets that are parked say so and link there; the write-up
@@ -43,7 +43,7 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
   are the widget player embedded by stable track id — remove the old "preview MP3
   in the dataset" wording from research docs if it resurfaces. **Parked for review:**
   it is still there in `docs/research/music-data-sources.md` §7 (~lines 289, 292, 308).
-  Detail: `docs/review/2026-08-12-open-items.md` §4.
+  Detail: `docs/review/2026-08-12-open-items.md` §3.
 
 - 2026-08-07 — Touch was not exercised on a real device. Mobile layout landed in
   milestone 6 and `d3-zoom` speaks touch via the pointer-events path, but pinch,
@@ -68,16 +68,10 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
 - 2026-08-07 — "Obscure" floor set at 100 listens (`OBSCURE_MIN_LISTENS`) in
   milestone 4 — deeper cuts land in the 100–500 listen band, which reads right.
   Revisit only if user feedback says the band is too thin or too noisy.
-- 2026-08-07 — Popular-artist lists skew to global megastars: ranking is by TOTAL
-  artist listens, so anyone ever tagged `house` (e.g. Britney Spears) can outrank
-  genuine house artists. Genre-scoped listen counts don't exist in ListenBrainz's
-  API; mitigations would be heuristic (e.g. weight by tag count). Assess after
-  living with it. **Parked for review** — the open decision that most changes what
-  users see. Detail: `docs/review/2026-08-12-open-items.md` §2
 - 2026-08-04 — Whether the long tail leaves non-Western genre families looking thin after
   the threshold filter. Review now that the filtered dataset exists (912 of 2,184 kept).
   **Parked for review** — still outstanding; the dataset it was waiting on has existed
-  since 2026-08-07. Detail: `docs/review/2026-08-12-open-items.md` §3
+  since 2026-08-07. Detail: `docs/review/2026-08-12-open-items.md` §2
 
 ## Upstream watch
 

@@ -147,7 +147,7 @@ describe('DetailPanel', () => {
     );
     render(<DetailPanel node={node('acholitronix-b')} />);
     await waitFor(() => {
-      expect(screen.getByText(/nobody has tagged listens/)).toBeInTheDocument();
+      expect(screen.getByText(/nothing is filed under it/)).toBeInTheDocument();
     });
   });
 
