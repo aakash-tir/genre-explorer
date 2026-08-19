@@ -36,6 +36,17 @@ where data reaches `main` without a human reading it, and it is deliberate: a da
 waiting for review is a day the rotation stalls. The gate is the pipeline's sharp-drop
 guard plus the full test suite, and a bad slice can only reach the ~66 genres it touched.
 
+## No post-merge chores
+
+The project's post-PR-merge rule (refresh the knowledge graph, update the architecture
+diagram) does **not** apply to these PRs. They touch only `public/data/**`, which
+`graphify` reports as producing zero nodes — a data refresh cannot move the code graph —
+and they are the same pipeline on its schedule writing its usual output, so the
+architecture is unchanged. They also merge unattended, so there would be no session in
+which to do the chore. See `.claude/CLAUDE.md`.
+
+This covers the daily rotation only. Changing the pipeline itself is a normal merge.
+
 ## Setup this depends on
 
 - **`REFRESH_PAT`** — a fine-grained PAT with `Contents: write` and
