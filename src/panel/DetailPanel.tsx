@@ -10,11 +10,12 @@
  * (a real MusicBrainz condition — a genre can clear the release-group threshold yet
  * have no ranked listens at all).
  */
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 import type { Artist, GenreDetail, GenreNode, Track } from '../types';
 import { createDetailCache } from '../lib/dataset';
 import { trackLinks } from '../lib/trackLinks';
+import SwipeDeck from '../mobile/SwipeDeck';
 
 // The wrapper resolves `fetch` at call time, not module-load time — tests stub the
 // global after this module is imported.
@@ -149,13 +150,35 @@ function ArtistList({
 type PanelResult =
   { id: string; phase: 'error' } | { id: string; phase: 'loaded'; detail: GenreDetail };
 
-export default function DetailPanel({ node }: { node: GenreNode | null }) {
+export default function DetailPanel({
+  node,
+  asSlides = false,
+}: {
+  node: GenreNode | null;
+  /**
+   * Mobile: render the four lists as a swipeable deck instead of one long scroll.
+   * A phone sheet is ~45vh, so stacked lists meant scrolling past Popular songs to
+   * reach anything else; as slides each list gets the full sheet.
+   */
+  asSlides?: boolean;
+}) {
   const [result, setResult] = useState<PanelResult | null>(null);
   // Tagged with the genre id so switching genres implicitly silences the preview —
   // no reset effect needed.
   const [playing, setPlaying] = useState<{ nodeId: string; deezerId: number } | null>(
     null,
   );
+  const [slide, setSlide] = useState(0);
+  /**
+   * Reset the deck when the genre changes — during render, which is React's
+   * sanctioned way to adjust state from props. Doing it in an effect cascades an
+   * extra render and trips `react-hooks/set-state-in-effect`.
+   */
+  const [slideFor, setSlideFor] = useState<string | null>(node?.id ?? null);
+  if (node && node.id !== slideFor) {
+    setSlideFor(node.id);
+    setSlide(0);
+  }
 
   useEffect(() => {
     if (!node) return;
@@ -231,22 +254,74 @@ export default function DetailPanel({ node }: { node: GenreNode | null }) {
           use.
         </p>
       ) : (
-        <>
-          <TrackList
-            heading="Popular songs"
-            tracks={detail.popularTracks}
-            playingId={playing && playing.nodeId === node.id ? playing.deezerId : null}
-            onPlay={handlePlay}
-          />
-          <TrackList
-            heading="Deeper cuts"
-            tracks={detail.obscureTracks}
-            playingId={playing && playing.nodeId === node.id ? playing.deezerId : null}
-            onPlay={handlePlay}
-          />
-          <ArtistList heading="Popular artists" artists={detail.popularArtists} />
-          <ArtistList heading="Small artists" artists={detail.smallArtists} />
-        </>
+        (() => {
+          const playingId =
+            playing && playing.nodeId === node.id ? playing.deezerId : null;
+          const lists = [
+            {
+              id: 'popular-tracks',
+              label: 'Songs',
+              count: detail.popularTracks.length,
+              content: (
+                <TrackList
+                  heading="Popular songs"
+                  tracks={detail.popularTracks}
+                  playingId={playingId}
+                  onPlay={handlePlay}
+                />
+              ),
+            },
+            {
+              id: 'obscure-tracks',
+              label: 'Deeper',
+              count: detail.obscureTracks.length,
+              content: (
+                <TrackList
+                  heading="Deeper cuts"
+                  tracks={detail.obscureTracks}
+                  playingId={playingId}
+                  onPlay={handlePlay}
+                />
+              ),
+            },
+            {
+              id: 'popular-artists',
+              label: 'Artists',
+              count: detail.popularArtists.length,
+              content: (
+                <ArtistList heading="Popular artists" artists={detail.popularArtists} />
+              ),
+            },
+            {
+              id: 'small-artists',
+              label: 'Small',
+              count: detail.smallArtists.length,
+              content: (
+                <ArtistList heading="Small artists" artists={detail.smallArtists} />
+              ),
+            },
+          ];
+          if (!asSlides) {
+            return (
+              <>
+                {lists.map((list) => (
+                  <Fragment key={list.id}>{list.content}</Fragment>
+                ))}
+              </>
+            );
+          }
+          // Empty lists are dropped rather than shown as blank slides — a thin genre
+          // should present a short deck, not slides that look broken.
+          const slides = lists.filter((list) => list.count > 0);
+          return (
+            <SwipeDeck
+              slides={slides}
+              index={slide}
+              onIndexChange={setSlide}
+              className="deck--sheet"
+            />
+          );
+        })()
       )}
     </div>
   );

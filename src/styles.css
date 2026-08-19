@@ -440,10 +440,16 @@ body {
 }
 
 /**
- * Mobile: the map takes the whole screen; the filter floats as an overlay in the
- * top-left; the detail panel becomes a bottom sheet. Pinch-zoom and tap-to-focus
- * already work — d3-zoom listens to touch, and `touch-action: none` on the canvas
- * stops the browser from stealing the gestures.
+ * Mobile: the map IS the screen.
+ *
+ * The previous arrangement mounted both control panels and the detail sheet at once, so
+ * a phone opened to chrome with the graph hidden behind it (see the 2026-08-19
+ * screenshots). Now nothing covers the map until you ask: a small toggle summons a
+ * banner across the top, and the sheet only grows once a genre is picked.
+ *
+ * Everything here floats OVER a full-bleed canvas rather than shrinking it, which is
+ * why `src/graph/insets.ts` exists — the camera is told how much is covered so it can
+ * aim at the part you can still see.
  */
 @media (max-width: 900px) {
   .app {
@@ -457,16 +463,71 @@ body {
     inset: 0;
   }
 
-  .filters {
+  /* The summon button. Small and cornered — chrome should cost one thumb, not a panel. */
+  .banner-toggle {
     position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    z-index: 2;
-    max-width: min(78vw, 20rem);
-    max-height: 55vh;
-    border-radius: 12px;
+    top: 0.6rem;
+    left: 0.6rem;
+    z-index: 4;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 10px;
     border: 1px solid #26263a;
     background: rgba(16, 16, 24, 0.92);
+    color: var(--ink);
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  .top-banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    max-height: 46vh;
+    padding: 3.6rem 0.6rem 0.4rem;
+    border-bottom: 1px solid #26263a;
+    border-radius: 0 0 16px 16px;
+    /* Fully opaque: at 0.97 the bright genre labels underneath still read through
+       and the banner looked like a rendering fault rather than a surface. */
+    background: #101018;
+    overflow: hidden;
+  }
+
+  /*
+   * Banner open wins the screen. Without this the banner and a full-height sheet
+   * both claim ~46vh and squeeze the map into a strip too thin to read — so the
+   * sheet drops to its one-line form for as long as the banner is up.
+   */
+  .app--mobile:has(.top-banner) .detail {
+    max-height: none;
+    padding: 0.65rem 1rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .app--mobile:has(.top-banner) .detail .entity-sub,
+  .app--mobile:has(.top-banner) .detail .deck,
+  .app--mobile:has(.top-banner) .detail .stub {
+    display: none;
+  }
+
+  .app--mobile:has(.top-banner) .detail h2 {
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  /*
+   * The panels' own headers and collapse chevrons are redundant inside a tabbed
+   * banner — the tab already names the slide and the × already closes it.
+   */
+  .top-banner .filter-header,
+  .top-banner .personal-header {
+    display: none;
+  }
+
+  /* The desktop sidebar is gone on mobile; its children are slides now. */
+  .app--mobile .filters {
+    display: none;
   }
 
   .detail {
@@ -475,13 +536,146 @@ body {
     right: 0;
     bottom: 0;
     z-index: 2;
-    max-height: 45vh;
+    max-height: 46vh;
     border-top: 1px solid #26263a;
     border-radius: 16px 16px 0 0;
     background: rgba(16, 16, 24, 0.96);
   }
 
-  .map-hud {
-    bottom: 46vh;
+  /*
+   * Nothing selected: the sheet shrinks to a one-line prompt instead of claiming
+   * 45vh to say "No genre selected", which is what buried the map on open.
+   */
+  .detail--idle {
+    max-height: none;
+    padding: 0.65rem 1rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
   }
+
+  .detail--idle h2 {
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .detail--idle .stub {
+    display: none;
+  }
+
+  /*
+   * The HUD sits just above the sheet. `bottom` is driven by the same 46vh the sheet
+   * is capped at; when the sheet is idle it collapses, so the buttons drop with it.
+   */
+  .map-hud {
+    bottom: 48vh;
+  }
+
+  .app--mobile:has(.detail--idle) .map-hud {
+    bottom: 4.5rem;
+  }
+
+  /* Counts are debug scaffolding, not something worth covering the map with. */
+  .app--mobile .counts {
+    display: none;
+  }
+
+  /* Linked ListenBrainz genres: a scrollable row, not a tall list. */
+  .personal-genres--row {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+  }
+
+  .personal-genres--row li {
+    flex: 0 0 auto;
+    width: 11rem;
+  }
+
+  .personal-genres--row li button {
+    width: 100%;
+  }
+}
+
+/**
+ * Swipe decks — the top banner and the bottom sheet. Shared because their gesture
+ * rules are identical (`src/mobile/slides.ts`).
+ */
+.deck {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.deck-tabs {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0 0.35rem 0.4rem;
+  overflow-x: auto;
+}
+
+.deck-tab {
+  flex: 0 0 auto;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid #26263a;
+  background: transparent;
+  color: var(--ink-dim);
+  font-size: 0.85rem;
+}
+
+.deck-tab--on {
+  background: #1d1d2c;
+  color: var(--ink);
+}
+
+.deck-viewport {
+  overflow: hidden;
+  min-height: 0;
+  flex: 1;
+}
+
+.deck-track {
+  display: flex;
+  will-change: transform;
+}
+
+.deck-slide {
+  flex: 0 0 auto;
+  min-width: 0;
+  padding: 0 0.6rem;
+  /* Vertical scroll stays inside a slide; horizontal is the deck's own gesture. */
+  overflow-y: auto;
+  touch-action: pan-y;
+}
+
+/*
+ * The track is a flex row, so the banner is as tall as its TALLEST slide — the
+ * ListenBrainz form — which left dead space under the shorter filter slide. Capping
+ * lower keeps that slack small; each slide scrolls if it needs to.
+ */
+.deck--banner .deck-slide {
+  max-height: 26vh;
+}
+
+.deck--sheet .deck-slide {
+  max-height: 34vh;
+}
+
+.deck-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0 calc(0.2rem + env(safe-area-inset-bottom, 0px));
+}
+
+.deck-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2e2e44;
+}
+
+.deck-dot--on {
+  background: var(--ink-dim);
 }

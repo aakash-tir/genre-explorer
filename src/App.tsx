@@ -9,7 +9,7 @@
  * URL serialises to (`src/lib/deepLink.ts`), so deep links work from the first real
  * interaction rather than being retrofitted.
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { GraphDataset } from './types';
 import { indexNodes, loadGraph } from './lib/dataset';
 import {
@@ -30,6 +30,9 @@ import DetailPanel from './panel/DetailPanel';
 import FilterPanel from './filters/FilterPanel';
 import PersonalPanel from './personal/PersonalPanel';
 import { usePersonal } from './personal/usePersonal';
+import TopBanner from './mobile/TopBanner';
+import { useIsMobile } from './mobile/useIsMobile';
+import { NO_INSETS, type Insets } from './graph/insets';
 
 export default function App() {
   const [dataset, setDataset] = useState<GraphDataset | null>(null);
@@ -47,6 +50,16 @@ export default function App() {
    * not part of the URL; a deep-linked genre opens fanned.
    */
   const [fanOpen, setFanOpen] = useState(true);
+  const isMobile = useIsMobile();
+  /**
+   * Mobile chrome starts CLOSED: the map is the product, and the old layout opened
+   * with both panels mounted, covering it entirely. Controls are summoned, not
+   * permanent.
+   */
+  const [bannerOpen, setBannerOpen] = useState(false);
+  const [bannerHeight, setBannerHeight] = useState(0);
+  const [sheetHeight, setSheetHeight] = useState(0);
+  const sheetRef = useRef<HTMLElement>(null);
 
   const personal = usePersonal(dataset);
   const nodesById = useMemo(
@@ -75,6 +88,25 @@ export default function App() {
       cancelled = true;
     };
   }, []);
+
+  /**
+   * Measure the bottom sheet. It floats OVER the full-bleed canvas on mobile, so the
+   * camera needs its real height to avoid centring genres behind it — the bug in the
+   * phone screenshots, where the focused node sat half-hidden at the sheet edge.
+   */
+  useEffect(() => {
+    const el = sheetRef.current;
+    if (!isMobile || !el) {
+      setSheetHeight(0);
+      return;
+    }
+    const report = () => setSheetHeight(el.getBoundingClientRect().height);
+    report();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(report);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isMobile, state.focusId, dataset]);
 
   // Keep the URL in step with the state so every view is shareable.
   useEffect(() => {
@@ -106,6 +138,8 @@ export default function App() {
     }
     setState((s) => ({ ...s, focusId: hitId }));
     setFanOpen(true);
+    // Picking a genre gets the chrome out of the way — you asked to look at the map.
+    setBannerOpen(false);
   };
 
   const handleSelectionChange = useCallback((selectedIds: string[]) => {
@@ -116,6 +150,7 @@ export default function App() {
   const handlePick = useCallback((genreId: string) => {
     setState((s) => ({ ...s, focusId: genreId }));
     setFanOpen(true);
+    setBannerOpen(false);
   }, []);
 
   if (error !== null) {
@@ -141,16 +176,48 @@ export default function App() {
   const shown = visibleNodes(dataset.nodes, context);
   const lines = drawnEdges(dataset.edges);
 
+  const focusNode = state.focusId
+    ? (dataset.nodes.find((n) => n.id === state.focusId) ?? null)
+    : null;
+
+  const filterPanel = (
+    <FilterPanel
+      nodes={dataset.nodes}
+      selectedIds={state.selectedIds}
+      onSelectionChange={handleSelectionChange}
+    />
+  );
+  const personalPanel = (
+    <PersonalPanel
+      personal={personal}
+      nodesById={nodesById}
+      onPick={handlePick}
+      horizontal={isMobile}
+    />
+  );
+
+  // What the chrome covers, so the camera can aim at the part you can still see.
+  // Desktop chrome sits BESIDE the canvas rather than over it, so it contributes none.
+  const insets: Insets = isMobile
+    ? { top: bannerHeight, bottom: sheetHeight }
+    : NO_INSETS;
+
   return (
-    <main className="app">
-      <aside className="filters" aria-label="Genre filters">
-        <FilterPanel
-          nodes={dataset.nodes}
-          selectedIds={state.selectedIds}
-          onSelectionChange={handleSelectionChange}
+    <main className={isMobile ? 'app app--mobile' : 'app'}>
+      {isMobile ? (
+        <TopBanner
+          open={bannerOpen}
+          onOpenChange={setBannerOpen}
+          onHeightChange={setBannerHeight}
+          filter={filterPanel}
+          personal={personalPanel}
         />
-        <PersonalPanel personal={personal} nodesById={nodesById} onPick={handlePick} />
-      </aside>
+      ) : (
+        <aside className="filters" aria-label="Genre filters">
+          {filterPanel}
+          {personalPanel}
+        </aside>
+      )}
 
       <section className="canvas-host" aria-label="Genre map">
         <GraphCanvas
@@ -158,6 +225,7 @@ export default function App() {
           state={state}
           fanOpen={fanOpen}
           lens={lens}
+          insets={insets}
           onZoomChange={handleZoomChange}
           onFocusChange={handleFocusChange}
         />
@@ -193,14 +261,12 @@ export default function App() {
         </div>
       </section>
 
-      <aside className="detail" aria-label="Genre detail">
-        <DetailPanel
-          node={
-            state.focusId
-              ? (dataset.nodes.find((n) => n.id === state.focusId) ?? null)
-              : null
-          }
-        />
+      <aside
+        className={isMobile && focusNode === null ? 'detail detail--idle' : 'detail'}
+        aria-label="Genre detail"
+        ref={sheetRef}
+      >
+        <DetailPanel node={focusNode} asSlides={isMobile} />
       </aside>
     </main>
   );

@@ -26,6 +26,7 @@ import { useEffect, useMemo, useRef, type MouseEvent } from 'react';
 import { select } from 'd3-selection';
 import 'd3-transition';
 import { zoom, zoomIdentity, type ZoomBehavior, type ZoomTransform } from 'd3-zoom';
+import { NO_INSETS, reframe, visibleCenter, type Insets } from './insets';
 
 import type { GraphDataset } from '../types';
 import type { AppState } from '../lib/deepLink';
@@ -83,6 +84,11 @@ interface GraphCanvasProps {
   onZoomChange: (zoom: number) => void;
   /** Reports the raw hit: a node id, or null for empty space. App decides. */
   onFocusChange: (focusId: string | null) => void;
+  /**
+   * How much chrome floats OVER the canvas (mobile banner / bottom sheet). The canvas
+   * stays full-bleed, so without this the camera aims at points that are covered.
+   */
+  insets?: Insets;
 }
 
 export default function GraphCanvas({
@@ -92,11 +98,25 @@ export default function GraphCanvas({
   lens,
   onZoomChange,
   onFocusChange,
+  insets = NO_INSETS,
 }: GraphCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const transformRef = useRef<ZoomTransform>(zoomIdentity);
   const behaviorRef = useRef<ZoomBehavior<HTMLCanvasElement, unknown> | null>(null);
   const sizeRef = useRef({ width: 0, height: 0 });
+  /** Last applied insets, so a change can be diffed into a re-frame. */
+  const insetsRef = useRef<Insets>(insets);
+  /** Last focus, to tell "new selection" from "chrome moved". */
+  const lastFocusRef = useRef<string | null>(null);
+  /**
+   * The zoom we last COMMANDED, as opposed to the one currently on screen.
+   *
+   * Chrome can move while a focus fly is still animating, and reading the live
+   * transform then captures a half-finished scale and freezes it — which silently
+   * cancelled the zoom-in whenever the bottom sheet was measured mid-flight. d3's
+   * `end` event syncs this back to reality after every transition and user gesture.
+   */
+  const desiredKRef = useRef<number>(1);
   const hoveredRef = useRef<string | null>(null);
 
   const structural = useMemo(() => drawnEdges(dataset.edges), [dataset]);
@@ -435,7 +455,13 @@ export default function GraphCanvas({
         transformRef.current = event.transform;
         drawRef.current();
       })
-      .on('end', (event: { transform: ZoomTransform }) => {
+      .on('end', (event: { transform: ZoomTransform; sourceEvent?: unknown }) => {
+        // Only a USER gesture redefines the intended zoom. Our own transitions also
+        // fire `end` — including when one is interrupted part-way, which reports a
+        // half-finished scale. Adopting that was cancelling the focus zoom-in
+        // whenever the bottom sheet was measured mid-flight. `sourceEvent` is null
+        // for programmatic transforms, which is exactly the discriminator.
+        if (event.sourceEvent != null) desiredKRef.current = event.transform.k;
         onZoomChange(event.transform.k);
       });
     behaviorRef.current = behavior;
@@ -463,26 +489,69 @@ export default function GraphCanvas({
     }
   }, [state.zoom]);
 
-  // Focusing a genre flies the camera to it: centre the node, and come in to at
-  // least FOCUS_ZOOM if the camera was further out. Releasing focus moves nothing —
-  // the fan collapses in place.
+  /**
+   * Camera aiming, for both "a genre was focused" and "the chrome moved".
+   *
+   * ONE effect on purpose. They were separate at first and raced on mount: the focus
+   * fly centred the node using insets of zero (the bottom sheet had not been measured
+   * yet), then the sheet appeared and the re-frame fought the still-running 500 ms
+   * transition, leaving the node below the visible centre instead of on it.
+   *
+   * With a focused genre the rule is simply "keep it in the middle of what you can
+   * see", re-applied whenever the chrome changes. With nothing focused there is no
+   * anchor, so the map preserves whatever content was on screen instead.
+   */
   useEffect(() => {
     const canvas = canvasRef.current;
     const behavior = behaviorRef.current;
-    if (!canvas || !behavior || !focusNode) return;
+    const previous = insetsRef.current;
+    const focusChanged = lastFocusRef.current !== state.focusId;
+    // Commit these ONLY once we know the move can actually happen. Updating them
+    // above the guards let the first, early-returning run (before d3-zoom is wired
+    // on mount) swallow the change, so the real run saw nothing to do and a
+    // deep-linked genre never zoomed in.
+    if (!canvas || !behavior) return;
     const { width, height } = sizeRef.current;
     if (width === 0 || height === 0) return;
-    const fit = computeFit(dataset.nodes, width, height);
-    const k = Math.max(transformRef.current.k, FOCUS_ZOOM);
-    const bx = (focusNode.x - fit.cx) * fit.scale + width / 2;
-    const by = (focusNode.y - fit.cy) * fit.scale + height / 2;
-    const target = zoomIdentity
-      .translate(width / 2, height / 2)
-      .scale(k)
-      .translate(-bx, -by);
-    select(canvas).transition().duration(500).call(behavior.transform, target);
+    insetsRef.current = insets;
+    lastFocusRef.current = state.focusId;
+
+    const insetsChanged =
+      previous.top !== insets.top || previous.bottom !== insets.bottom;
+    if (!focusChanged && !insetsChanged) return;
+
+    const aim = visibleCenter({ width, height }, insets);
+    const t = transformRef.current;
+
+    if (focusNode) {
+      const fit = computeFit(dataset.nodes, width, height);
+      // Only pull the camera IN when the selection actually changed; a banner opening
+      // must not silently zoom the map further every time.
+      const k = focusChanged
+        ? Math.max(desiredKRef.current, FOCUS_ZOOM)
+        : desiredKRef.current;
+      desiredKRef.current = k;
+      const bx = (focusNode.x - fit.cx) * fit.scale + width / 2;
+      const by = (focusNode.y - fit.cy) * fit.scale + height / 2;
+      const target = zoomIdentity.translate(aim.x, aim.y).scale(k).translate(-bx, -by);
+      select(canvas)
+        .transition()
+        .duration(focusChanged ? 500 : 300)
+        .call(behavior.transform, target);
+      return;
+    }
+
+    if (!insetsChanged) return;
+    // Nothing focused: keep the same world content on screen, refitted smaller.
+    const { scale, fromCenter } = reframe({ width, height }, previous, insets);
+    const wx = (fromCenter.x - t.x) / t.k;
+    const wy = (fromCenter.y - t.y) / t.k;
+    const k = Math.max(MIN_ZOOM, Math.min(desiredKRef.current * scale, FULL_DETAIL_ZOOM));
+    desiredKRef.current = k;
+    const target = zoomIdentity.translate(aim.x, aim.y).scale(k).translate(-wx, -wy);
+    select(canvas).transition().duration(300).call(behavior.transform, target);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.focusId]);
+  }, [state.focusId, insets.top, insets.bottom]);
 
   // Focus, filter and lens changes redraw without touching the camera.
   useEffect(() => {
