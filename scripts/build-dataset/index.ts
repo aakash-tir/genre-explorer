@@ -96,6 +96,7 @@ export async function buildDataset(): Promise<void> {
       mbid: r.entity.mbid,
       name: r.entity.name,
       listens: r.listens,
+      tagVotes: r.entity.tagVotes,
       links: await fetchArtistLinks(r.entity.mbid),
     });
     const toTrack = async (r: Ranked<CandidateRecording>) => ({

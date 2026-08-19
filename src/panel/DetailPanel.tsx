@@ -226,7 +226,9 @@ export default function DetailPanel({ node }: { node: GenreNode | null }) {
       <p className="entity-sub">{formatListens(node.popularity)} tagged releases</p>
       {empty ? (
         <p className="stub">
-          This genre is on the map, but nobody has tagged listens for it yet.
+          This genre is on the map, but nothing is filed under it clearly enough to list —
+          it is a name in MusicBrainz&rsquo;s hierarchy more than a label people actually
+          use.
         </p>
       ) : (
         <>

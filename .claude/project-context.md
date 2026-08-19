@@ -32,16 +32,16 @@ inside `src/` means the design has gone wrong.
 `scripts/build-dataset/index.ts` runs these in order. Each stage caches its HTTP
 responses to disk so a rerun is cheap and doesn't re-hammer upstream.
 
-| #   | Stage              | Source                                                           | Output                                                      |
-| --- | ------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------- |
-| 1   | `fetch-genres`     | `GET musicbrainz.org/ws/2/genre/all?fmt=txt`                     | 2,184 genre names                                           |
-| 2   | `fetch-hierarchy`  | **Scraped genre HTML pages**, 1 req/s                            | `subgenre of` / `fusion of` / `influenced by` edges         |
-| 3   | `fetch-popularity` | MusicBrainz release-group tag counts                             | Genre size → **and the threshold filter**                   |
-| 4   | `fetch-entities`   | MusicBrainz artist + recording tag search, artist `inc=url-rels` | Candidate artists/tracks + Spotify/SoundCloud/Bandcamp URLs |
-| 5   | `rank`             | `POST listenbrainz.org/1/popularity/{artist,recording}`          | Listen counts → popular vs. obscure split                   |
-| 6   | `previews`         | Deezer search                                                    | 30s preview MP3 URLs                                        |
-| 7   | `layout`           | `d3-force`, fixed tick count, fixed seed                         | Baked `x`/`y` per node                                      |
-| 8   | `emit`             | Zod validation + sharp-drop guard                                | `public/data/*.json`                                        |
+| #   | Stage              | Source                                                           | Output                                                                |
+| --- | ------------------ | ---------------------------------------------------------------- | --------------------------------------------------------------------- |
+| 1   | `fetch-genres`     | `GET musicbrainz.org/ws/2/genre/all?fmt=txt`                     | 2,184 genre names                                                     |
+| 2   | `fetch-hierarchy`  | **Scraped genre HTML pages**, 1 req/s                            | `subgenre of` / `fusion of` / `influenced by` edges                   |
+| 3   | `fetch-popularity` | MusicBrainz release-group tag counts                             | Genre size → **and the threshold filter**                             |
+| 4   | `fetch-entities`   | MusicBrainz artist + recording tag search, artist `inc=url-rels` | Candidates **gated on tag votes**, + Spotify/SoundCloud/Bandcamp URLs |
+| 5   | `rank`             | `POST listenbrainz.org/1/popularity/{artist,recording}`          | Listens × tag votes → popular; listens alone → obscure                |
+| 6   | `previews`         | Deezer search                                                    | 30s preview MP3 URLs                                                  |
+| 7   | `layout`           | `d3-force`, fixed tick count, fixed seed                         | Baked `x`/`y` per node                                                |
+| 8   | `emit`             | Zod validation + sharp-drop guard                                | `public/data/*.json`                                                  |
 
 ### Stage 2 is the fragile one
 
@@ -173,6 +173,33 @@ and the obscure floor is `OBSCURE_MIN_LISTENS = 100`. What remains:
   they would simplify stage 5.
 - **No end-to-end tests.** Deliberate for v1 — they'd mostly assert a canvas painted
   something. Revisit if interaction bugs start reaching `main`.
-- **Open product questions** — megastar skew in popular-artist lists, tuning the
-  obscure band, non-Western coverage after the threshold filter — are tracked with
-  the rest of the backlog in `docs/future.md`.
+- **Open product questions** — tuning the obscure band, non-Western coverage after
+  the threshold filter — are tracked with the rest of the backlog in `docs/future.md`.
+  (Megastar skew was settled 2026-08-17; see below.)
+
+### Genre membership comes from tag votes, not search rank
+
+The most important thing to know about stage 4. MusicBrainz scores `tag:"indie rock"`
+by Lucene relevance over the whole document, which is **not** tag agreement: The
+Beatles came back first for indie rock carrying an `indie rock` tag count of `-3`, a
+tag users had voted down. Because stage 5 originally ranked purely on total listens,
+a loose match on a megastar beat every genuine member — The Beatles were filed under
+heavy metal, classical and filk, and Coldplay under ambient, a tag Coldplay does not
+carry at all.
+
+Three rules now hold the line, all added 2026-08-17:
+
+- Stage 4 admits a candidate only if it carries the genre's own tag with
+  `>= MIN_TAG_VOTES` (1). The counts ride along in the same search response, so this
+  costs no extra requests. MusicBrainz placeholder artists (`Various Artists`,
+  `[unknown]`, …) are blocked outright.
+- Stage 5 ranks "popular" on `sqrt(votes) * log10(listens)`, so tag agreement and
+  reach both count. "Obscure" still ranks on listens alone — that is a pure
+  listen-count question — but draws from the same tag-gated pool.
+- Tag votes are carried into `artist-index.json` so the personal lens can weight each
+  genre by `sqrt(votes / the artist's strongest tag)`. Without it the lens can only
+  treat membership as binary, which made a Coldplay listener read as equally a
+  britpop listener.
+
+A genre nobody uses as a tag now shows an empty panel rather than the most famous
+loosely-related artist. That is the intended trade.

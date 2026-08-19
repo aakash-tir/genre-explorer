@@ -32,13 +32,16 @@ function detail(id: string, overrides: Partial<GenreDetail> = {}): GenreDetail {
         mbid: M(2),
         name: 'Pearl Jam',
         listens: 76601554,
+        tagVotes: 20,
         links: [
           { kind: 'spotify', url: 'https://open.spotify.com/artist/1w5K' },
           { kind: 'discogs', url: 'https://www.discogs.com/artist/175395' },
         ],
       },
     ],
-    smallArtists: [{ mbid: M(3), name: 'Deep Cut Band', listens: 4300, links: [] }],
+    smallArtists: [
+      { mbid: M(3), name: 'Deep Cut Band', listens: 4300, tagVotes: 2, links: [] },
+    ],
     popularTracks: [
       {
         mbid: M(4),
@@ -144,7 +147,7 @@ describe('DetailPanel', () => {
     );
     render(<DetailPanel node={node('acholitronix-b')} />);
     await waitFor(() => {
-      expect(screen.getByText(/nobody has tagged listens/)).toBeInTheDocument();
+      expect(screen.getByText(/nothing is filed under it/)).toBeInTheDocument();
     });
   });
 

@@ -38,12 +38,34 @@ export interface GenreWeight {
 
 /**
  * A rank-0 artist counts 1.0, rank 9 ≈ 0.32, rank 49 ≈ 0.14 — top of the list
- * dominates without the tail vanishing. An artist tagged with several genres
- * credits each in full: splitting would punish exactly the versatile artists the
- * map is about.
+ * dominates without the tail vanishing.
  */
 export function artistWeight(rank: number): number {
   return 1 / Math.sqrt(rank + 1);
+}
+
+/**
+ * How much of an artist a given genre actually is, from MusicBrainz tag votes.
+ *
+ * This module used to credit every genre an artist appeared in IN FULL, on the
+ * reasoning that splitting would punish versatile artists. That was the wrong shape:
+ * it made a listener who plays nothing but Coldplay come out equally an indie rock,
+ * ambient and britpop listener, because those genres are equal *members* of
+ * Coldplay's list even though they are wildly unequal *claims*. Coldplay carry 34
+ * votes for alternative rock and 1 for britpop.
+ *
+ * Measured against the artist's own strongest tag rather than an absolute scale, so
+ * the question stays "how much of THIS artist is this genre" — an artist with 3 votes
+ * total is not a weaker listener signal than one with 300, they are just less tagged.
+ * The strongest genre always scores exactly 1, so a single-genre artist is unaffected.
+ *
+ * `sqrt` keeps the fade gentle: Coldplay's britpop (1 of 34) lands at 0.17 rather
+ * than 0.03, so a marginal genre is quiet but not erased. Versatile artists still
+ * light up their whole neighbourhood — just at honest relative brightness.
+ */
+export function genreShare(votes: number, strongestVotes: number): number {
+  if (strongestVotes <= 0) return 0;
+  return Math.sqrt(Math.max(votes, 0) / strongestVotes);
 }
 
 interface IndexLookup {
@@ -82,14 +104,17 @@ export function matchGenres(
       null;
     if (entry === null) continue;
     const weight = artistWeight(artist.rank);
-    for (const genreIndex of entry.genres) {
+    const strongest = Math.max(...entry.votes);
+    entry.genres.forEach((genreIndex, i) => {
       const id = index.genreIds[genreIndex];
-      if (id === undefined) continue;
+      if (id === undefined) return;
+      const share = genreShare(entry.votes[i] ?? 0, strongest);
+      if (share === 0) return;
       const bucket = accumulated.get(id) ?? { weight: 0, artistNames: [] };
-      bucket.weight += weight;
+      bucket.weight += weight * share;
       bucket.artistNames.push(artist.name);
       accumulated.set(id, bucket);
-    }
+    });
   }
 
   const max = Math.max(...[...accumulated.values()].map((bucket) => bucket.weight), 0);

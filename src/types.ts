@@ -34,6 +34,16 @@ export const Artist = z.object({
   name: z.string().min(1),
   /** ListenBrainz total listen count. Drives the popular/small split. */
   listens: z.number().int().nonnegative(),
+  /**
+   * MusicBrainz community votes for THIS genre's tag on this artist — how strongly
+   * the artist belongs here, not how popular they are. Always >= `MIN_TAG_VOTES`,
+   * because the pipeline drops anything weaker (see `fetch-entities.ts`).
+   *
+   * Kept in the dataset rather than consumed and discarded at build time because the
+   * personal lens needs it at runtime: an artist in ten panels is not equally each of
+   * those ten genres, and without this the lens can only treat membership as binary.
+   */
+  tagVotes: z.number().int().positive(),
   links: z.array(ExternalLink),
 });
 export type Artist = z.infer<typeof Artist>;
@@ -117,19 +127,34 @@ export type GenreDetail = z.infer<typeof GenreDetail>;
  * simply doesn't light anything up (see
  * `docs/research/listening-history-personalization.md` §5).
  */
-export const ArtistIndexEntry = z.object({
-  /** MusicBrainz artist id — every entry has one; the ListenBrainz-path match key. */
-  mbid: z.uuid(),
-  /**
-   * Spotify artist id, extracted from the artist's `spotify` link when present
-   * (~68% of dataset artists). The Spotify-path exact-match key.
-   */
-  spotifyId: z.string().min(1).optional(),
-  /** Normalized display name (see `normalizeArtistName`) — the fallback match key. */
-  name: z.string().min(1),
-  /** Indexes into {@link ArtistIndex.genreIds}, kept as numbers for payload size. */
-  genres: z.array(z.number().int().nonnegative()).min(1),
-});
+export const ArtistIndexEntry = z
+  .object({
+    /** MusicBrainz artist id — every entry has one; the ListenBrainz-path match key. */
+    mbid: z.uuid(),
+    /**
+     * Spotify artist id, extracted from the artist's `spotify` link when present
+     * (~68% of dataset artists). The Spotify-path exact-match key.
+     */
+    spotifyId: z.string().min(1).optional(),
+    /** Normalized display name (see `normalizeArtistName`) — the fallback match key. */
+    name: z.string().min(1),
+    /** Indexes into {@link ArtistIndex.genreIds}, kept as numbers for payload size. */
+    genres: z.array(z.number().int().nonnegative()).min(1),
+    /**
+     * MusicBrainz tag votes, positionally parallel to {@link genres} — `votes[i]` is
+     * the support for `genres[i]`. Parallel arrays rather than pairs or objects purely
+     * for payload size; this file is already the largest thing the lens loads.
+     *
+     * This is what lets the lens say Coldplay is *mostly* alternative rock (34 votes)
+     * and only marginally britpop (1). Validated as the same length as `genres` —
+     * a drift there would silently misattribute every genre after the gap.
+     */
+    votes: z.array(z.number().int().positive()).min(1),
+  })
+  .refine((entry) => entry.genres.length === entry.votes.length, {
+    message: 'genres and votes must be the same length — they are positionally paired',
+    path: ['votes'],
+  });
 export type ArtistIndexEntry = z.infer<typeof ArtistIndexEntry>;
 
 /**

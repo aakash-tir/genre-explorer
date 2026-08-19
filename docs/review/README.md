@@ -16,5 +16,6 @@ survive as a "done" list.
 
 ## Open
 
-- [`2026-08-12-open-items.md`](2026-08-12-open-items.md) — four items. Waiting on the
-  owner's ListenBrainz account to finish importing from Spotify.
+- [`2026-08-12-open-items.md`](2026-08-12-open-items.md) — three items. Waiting on the
+  owner's ListenBrainz account to finish importing from Spotify. (The fourth, the
+  megastar skew in popular-artist lists, was settled on 2026-08-17.)

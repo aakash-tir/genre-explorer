@@ -11,11 +11,12 @@ import type { Artist, GenreDetail } from '../../src/types';
 const M = (n: number) => `00000000-0000-4000-8000-00000000000${n}`;
 const BUILT_AT = '2026-08-10T00:00:00.000Z';
 
-function artist(n: number, name: string, spotifyId?: string): Artist {
+function artist(n: number, name: string, spotifyId?: string, tagVotes = 5): Artist {
   return {
     mbid: M(n),
     name,
     listens: 100,
+    tagVotes,
     links: spotifyId
       ? [{ kind: 'spotify', url: `https://open.spotify.com/artist/${spotifyId}` }]
       : [{ kind: 'bandcamp', url: 'https://example.bandcamp.com' }],
@@ -43,9 +44,49 @@ describe('buildArtistIndex', () => {
     );
     expect(index.genreIds).toEqual(['techno', 'house']);
     expect(index.artists).toEqual([
-      { mbid: M(2), spotifyId: 'sidFrankie', name: 'frankie knuckles', genres: [1] },
-      { mbid: M(1), spotifyId: 'sidJeff', name: 'jeff mills', genres: [0] },
+      {
+        mbid: M(2),
+        spotifyId: 'sidFrankie',
+        name: 'frankie knuckles',
+        genres: [1],
+        votes: [5],
+      },
+      {
+        mbid: M(1),
+        spotifyId: 'sidJeff',
+        name: 'jeff mills',
+        genres: [0],
+        votes: [5],
+      },
     ]);
+  });
+
+  it('carries each genre-specific tag vote, positionally paired with genres', () => {
+    // Coldplay's real shape: strongly alternative rock, marginally post-britpop.
+    const index = buildArtistIndex(
+      [
+        detail('alternative-rock', [artist(1, 'Coldplay', 'sidCold', 34)]),
+        detail('post-britpop', [artist(1, 'Coldplay', 'sidCold', 3)]),
+      ],
+      BUILT_AT,
+    );
+    expect(index.artists).toHaveLength(1);
+    expect(index.artists[0].genres).toEqual([0, 1]);
+    expect(index.artists[0].votes).toEqual([34, 3]);
+  });
+
+  it('keeps genres and votes the same length however many panels an artist reaches', () => {
+    const index = buildArtistIndex(
+      [
+        detail('techno', [artist(1, 'Aphex Twin', 'sidAphex', 9)]),
+        detail('idm', [], [artist(1, 'Aphex Twin', 'sidAphex', 4)]),
+        detail('house', [artist(1, 'Aphex Twin', 'sidAphex', 2)]),
+      ],
+      BUILT_AT,
+    );
+    const entry = index.artists[0];
+    expect(entry.votes).toHaveLength(entry.genres.length);
+    expect(entry.votes).toEqual([9, 4, 2]);
   });
 
   it('merges the same MBID across genres and across popular/small lists', () => {

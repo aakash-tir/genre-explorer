@@ -4,8 +4,11 @@
 finish importing from Spotify, then intends to work through everything below in one
 pass. Nothing here has been acted on.
 
-Ordered by what actually costs something if left alone. All four are quality and
+Ordered by what actually costs something if left alone. All three are quality and
 verification work — nothing here is currently breaking.
+
+The original item 2 — popular-artist lists skewing to global megastars — was settled
+on 2026-08-17 and removed; see that day's log entry.
 
 ---
 
@@ -24,27 +27,7 @@ minutes on a phone either closes it or finds something real.
 
 ---
 
-## 2. Popular-artist lists skew to global megastars
-
-**Status:** open product decision, already recorded — the one that changes what users see.
-
-Ranking is by **total** artist listens, so anyone ever tagged with a genre can outrank its
-genuine artists. The example in the existing note: Britney Spears surfacing under `house`.
-
-ListenBrainz exposes no genre-scoped listen counts, so every fix is heuristic — weighting
-by tag count, capping the contribution of artists whose top genre is elsewhere, or
-blending listens with tag strength. Each risks making other genres worse, which is why
-this is a judgement call rather than a bug.
-
-Suggest picking three or four genres you know well, looking at their current popular
-lists, and deciding whether the skew is actually bothering you before engineering against
-it.
-
-**Effort:** small to try a heuristic; the hard part is deciding it is an improvement.
-
----
-
-## 3. Non-Western coverage after the threshold filter was never reviewed
+## 2. Non-Western coverage after the threshold filter was never reviewed
 
 **Status:** the review the backlog asks for has not happened.
 
@@ -61,7 +44,7 @@ possibly a per-family floor.
 
 ---
 
-## 4. Straggler: stale Deezer wording in the research doc
+## 3. Straggler: stale Deezer wording in the research doc
 
 **Status:** trivial, and already flagged by the backlog itself.
 
