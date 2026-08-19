@@ -440,10 +440,16 @@ body {
 }
 
 /**
- * Mobile: the map takes the whole screen; the filter floats as an overlay in the
- * top-left; the detail panel becomes a bottom sheet. Pinch-zoom and tap-to-focus
- * already work — d3-zoom listens to touch, and `touch-action: none` on the canvas
- * stops the browser from stealing the gestures.
+ * Mobile: the map IS the screen.
+ *
+ * The previous arrangement mounted both control panels and the detail sheet at once, so
+ * a phone opened to chrome with the graph hidden behind it (see the 2026-08-19
+ * screenshots). Now nothing covers the map until you ask: a small toggle summons a
+ * banner across the top, and the sheet only grows once a genre is picked.
+ *
+ * Everything here floats OVER a full-bleed canvas rather than shrinking it, which is
+ * why `src/graph/insets.ts` exists — the camera is told how much is covered so it can
+ * aim at the part you can still see.
  */
 @media (max-width: 900px) {
   .app {
@@ -457,16 +463,69 @@ body {
     inset: 0;
   }
 
-  .filters {
+  /* The summon button. Small and cornered — chrome should cost one thumb, not a panel. */
+  .banner-toggle {
     position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    z-index: 2;
-    max-width: min(78vw, 20rem);
-    max-height: 55vh;
-    border-radius: 12px;
+    top: 0.6rem;
+    left: 0.6rem;
+    z-index: 4;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 10px;
     border: 1px solid #26263a;
     background: rgba(16, 16, 24, 0.92);
+    color: var(--ink);
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  .top-banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    max-height: 46vh;
+    /* Was 3.6rem on top purely to clear the floating toggle. With the close control
+       inline in the tab row, that whole band comes back to the map. */
+    padding: 0.45rem 0.6rem 0.3rem;
+    border-bottom: 1px solid #26263a;
+    border-radius: 0 0 16px 16px;
+    /* Fully opaque: at 0.97 the bright genre labels underneath still read through
+       and the banner looked like a rendering fault rather than a surface. */
+    background: #101018;
+    overflow: hidden;
+  }
+
+  /*
+   * The panels' own headers and collapse chevrons are redundant inside a tabbed
+   * banner — the tab already names the slide and the × already closes it.
+   */
+  .top-banner .filter-header,
+  .top-banner .personal-header {
+    display: none;
+  }
+
+  /* The slides carry their own copy; the banner supplies the frame, not padding. */
+  .top-banner .filter-panel,
+  .top-banner .personal-panel {
+    padding: 0;
+  }
+
+  .banner-close {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 8px;
+    border: 1px solid #26263a;
+    background: transparent;
+    color: var(--ink-dim);
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  /* The desktop sidebar is gone on mobile; its children are slides now. */
+  .app--mobile .filters {
+    display: none;
   }
 
   .detail {
@@ -475,13 +534,236 @@ body {
     right: 0;
     bottom: 0;
     z-index: 2;
-    max-height: 45vh;
+    max-height: 46vh;
     border-top: 1px solid #26263a;
     border-radius: 16px 16px 0 0;
     background: rgba(16, 16, 24, 0.96);
+    /* Trimmed from 1rem 1.25rem: on a 46vh sheet the desktop padding cost a whole
+       track row of vertical space before the first song. */
+    padding: 0 0.9rem 0.4rem;
+    transition: max-height 220ms ease;
   }
 
-  .map-hud {
-    bottom: 46vh;
+  /* Grab strip. Its own element so scrolling the list never dismisses the sheet. */
+  .sheet-handle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 1.6rem;
+    margin: 0 -0.9rem;
+    touch-action: none;
+    cursor: grab;
   }
+
+  .sheet-grip {
+    width: 2.4rem;
+    height: 4px;
+    border-radius: 2px;
+    background: #3a3a52;
+  }
+
+  /*
+   * Dragged down: only the handle and the genre name stay. `max-height` drives it so
+   * the ResizeObserver in App reports the change and the camera re-frames — the map
+   * grows into the space the sheet gave up.
+   */
+  .detail--collapsed {
+    max-height: 4.2rem;
+    overflow: hidden;
+  }
+
+  .detail--collapsed .entity-sub,
+  .detail--collapsed .sheet-tabs,
+  .detail--collapsed .sheet-list,
+  .detail--collapsed .stub {
+    display: none;
+  }
+
+  .app--mobile .detail h2 {
+    /* Was inheriting a desktop heading margin; the sheet has no room for it. */
+    margin: 0.1rem 0 0.35rem;
+    font-size: 1.15rem;
+  }
+
+  .app--mobile .detail .entity-sub {
+    margin: 0 0 0.5rem;
+  }
+
+  .sheet-tabs {
+    display: flex;
+    gap: 0.35rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .sheet-list {
+    overflow-y: auto;
+    /* The first heading inside a list is redundant next to the active tab. */
+  }
+
+  .sheet-list h3 {
+    margin-top: 0.25rem;
+  }
+
+  /*
+   * Nothing selected: the sheet shrinks to a one-line prompt instead of claiming
+   * 45vh to say "No genre selected", which is what buried the map on open.
+   */
+  .detail--idle {
+    max-height: none;
+    padding: 0.65rem 1rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .detail--idle h2 {
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .detail--idle .stub {
+    display: none;
+  }
+
+  /*
+   * The HUD sits just above the sheet. `bottom` is driven by the same 46vh the sheet
+   * is capped at; when the sheet is idle it collapses, so the buttons drop with it.
+   */
+  .map-hud {
+    bottom: 48vh;
+  }
+
+  .app--mobile:has(.detail--idle) .map-hud {
+    bottom: 4.5rem;
+  }
+
+  /* Counts are debug scaffolding, not something worth covering the map with. */
+  .app--mobile .counts {
+    display: none;
+  }
+
+  /* Linked ListenBrainz genres: a scrollable row, not a tall list. */
+  .personal-genres--row {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+  }
+
+  .personal-genres--row li {
+    flex: 0 0 auto;
+    width: 11rem;
+  }
+
+  .personal-genres--row li button {
+    width: 100%;
+  }
+}
+
+/**
+ * Swipe decks — the top banner and the bottom sheet. Shared because their gesture
+ * rules are identical (`src/mobile/slides.ts`).
+ */
+.deck {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.deck-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 0.35rem 0.35rem;
+  overflow-x: auto;
+}
+
+/* Pins the banner's close button to the end of the tab row. */
+.deck-tabs-end {
+  margin-left: auto;
+  padding-left: 0.4rem;
+  flex: 0 0 auto;
+}
+
+.deck-tab {
+  flex: 0 0 auto;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid #26263a;
+  background: transparent;
+  color: var(--ink-dim);
+  font-size: 0.85rem;
+}
+
+.deck-tab--on {
+  background: #1d1d2c;
+  color: var(--ink);
+}
+
+.deck-viewport {
+  overflow: hidden;
+  min-height: 0;
+  /* NOT flex: 1 — growing to fill overrode the measured height and reinstated the
+     dead space this measurement exists to remove. The viewport is exactly as tall as
+     the active slide. */
+  flex: 0 0 auto;
+  transition: height 200ms ease;
+}
+
+.deck-track {
+  display: flex;
+  will-change: transform;
+  /* Fills the measured viewport so a slide's `max-height: 100%` resolves against the
+     viewport rather than against the track's own content height — without this the
+     slide sizes to its content and overflows, clipping the last row. */
+  height: 100%;
+}
+
+.deck-slide {
+  flex: 0 0 auto;
+  min-width: 0;
+  /* Each slide sizes to its own content, up to the viewport, then scrolls. */
+  align-self: flex-start;
+  max-height: 100%;
+  padding: 0 0.6rem;
+  /* Vertical scroll stays inside a slide; horizontal is the deck's own gesture. */
+  overflow-y: auto;
+  touch-action: pan-y;
+}
+
+/*
+ * The track is a flex row, so the banner is as tall as its TALLEST slide — the
+ * ListenBrainz form — which left dead space under the shorter filter slide. Capping
+ * lower keeps that slack small; each slide scrolls if it needs to.
+ */
+/*
+ * The slide fills the measured viewport and scrolls inside it. It used to carry its
+ * own max-height, which produced the empty band: the viewport was sized to the full
+ * scrollHeight while the slide stopped at the cap, leaving the difference as dead
+ * space — and clipping the last row mid-item.
+ */
+.deck--banner .deck-slide {
+  max-height: 100%;
+}
+
+.deck--sheet .deck-slide {
+  max-height: 34vh;
+}
+
+.deck-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0 calc(0.2rem + env(safe-area-inset-bottom, 0px));
+}
+
+.deck-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2e2e44;
+}
+
+.deck-dot--on {
+  background: var(--ink-dim);
 }

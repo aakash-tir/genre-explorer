@@ -21,12 +21,18 @@ interface PersonalPanelProps {
   nodesById: ReadonlyMap<string, GenreNode>;
   /** Focus a genre on the map (same action as clicking its node). */
   onPick: (genreId: string) => void;
+  /**
+   * Mobile: lay the genre bars out as a horizontally scrolling row rather than the
+   * desktop vertical list. A phone banner has width to spare and almost no height.
+   */
+  horizontal?: boolean;
 }
 
 export default function PersonalPanel({
   personal,
   nodesById,
   onPick,
+  horizontal = false,
 }: PersonalPanelProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [usernameDraft, setUsernameDraft] = useState(personal.username ?? '');
@@ -126,7 +132,12 @@ export default function PersonalPanel({
           </label>
 
           <h3>Your genres</h3>
-          <ul className="personal-genres" aria-label="Your genres">
+          <ul
+            className={
+              horizontal ? 'personal-genres personal-genres--row' : 'personal-genres'
+            }
+            aria-label="Your genres"
+          >
             {personal.weights.slice(0, MAX_LISTED).map((genre) => (
               <li key={genre.id}>
                 <button type="button" onClick={() => onPick(genre.id)}>
