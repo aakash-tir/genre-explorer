@@ -15,7 +15,6 @@ import { Fragment, useEffect, useState } from 'react';
 import type { Artist, GenreDetail, GenreNode, Track } from '../types';
 import { createDetailCache } from '../lib/dataset';
 import { trackLinks } from '../lib/trackLinks';
-import SwipeDeck from '../mobile/SwipeDeck';
 
 // The wrapper resolves `fetch` at call time, not module-load time — tests stub the
 // global after this module is imported.
@@ -310,16 +309,41 @@ export default function DetailPanel({
               </>
             );
           }
-          // Empty lists are dropped rather than shown as blank slides — a thin genre
-          // should present a short deck, not slides that look broken.
-          const slides = lists.filter((list) => list.count > 0);
+          // Empty lists are dropped rather than shown as blank tabs — a thin genre
+          // should present a short set, not tabs that open on nothing.
+          const shown = lists.filter((list) => list.count > 0);
+          if (shown.length === 0) return null;
+          const active = shown[Math.min(slide, shown.length - 1)];
+          /*
+           * Tabs that SWAP content, not a sliding deck.
+           *
+           * This was a horizontal SwipeDeck and it read as broken on a real phone:
+           * mid-gesture the heading, tab row and track list all slid sideways
+           * together, clipping "DEEPER CUTS" to "PER CUTS" and "Spotify" to "fy".
+           * Horizontal motion is the wrong axis for a surface anchored to the bottom
+           * edge — the sheet moves vertically now (drag to collapse), and switching
+           * lists is a tap that moves nothing.
+           */
           return (
-            <SwipeDeck
-              slides={slides}
-              index={slide}
-              onIndexChange={setSlide}
-              className="deck--sheet"
-            />
+            <>
+              <div className="sheet-tabs" role="tablist">
+                {shown.map((list, i) => (
+                  <button
+                    key={list.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={list.id === active.id}
+                    className={
+                      list.id === active.id ? 'deck-tab deck-tab--on' : 'deck-tab'
+                    }
+                    onClick={() => setSlide(i)}
+                  >
+                    {list.label}
+                  </button>
+                ))}
+              </div>
+              <div className="sheet-list">{active.content}</div>
+            </>
           );
         })()
       )}

@@ -33,6 +33,7 @@ import { usePersonal } from './personal/usePersonal';
 import TopBanner from './mobile/TopBanner';
 import { useIsMobile } from './mobile/useIsMobile';
 import { NO_INSETS, type Insets } from './graph/insets';
+import { sheetAfterDrag } from './mobile/sheet';
 
 export default function App() {
   const [dataset, setDataset] = useState<GraphDataset | null>(null);
@@ -59,7 +60,10 @@ export default function App() {
   const [bannerOpen, setBannerOpen] = useState(false);
   const [bannerHeight, setBannerHeight] = useState(0);
   const [sheetHeight, setSheetHeight] = useState(0);
+  /** Dragged down out of the way. Reset whenever a new genre is picked. */
+  const [sheetCollapsed, setSheetCollapsed] = useState(false);
   const sheetRef = useRef<HTMLElement>(null);
+  const dragStart = useRef<{ x: number; y: number } | null>(null);
 
   const personal = usePersonal(dataset);
   const nodesById = useMemo(
@@ -106,7 +110,7 @@ export default function App() {
     const observer = new ResizeObserver(report);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [isMobile, state.focusId, dataset]);
+  }, [isMobile, state.focusId, dataset, sheetCollapsed]);
 
   // Keep the URL in step with the state so every view is shareable.
   useEffect(() => {
@@ -140,6 +144,8 @@ export default function App() {
     setFanOpen(true);
     // Picking a genre gets the chrome out of the way — you asked to look at the map.
     setBannerOpen(false);
+    // ...and brings the sheet back, since a new pick is a request to see it.
+    setSheetCollapsed(false);
   };
 
   const handleSelectionChange = useCallback((selectedIds: string[]) => {
@@ -151,6 +157,7 @@ export default function App() {
     setState((s) => ({ ...s, focusId: genreId }));
     setFanOpen(true);
     setBannerOpen(false);
+    setSheetCollapsed(false);
   }, []);
 
   if (error !== null) {
@@ -262,10 +269,54 @@ export default function App() {
       </section>
 
       <aside
-        className={isMobile && focusNode === null ? 'detail detail--idle' : 'detail'}
+        className={[
+          'detail',
+          isMobile && focusNode === null ? 'detail--idle' : '',
+          isMobile && sheetCollapsed ? 'detail--collapsed' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
         aria-label="Genre detail"
         ref={sheetRef}
       >
+        {isMobile && focusNode !== null && (
+          /*
+           * Drag handle. The gesture lives on this strip rather than the whole sheet
+           * so that scrolling a track list never dismisses what you are reading.
+           */
+          <div
+            className="sheet-handle"
+            role="button"
+            tabIndex={0}
+            aria-expanded={!sheetCollapsed}
+            aria-label={sheetCollapsed ? 'Expand details' : 'Collapse details'}
+            onClick={() => setSheetCollapsed((c) => !c)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                setSheetCollapsed((c) => !c);
+              }
+            }}
+            onTouchStart={(event) => {
+              const touch = event.touches[0];
+              dragStart.current = { x: touch.clientX, y: touch.clientY };
+            }}
+            onTouchEnd={(event) => {
+              const start = dragStart.current;
+              if (!start) return;
+              dragStart.current = null;
+              const touch = event.changedTouches[0];
+              // Capture the deltas BEFORE the updater. React may invoke a state
+              // updater more than once (StrictMode does in development), and reading
+              // the ref inside it threw once the gesture had already cleared it.
+              const dx = touch.clientX - start.x;
+              const dy = touch.clientY - start.y;
+              setSheetCollapsed((collapsed) => sheetAfterDrag(collapsed, dx, dy));
+            }}
+          >
+            <span className="sheet-grip" aria-hidden="true" />
+          </div>
+        )}
         <DetailPanel node={focusNode} asSlides={isMobile} />
       </aside>
     </main>

@@ -540,6 +540,71 @@ body {
     border-top: 1px solid #26263a;
     border-radius: 16px 16px 0 0;
     background: rgba(16, 16, 24, 0.96);
+    /* Trimmed from 1rem 1.25rem: on a 46vh sheet the desktop padding cost a whole
+       track row of vertical space before the first song. */
+    padding: 0 0.9rem 0.4rem;
+    transition: max-height 220ms ease;
+  }
+
+  /* Grab strip. Its own element so scrolling the list never dismisses the sheet. */
+  .sheet-handle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 1.6rem;
+    margin: 0 -0.9rem;
+    touch-action: none;
+    cursor: grab;
+  }
+
+  .sheet-grip {
+    width: 2.4rem;
+    height: 4px;
+    border-radius: 2px;
+    background: #3a3a52;
+  }
+
+  /*
+   * Dragged down: only the handle and the genre name stay. `max-height` drives it so
+   * the ResizeObserver in App reports the change and the camera re-frames — the map
+   * grows into the space the sheet gave up.
+   */
+  .detail--collapsed {
+    max-height: 4.2rem;
+    overflow: hidden;
+  }
+
+  .detail--collapsed .entity-sub,
+  .detail--collapsed .sheet-tabs,
+  .detail--collapsed .sheet-list,
+  .detail--collapsed .stub {
+    display: none;
+  }
+
+  .app--mobile .detail h2 {
+    /* Was inheriting a desktop heading margin; the sheet has no room for it. */
+    margin: 0.1rem 0 0.35rem;
+    font-size: 1.15rem;
+  }
+
+  .app--mobile .detail .entity-sub {
+    margin: 0 0 0.5rem;
+  }
+
+  .sheet-tabs {
+    display: flex;
+    gap: 0.35rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .sheet-list {
+    overflow-y: auto;
+    /* The first heading inside a list is redundant next to the active tab. */
+  }
+
+  .sheet-list h3 {
+    margin-top: 0.25rem;
   }
 
   /*
