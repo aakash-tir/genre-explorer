@@ -19,12 +19,21 @@
   "17": "Force Layout",
   "18": "CI Gate and Automation",
   "19": "Deezer Previews and Prior Art",
+  "20": "Found: the Weekly Refresh Is Failing (2026-08-09 run, parked in a new docs/review/)",
+  "21": "fetch-entities.ts",
+  "22": "Genre Explorer - Claude Project Instructions",
+  "23": "rank.ts",
+  "24": "config.ts",
   "25": "Prettier Config",
+  "26": "Runbook — the rolling dataset refresh",
+  "27": "2026-08-19",
   "28": "React Frontend Rules (empty)",
   "29": "v1 Status",
   "30": "ESLint Config File",
   "31": "Vite Env Types",
   "32": "Vitest Setup File",
   "33": "Vite Config",
-  "34": "Vitest Config"
+  "34": "Vitest Config",
+  "35": "Genre Explorer README",
+  "36": "fetch-links.ts"
 }
