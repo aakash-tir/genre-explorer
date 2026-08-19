@@ -88,6 +88,19 @@ Two artifacts must be kept current, together:
 Both artifacts may be empty or absent on a brand-new project. The first merge that
 introduces real structure is the one that creates them.
 
+**Exempt: automated data refreshes.** A PR from `refresh-data.yml` (branch
+`data/rolling-refresh`, labelled `data`/`automated`) touches only `public/data/**` and
+needs NEITHER artifact updated. `graphify` extracts code structure, and these files
+contribute none — a graph rebuild reports every one of them under its "produced zero
+nodes and are absent from the graph" warning, so a refresh cannot move the graph. Nor
+can it change the architecture: it is the same pipeline, on its schedule, writing its
+usual output. This exemption is for the daily rotation only — a hand-made change to
+`public/data/`, or any change to the pipeline that produces it, is a normal merge and
+follows the rule above.
+
+Since these PRs auto-merge unattended, there is no session to do the chore in anyway;
+requiring it would leave the repo permanently in violation of its own rule.
+
 ## Backlog (required)
 
 All future work — bugs, known gaps, feature ideas, scaling items — is recorded in
