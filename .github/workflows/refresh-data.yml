@@ -1,42 +1,66 @@
 name: Refresh dataset
 
-# Rebuilds public/data/ from MusicBrainz, ListenBrainz and Deezer, and opens a PR with
-# the result. Never pushes to main — the dataset goes through the same review gate as
-# code, which is the whole point of the sharp-drop guard in the pipeline.
+# Rolling refresh: a slice of the map every day, landing the same day.
 #
-# TIMING (measured, milestone 4/6 runs): a fully cold build is ~9 hours — over the
-# 6-hour job limit. Two things make the weekly run fit anyway:
+# WHY DAILY SLICES. The old design rebuilt all 912 genres in one weekly job and never
+# once succeeded. A cold build is ~14,010 MusicBrainz requests, and at the 1 req/s this
+# project is bound to that is 4.3 h of pure waiting before Deezer's over-quota backoffs
+# are counted. The 2026-08-16 run reached 325/913 genres in 5 h 50 m and was cancelled at
+# the job ceiling — which also killed the actions/cache post-step, so it saved nothing
+# and the following week started cold again. The workflow's own comment had claimed the
+# cache "is saved even when the job fails or times out"; that is not true of a cancelled
+# job, and it made the loop unbreakable. `gh cache list` showed no build-dataset entry at
+# all, which is why public/data had never been refreshed automatically.
 #
-#   1. The pipeline's disk cache IS its resume mechanism. It is saved to the Actions
-#      cache even when the job fails or times out, so a rerun continues where the
-#      last one stopped. The very first run (or a run after the cache is evicted)
-#      may need one or two manual re-dispatches to fill the cache; after that the
-#      weekly run fits comfortably.
-#   2. "Prune volatile cache" below deletes the parts that must be re-fetched for a
-#      refresh to mean anything (the tree, the counts, the candidate searches, the
-#      rankings) but keeps the stable id mappings (artist streaming links, Deezer
-#      track ids — ~10k entries that change essentially never). A steady-state
-#      weekly run is ~6,000 fresh requests ≈ 2.5-3 h.
+# So the unit of work is a DAY, not a dataset:
+#
+#   * details (this workflow's daily run) — the 66 least-recently-refreshed genres,
+#     picked by `refreshedAt` in each detail file. ~5 min steady state. 912/66 = 14 days
+#     to turn the whole map over, so nothing is ever more than a fortnight stale.
+#   * graph (Sundays) — stages 1-3, which decide WHICH genres exist and how big nodes
+#     are. Not shardable: split across days, the map would gain and lose nodes
+#     mid-rotation. ~4,368 requests, ~80 min, comfortably inside one job.
+#
+# Every run leaves public/data complete and valid, so the live site is never waiting on a
+# half-finished rotation — only the AGE of a given genre varies, never whether it exists.
 on:
   schedule:
-    # Sundays 04:00 UTC — MusicBrainz is quietest then.
-    - cron: '0 4 * * 0'
+    # Daily 04:00 UTC — MusicBrainz is quietest then.
+    - cron: '0 4 * * *'
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'What to rebuild'
+        type: choice
+        options: [details, graph, both]
+        default: details
+      shard_size:
+        description: 'Genres to refresh (details mode); blank uses SHARD_SIZE'
+        type: string
+        default: ''
 
 permissions:
   contents: write
   pull-requests: write
 
+# Never let two refreshes write public/data at once; queue instead of cancelling, so a
+# long Sunday graph run is not killed by Monday's details run.
 concurrency:
   group: refresh-data
   cancel-in-progress: false
 
 jobs:
   refresh:
-    name: rebuild and open PR
+    name: rolling refresh
     runs-on: ubuntu-latest
-    # Just under the 6-hour hard limit so the cache post-step always gets to run.
-    timeout-minutes: 350
+    # A daily shard is minutes. This is a runaway guard, not a budget — nothing here is
+    # expected to come near it, and unlike the old design no progress is lost if it trips.
+    timeout-minutes: 120
+
+    # The `secrets` context is NOT available in a step-level `if:`, so the presence of
+    # the token has to be surfaced as an env value here to be testable below.
+    env:
+      HAS_REFRESH_PAT: ${{ secrets.REFRESH_PAT != '' }}
 
     steps:
       - uses: actions/checkout@v5
@@ -48,9 +72,10 @@ jobs:
 
       - run: npm ci
 
-      # Restore last run's upstream responses. The per-run key + prefix restore-keys
-      # pattern means every run saves its own snapshot and the next run starts from
-      # the newest one — including snapshots from failed/timed-out runs (resume).
+      # Upstream responses. Still worth carrying between runs — artist streaming links
+      # and Deezer track ids change essentially never — but it is now an optimisation
+      # again rather than the resume mechanism. Losing it costs one slow day, not the
+      # whole rotation.
       - name: Restore pipeline cache
         uses: actions/cache@v4
         with:
@@ -58,43 +83,95 @@ jobs:
           key: build-dataset-${{ github.run_id }}
           restore-keys: build-dataset-
 
-      # A refresh that reuses last week's scrape refreshes nothing. Drop everything
-      # that must be current; keep the stable id mappings (links, Deezer ids) that
-      # make the run fit in the job limit. Scheduled runs only — a manual dispatch
-      # after a timeout must RESUME, not start the volatile fetches over.
-      - name: Prune volatile cache (scheduled runs)
+      # Sunday also rebuilds the map. It decides which genres exist, so it runs as one
+      # unit and BEFORE the day's details — a genre added today should get its detail
+      # file today, not in a fortnight.
+      - name: Decide today's work
+        id: plan
+        run: |
+          MODE="${{ github.event.inputs.mode }}"
+          if [ -z "$MODE" ]; then
+            # Scheduled: rebuild the graph on Sundays, details every day.
+            if [ "$(date -u +%u)" = "7" ]; then MODE=both; else MODE=details; fi
+          fi
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          echo "Today's mode: $MODE"
+
+      # A refresh that reuses last week's scrape refreshes nothing. Drop the volatile
+      # entries so this run genuinely re-reads upstream; keep the stable id mappings
+      # (artist links, Deezer ids) that make a shard cheap. Only on real refreshes — a
+      # manual dispatch to repair something must be able to reuse what is there.
+      - name: Prune volatile cache
         if: github.event_name == 'schedule'
         run: |
-          rm -rf .cache/build-dataset/genre-list \
-                 .cache/build-dataset/genre-pages \
-                 .cache/build-dataset/rg-counts \
-                 .cache/build-dataset/artist-search \
+          rm -rf .cache/build-dataset/artist-search \
                  .cache/build-dataset/recording-search \
                  .cache/build-dataset/lb-artists \
                  .cache/build-dataset/lb-recordings
+          if [ "${{ steps.plan.outputs.mode }}" != "details" ]; then
+            rm -rf .cache/build-dataset/genre-list \
+                   .cache/build-dataset/genre-pages \
+                   .cache/build-dataset/rg-counts
+          fi
 
-      - name: Rebuild dataset
-        run: npm run build:dataset
+      - name: Rebuild graph
+        if: steps.plan.outputs.mode != 'details'
+        run: npm run build:dataset -- --graph
 
-      # The dataset must pass the same schema and consistency tests as a code change.
+      - name: Rebuild today's genres
+        if: steps.plan.outputs.mode != 'graph'
+        run: |
+          if [ -n "${{ github.event.inputs.shard_size }}" ]; then
+            npm run build:dataset -- --shard=${{ github.event.inputs.shard_size }}
+          else
+            npm run build:dataset -- --shard
+          fi
+
+      # The dataset passes the same schema and consistency tests as a code change.
       - name: Validate
         run: npm test
 
+      # A PR opened with the default GITHUB_TOKEN does NOT trigger other workflows —
+      # GitHub suppresses that to prevent recursion. `verify` is a REQUIRED check on
+      # main, so such a PR would never get one, would never be mergeable, and the
+      # rotation would stall on day one. A PAT (or App token) in REFRESH_PAT makes the
+      # PR author an identity whose events do start workflows. Fail loudly rather than
+      # opening un-mergeable PRs every morning.
+      - name: Require a token that can trigger checks
+        if: env.HAS_REFRESH_PAT != 'true'
+        run: |
+          echo "::error::REFRESH_PAT is not set. A pull request opened with GITHUB_TOKEN"
+          echo "::error::cannot trigger the required 'verify' check, so it could never"
+          echo "::error::auto-merge and the rotation would stall. Create a fine-grained"
+          echo "::error::PAT with Contents:write + Pull requests:write on this repo and"
+          echo "::error::save it as the REFRESH_PAT secret."
+          exit 1
+
       - name: Open PR
+        id: pr
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: data/weekly-refresh
-          title: 'data: weekly dataset refresh'
-          commit-message: 'data: weekly dataset refresh'
+          token: ${{ secrets.REFRESH_PAT }}
+          branch: data/rolling-refresh
+          title: 'data: rolling refresh'
+          commit-message: 'data: rolling refresh'
           body: |
-            Automated rebuild of `public/data/` from MusicBrainz, ListenBrainz and Deezer.
+            Automated slice of the rolling refresh — the least-recently-refreshed genres,
+            rebuilt from MusicBrainz, ListenBrainz and Deezer.
 
-            Check before merging:
-            - [ ] Node and edge counts look sane against the previous dataset
-            - [ ] No genre family has vanished
-            - [ ] `graph.json` is still within the ~400 KB budget
-
-            The pipeline fails outright on a sharp drop, so a green run means the counts
-            are within tolerance — but tolerance is not the same as correct.
+            The pipeline fails outright on a sharp drop in node or edge count, and the
+            schema and consistency tests run above, so a green check means the shape is
+            within tolerance. Tolerance is not the same as correct — spot-check if a
+            genre you know well is in the diff.
           labels: data, automated
           delete-branch: true
+
+      # Auto-merge rather than waiting for a human. A day that waits for review is a day
+      # the rotation stalls, which is the staleness this design exists to remove. The
+      # sharp-drop guard and the test suite are the gate; a bad slice can only affect the
+      # ~66 genres it touched, and the next day's run is not blocked by it.
+      - name: Enable auto-merge
+        if: steps.pr.outputs.pull-request-number != ''
+        run: gh pr merge --squash --auto "${{ steps.pr.outputs.pull-request-number }}"
+        env:
+          GH_TOKEN: ${{ secrets.REFRESH_PAT }}

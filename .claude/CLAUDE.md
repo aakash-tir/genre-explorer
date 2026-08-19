@@ -40,6 +40,14 @@ See `plan.md` for scope, milestones and the tech-stack rationale.
   change must fail `tsc` on both sides. Never redeclare the dataset shape in the pipeline.
 - **The dataset is a committed artifact.** `public/data/` is checked in, produced by the
   pipeline, refreshed via PR. Never hand-edit it.
+- **The refresh is a daily rotation, and it auto-merges.** `refresh-data.yml` rebuilds
+  the 66 least-recently-refreshed genres each day and merges the PR itself once `verify`
+  is green — a day spent waiting for review is a day the rotation stalls, which is the
+  staleness the design exists to remove. The gate is the sharp-drop guard plus the test
+  suite, and a bad slice can only reach the ~66 genres it touched. This is the one place
+  where data does NOT go through human review; code still always does.
+  Whichever genres are oldest are due next: `refreshedAt` in each detail file IS the
+  queue, so there is no cursor to keep in step. See `docs/runbooks/dataset-refresh.md`.
 - **Network calls happen at build time only.** Nothing in `src/` may call MusicBrainz
   or Deezer at runtime. The app fetches its own static JSON and nothing else — with
   ONE scoped exception: the personal lens (`src/personal/`) may call

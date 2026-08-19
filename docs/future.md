@@ -56,12 +56,11 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
   disqualifier). Cloudflare Pages remains the documented fallback if the 100 GB/month
   soft bandwidth cap or the /genre-explorer/ sub-path ever becomes a problem —
   `docs/runbooks/hosting.md`.
-- 2026-08-07 — The first scheduled refresh runs with a cold Actions cache and may
-  time out once or twice before the cache fills (the run resumes; see
-  `refresh-data.yml`). Expect the first automated data PR to take a couple of
-  Sundays or a few manual dispatches. Still unproven in practice: the only scheduled
-  run so far (2026-08-09) died on a cached MusicBrainz error page rather than a
-  timeout, so the cold-cache path has not actually been exercised end to end yet.
+- 2026-08-19 — The rolling refresh has not yet completed a full 14-day rotation, and
+  no automated data PR has ever merged. It needs the `REFRESH_PAT` secret to exist
+  before day one works at all (`docs/runbooks/dataset-refresh.md`). Watch the first
+  week: confirm a PR opens, `verify` runs on it, it auto-merges, and the next day
+  picks up different genres.
 
 ## Decisions still open
 
