@@ -11,6 +11,9 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 import { slideAfterSwipe } from './slides';
 
+/** Most of the viewport a single slide may claim, leaving the map readable behind it. */
+const MAX_SLIDE_VH = 0.34;
+
 export interface Slide {
   /** Stable key, also the dot's accessible name. */
   id: string;
@@ -57,7 +60,11 @@ export default function SwipeDeck({
   useEffect(() => {
     const el = slideRefs.current[safeIndex];
     if (!el) return;
-    const measure = () => setViewportHeight(el.scrollHeight);
+    // Cap HERE, not on the slide: capping the slide left the viewport sized to the
+    // full content while the slide itself stopped short, and the difference showed as
+    // an empty band beneath a list clipped mid-row.
+    const measure = () =>
+      setViewportHeight(Math.min(el.scrollHeight, window.innerHeight * MAX_SLIDE_VH));
     measure();
     if (typeof ResizeObserver === 'undefined') return;
     // Content inside a slide can change height on its own — searching filters the

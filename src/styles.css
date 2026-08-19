@@ -498,27 +498,6 @@ body {
   }
 
   /*
-   * Banner open wins the screen. Without this the banner and a full-height sheet
-   * both claim ~46vh and squeeze the map into a strip too thin to read — so the
-   * sheet drops to its one-line form for as long as the banner is up.
-   */
-  .app--mobile:has(.top-banner) .detail {
-    max-height: none;
-    padding: 0.65rem 1rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
-  }
-
-  .app--mobile:has(.top-banner) .detail .entity-sub,
-  .app--mobile:has(.top-banner) .detail .deck,
-  .app--mobile:has(.top-banner) .detail .stub {
-    display: none;
-  }
-
-  .app--mobile:has(.top-banner) .detail h2 {
-    font-size: 0.95rem;
-    margin: 0;
-  }
-
-  /*
    * The panels' own headers and collapse chevrons are redundant inside a tabbed
    * banner — the tab already names the slide and the × already closes it.
    */
@@ -734,13 +713,18 @@ body {
 .deck-track {
   display: flex;
   will-change: transform;
+  /* Fills the measured viewport so a slide's `max-height: 100%` resolves against the
+     viewport rather than against the track's own content height — without this the
+     slide sizes to its content and overflows, clipping the last row. */
+  height: 100%;
 }
 
 .deck-slide {
   flex: 0 0 auto;
   min-width: 0;
-  /* Each slide sizes to its own content; the viewport takes the active one's height. */
+  /* Each slide sizes to its own content, up to the viewport, then scrolls. */
   align-self: flex-start;
+  max-height: 100%;
   padding: 0 0.6rem;
   /* Vertical scroll stays inside a slide; horizontal is the deck's own gesture. */
   overflow-y: auto;
@@ -752,8 +736,14 @@ body {
  * ListenBrainz form — which left dead space under the shorter filter slide. Capping
  * lower keeps that slack small; each slide scrolls if it needs to.
  */
+/*
+ * The slide fills the measured viewport and scrolls inside it. It used to carry its
+ * own max-height, which produced the empty band: the viewport was sized to the full
+ * scrollHeight while the slide stopped at the cap, leaving the difference as dead
+ * space — and clipping the last row mid-item.
+ */
 .deck--banner .deck-slide {
-  max-height: 26vh;
+  max-height: 100%;
 }
 
 .deck--sheet .deck-slide {

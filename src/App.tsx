@@ -272,7 +272,10 @@ export default function App() {
         className={[
           'detail',
           isMobile && focusNode === null ? 'detail--idle' : '',
-          isMobile && sheetCollapsed ? 'detail--collapsed' : '',
+          // The banner opening collapses the sheet too — reusing the SAME class
+          // rather than a parallel `:has(.top-banner)` rule, which silently stopped
+          // matching when the sheet's internals were renamed.
+          isMobile && (sheetCollapsed || bannerOpen) ? 'detail--collapsed' : '',
         ]
           .filter(Boolean)
           .join(' ')}
