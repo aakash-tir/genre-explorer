@@ -58,15 +58,22 @@ export default function TopBanner({
 
   return (
     <>
-      <button
-        type="button"
-        className="banner-toggle"
-        aria-expanded={open}
-        aria-label={open ? 'Hide filters' : 'Show filters'}
-        onClick={() => onOpenChange(!open)}
-      >
-        {open ? '×' : '☰'}
-      </button>
+      {/*
+        Only floats while CLOSED. Open, the close control sits inline with the tabs
+        instead — a separate row above them spent vertical space the banner cannot
+        afford, and left the tab row looking orphaned.
+      */}
+      {!open && (
+        <button
+          type="button"
+          className="banner-toggle"
+          aria-expanded={false}
+          aria-label="Show filters"
+          onClick={() => onOpenChange(true)}
+        >
+          ☰
+        </button>
+      )}
 
       {open && (
         <div className="top-banner" ref={bannerRef} role="region" aria-label="Controls">
@@ -75,6 +82,17 @@ export default function TopBanner({
             index={slide}
             onIndexChange={setSlide}
             className="deck--banner"
+            trailing={
+              <button
+                type="button"
+                className="banner-close"
+                aria-expanded
+                aria-label="Hide filters"
+                onClick={() => onOpenChange(false)}
+              >
+                ×
+              </button>
+            }
           />
         </div>
       )}

@@ -486,7 +486,9 @@ body {
     right: 0;
     z-index: 3;
     max-height: 46vh;
-    padding: 3.6rem 0.6rem 0.4rem;
+    /* Was 3.6rem on top purely to clear the floating toggle. With the close control
+       inline in the tab row, that whole band comes back to the map. */
+    padding: 0.45rem 0.6rem 0.3rem;
     border-bottom: 1px solid #26263a;
     border-radius: 0 0 16px 16px;
     /* Fully opaque: at 0.97 the bright genre labels underneath still read through
@@ -523,6 +525,23 @@ body {
   .top-banner .filter-header,
   .top-banner .personal-header {
     display: none;
+  }
+
+  /* The slides carry their own copy; the banner supplies the frame, not padding. */
+  .top-banner .filter-panel,
+  .top-banner .personal-panel {
+    padding: 0;
+  }
+
+  .banner-close {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 8px;
+    border: 1px solid #26263a;
+    background: transparent;
+    color: var(--ink-dim);
+    font-size: 1.1rem;
+    line-height: 1;
   }
 
   /* The desktop sidebar is gone on mobile; its children are slides now. */
@@ -674,9 +693,17 @@ body {
 
 .deck-tabs {
   display: flex;
+  align-items: center;
   gap: 0.35rem;
-  padding: 0 0.35rem 0.4rem;
+  padding: 0 0.35rem 0.35rem;
   overflow-x: auto;
+}
+
+/* Pins the banner's close button to the end of the tab row. */
+.deck-tabs-end {
+  margin-left: auto;
+  padding-left: 0.4rem;
+  flex: 0 0 auto;
 }
 
 .deck-tab {
@@ -697,7 +724,11 @@ body {
 .deck-viewport {
   overflow: hidden;
   min-height: 0;
-  flex: 1;
+  /* NOT flex: 1 — growing to fill overrode the measured height and reinstated the
+     dead space this measurement exists to remove. The viewport is exactly as tall as
+     the active slide. */
+  flex: 0 0 auto;
+  transition: height 200ms ease;
 }
 
 .deck-track {
@@ -708,6 +739,8 @@ body {
 .deck-slide {
   flex: 0 0 auto;
   min-width: 0;
+  /* Each slide sizes to its own content; the viewport takes the active one's height. */
+  align-self: flex-start;
   padding: 0 0.6rem;
   /* Vertical scroll stays inside a slide; horizontal is the deck's own gesture. */
   overflow-y: auto;

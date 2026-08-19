@@ -7,7 +7,7 @@
  * scroll position imperatively fights the browser's own momentum. A transform is
  * declarative and animates for free.
  */
-import { useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 import { slideAfterSwipe } from './slides';
 
@@ -25,6 +25,12 @@ interface SwipeDeckProps {
   className?: string;
   /** Labelled tabs above the slides. Off for the banner, which has few slides. */
   showTabs?: boolean;
+  /**
+   * Control pinned to the end of the tab row. The banner puts its close button here
+   * rather than floating it above, which cost a whole row of a screen that has none
+   * to spare.
+   */
+  trailing?: ReactNode;
 }
 
 export default function SwipeDeck({
@@ -33,12 +39,35 @@ export default function SwipeDeck({
   onIndexChange,
   className,
   showTabs = true,
+  trailing,
 }: SwipeDeckProps) {
   const start = useRef<{ x: number; y: number } | null>(null);
   const [dragX, setDragX] = useState(0);
+  /**
+   * The track is a flex row, so every slide is as tall as the TALLEST one — which
+   * left a band of dead space under the short Filter slide, sized by the taller
+   * ListenBrainz form. Measuring the ACTIVE slide and driving the viewport height
+   * from it gives each slide only the room it needs.
+   */
+  const slideRefs = useRef<(HTMLElement | null)[]>([]);
+  const [viewportHeight, setViewportHeight] = useState<number | undefined>(undefined);
+
+  const safeIndex = Math.max(0, Math.min(index, Math.max(0, slides.length - 1)));
+
+  useEffect(() => {
+    const el = slideRefs.current[safeIndex];
+    if (!el) return;
+    const measure = () => setViewportHeight(el.scrollHeight);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return;
+    // Content inside a slide can change height on its own — searching filters the
+    // list, linking an account replaces the form with genres.
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [safeIndex, slides.length]);
 
   if (slides.length === 0) return null;
-  const safeIndex = Math.max(0, Math.min(index, slides.length - 1));
 
   return (
     <div className={className ? `deck ${className}` : 'deck'}>
@@ -56,11 +85,13 @@ export default function SwipeDeck({
               {slide.label}
             </button>
           ))}
+          {trailing !== undefined && <span className="deck-tabs-end">{trailing}</span>}
         </div>
       )}
 
       <div
         className="deck-viewport"
+        style={viewportHeight === undefined ? undefined : { height: viewportHeight }}
         onTouchStart={(event) => {
           const touch = event.touches[0];
           start.current = { x: touch.clientX, y: touch.clientY };
@@ -99,6 +130,9 @@ export default function SwipeDeck({
           {slides.map((slide, i) => (
             <section
               key={slide.id}
+              ref={(el) => {
+                slideRefs.current[i] = el;
+              }}
               className="deck-slide"
               style={{ width: `${100 / slides.length}%` }}
               aria-hidden={i !== safeIndex}
