@@ -114,6 +114,19 @@ export type GraphDataset = z.infer<typeof GraphDataset>;
 /** `public/data/genres/<id>.json` — lazy-loaded when a node is focused. */
 export const GenreDetail = z.object({
   id: z.string().min(1),
+  /**
+   * When this genre's panel was last rebuilt from upstream.
+   *
+   * This IS the refresh queue. The daily rolling refresh rebuilds the N oldest
+   * genres, so "what is due next" is a sort key rather than a stored cursor — which
+   * makes it self-healing: a brand-new genre has no file and therefore sorts first, a
+   * deleted genre leaves the queue by disappearing, and a failed day corrupts nothing
+   * because those genres simply stay oldest and are picked up tomorrow.
+   *
+   * Optional so a dataset written before the rolling refresh existed still validates;
+   * a missing value is treated as "never refreshed", i.e. due first.
+   */
+  refreshedAt: z.iso.datetime().optional(),
   popularArtists: z.array(Artist),
   smallArtists: z.array(Artist),
   popularTracks: z.array(Track),

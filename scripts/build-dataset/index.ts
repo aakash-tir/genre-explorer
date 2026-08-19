@@ -23,7 +23,12 @@
  * trusted it would emit 2,184 orphan nodes and no error — hence the fixture-tested
  * parser and the sharp-drop guard in stage 8.
  */
-import { MIN_RELEASE_GROUPS } from './config';
+import { readFile } from 'node:fs/promises';
+
+import { GraphDataset, type GenreNode } from '../../src/types';
+import { GENRE_CONCURRENCY, MIN_RELEASE_GROUPS } from './config';
+import { mapWithConcurrency } from './concurrency';
+import { SHARD_SIZE, readRefreshTimes, selectShard } from './rotation';
 import { buildGraph } from './build-graph';
 import { emitArtistIndex } from './emit-artist-index';
 import { emitDetail } from './emit-details';
@@ -43,10 +48,18 @@ import {
   selectEntities,
   type Ranked,
 } from './rank';
-import { emitGraph } from './emit';
+import { GRAPH_PATH, emitGraph } from './emit';
 import { layoutGraph } from './layout';
 
-export async function buildDataset(): Promise<void> {
+/**
+ * Stages 1-3, 7 and 8 — the map itself.
+ *
+ * NOT shardable, which is why it is a separate entry point: these stages decide WHICH
+ * genres exist and how big each node is. Refreshing a slice of them per day would make
+ * the graph gain and lose nodes mid-rotation. ~4,368 MusicBrainz requests, so ~80
+ * minutes, run weekly.
+ */
+export async function buildGraphOnly(): Promise<GenreNode[]> {
   console.log('stage 1: genre list');
   const genres = await fetchGenres();
   console.log(`  ${genres.length} genres`);
@@ -75,11 +88,31 @@ export async function buildDataset(): Promise<void> {
 
   console.log('stage 8: emit');
   await emitGraph({ builtAt: new Date().toISOString(), nodes: placed, edges });
+  return placed;
+}
 
-  console.log('stages 4-5: entities + ranking + links (cold cache ≈ 3 h)');
+/** Load the committed graph, for a details run that is not rebuilding the map. */
+async function readGraphNodes(): Promise<GenreNode[]> {
+  const raw: unknown = JSON.parse(await readFile(GRAPH_PATH, 'utf8'));
+  return GraphDataset.parse(raw).nodes;
+}
+
+/**
+ * Stages 4-6 and 9 — the per-genre panels, for `nodes` only.
+ *
+ * Genres outside `nodes` keep the detail files they already have, so `public/data`
+ * stays complete after every run rather than only at the end of a rotation.
+ */
+export async function buildDetails(nodes: readonly GenreNode[]): Promise<void> {
+  console.log(
+    `stages 4-6: entities + ranking + links for ${nodes.length} genres ` +
+      `(${GENRE_CONCURRENCY} at a time; per-host queues keep every rate limit intact)`,
+  );
   let done = 0;
   let emptyPanels = 0;
-  for (const node of placed) {
+  const refreshedAt = new Date().toISOString();
+
+  await mapWithConcurrency(nodes, GENRE_CONCURRENCY, async (node) => {
     const candidates = await fetchEntities(node);
     const artistListens = await fetchArtistListens(
       node.mbid,
@@ -108,17 +141,23 @@ export async function buildDataset(): Promise<void> {
       deezerId: await fetchDeezerId(r.entity),
     });
 
-    const popularArtists = [];
-    for (const r of artists.popular) popularArtists.push(await toArtist(r));
-    const smallArtists = [];
-    for (const r of artists.obscure) smallArtists.push(await toArtist(r));
-    const popularTracks = [];
-    for (const r of tracks.popular) popularTracks.push(await toTrack(r));
-    const obscureTracks = [];
-    for (const r of tracks.obscure) obscureTracks.push(await toTrack(r));
+    // Artists resolve against MusicBrainz and tracks against Deezer, so these two
+    // groups are issued TOGETHER rather than one after the other. Awaiting them in
+    // sequence left MusicBrainz idle through every Deezer over-quota backoff (6-30 s)
+    // and Deezer idle through every 1 req/s MusicBrainz wait — the gap that turned a
+    // 4.3 h floor into ~12 h. `Promise.all` preserves order, and the per-host queues
+    // in `http.ts` still space each host's own requests, so no limit is widened.
+    const [popularArtists, smallArtists, popularTracks, obscureTracks] =
+      await Promise.all([
+        Promise.all(artists.popular.map(toArtist)),
+        Promise.all(artists.obscure.map(toArtist)),
+        Promise.all(tracks.popular.map(toTrack)),
+        Promise.all(tracks.obscure.map(toTrack)),
+      ]);
 
     await emitDetail({
       id: node.id,
+      refreshedAt,
       popularArtists,
       smallArtists,
       popularTracks,
@@ -127,10 +166,11 @@ export async function buildDataset(): Promise<void> {
 
     if (popularArtists.length === 0 && tracks.popular.length === 0) emptyPanels++;
     done++;
-    if (done % 25 === 0) console.log(`  details: ${done}/${placed.length} genres`);
-  }
+    if (done % 25 === 0) console.log(`  details: ${done}/${nodes.length} genres`);
+  });
+
   console.log(
-    `  details done: ${placed.length} files, ${emptyPanels} with no ranked entities at all`,
+    `  details done: ${nodes.length} files, ${emptyPanels} with no ranked entities at all`,
   );
 
   // Stage 9 — invert the detail files just written into the artist → genre index
@@ -138,7 +178,44 @@ export async function buildDataset(): Promise<void> {
   await emitArtistIndex();
 }
 
+/**
+ * Entry point. Three modes, because the work splits along what can be sharded:
+ *
+ *   --graph      stages 1-3/7/8 only. Weekly; decides which genres exist.
+ *   --shard[=N]  today's N least-recently-refreshed genres. Daily.
+ *   (no flag)    everything, as before — a full local rebuild.
+ */
+export async function main(argv: readonly string[]): Promise<void> {
+  if (argv.includes('--graph')) {
+    await buildGraphOnly();
+    return;
+  }
+
+  const shardArg = argv.find((a) => a === '--shard' || a.startsWith('--shard='));
+  if (shardArg !== undefined) {
+    const size = shardArg.includes('=') ? Number(shardArg.split('=')[1]) : SHARD_SIZE;
+    if (!Number.isInteger(size) || size < 1) {
+      throw new Error(`--shard needs a positive integer, got "${shardArg}"`);
+    }
+    const nodes = await readGraphNodes();
+    const shard = selectShard(await readRefreshTimes(nodes), size);
+    console.log(
+      `rolling refresh: ${shard.length} of ${nodes.length} genres due for a rebuild`,
+    );
+    await buildDetails(shard);
+    return;
+  }
+
+  const placed = await buildGraphOnly();
+  await buildDetails(placed);
+}
+
+/** Full rebuild — every genre, graph included. Kept for callers and local runs. */
+export async function buildDataset(): Promise<void> {
+  await main([]);
+}
+
 // `import.meta.url` guard so importing this module in a test does not run it.
 if (process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'))) {
-  await buildDataset();
+  await main(process.argv.slice(2));
 }

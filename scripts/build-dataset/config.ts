@@ -113,3 +113,17 @@ export const SPECIAL_PURPOSE_ARTIST_MBIDS: ReadonlySet<string> = new Set([
   '33cf029c-63b0-41a0-9855-be2a3665fb3b', // [data]
   '314e1c25-dde7-4e4d-b2f4-0a7b9f7c56dc', // [dialogue]
 ]);
+
+/**
+ * Genres processed at once by the details stage.
+ *
+ * This is NOT a rate-limit dial. The per-host queues in `http.ts` space every request
+ * to a given host regardless of how many callers are in flight, so MusicBrainz stays at
+ * exactly 1 req/s whatever this is set to. What concurrency buys is that Deezer and
+ * ListenBrainz work proceeds WHILE a MusicBrainz call is waiting its turn, instead of
+ * every queue taking turns being idle.
+ *
+ * 4 is enough to keep the MusicBrainz queue saturated — the binding constraint — while
+ * leaving Deezer's over-quota backoffs room to overlap each other rather than stacking.
+ */
+export const GENRE_CONCURRENCY = 4;
