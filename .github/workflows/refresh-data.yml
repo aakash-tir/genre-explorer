@@ -118,8 +118,23 @@ jobs:
         if: steps.plan.outputs.mode != 'details'
         run: npm run build:dataset -- --graph
 
+      # `continue-on-error` because the genres this step has ALREADY written are correct
+      # and already on disk, and throwing them away is what cost the rotation 12 of its
+      # first 34 days. Two different deaths are being survived here:
+      #
+      #   - the step exits non-zero (too much of the shard failed — see
+      #     `shard-outcome.ts`, which already tolerates the flaky-genre case in-process)
+      #   - the step is KILLED by `timeout-minutes` and never returns at all, which no
+      #     amount of in-process error handling can catch
+      #
+      # Either way the run continues, commits what landed, and is then marked failed by
+      # the last step so a bad day is still red in the Actions list. The step ceiling is
+      # deliberately below the job ceiling so the kill leaves room for the steps below.
       - name: Rebuild today's genres
+        id: details
         if: steps.plan.outputs.mode != 'graph'
+        continue-on-error: true
+        timeout-minutes: 90
         run: |
           if [ -n "${{ github.event.inputs.shard_size }}" ]; then
             npm run build:dataset -- --shard=${{ github.event.inputs.shard_size }}
@@ -127,7 +142,17 @@ jobs:
             npm run build:dataset -- --shard
           fi
 
+      # Stage 9 is the last thing `buildDetails` does, so a killed step never reaches
+      # it and would leave the artist index describing genres that have since changed.
+      # It is a pure re-read of `public/data/genres/` with no network, so running it
+      # again here costs seconds and always leaves index and panels agreeing.
+      - name: Reconcile the artist index
+        if: steps.plan.outputs.mode != 'graph'
+        run: npm run build:artist-index
+
       # The dataset passes the same schema and consistency tests as a code change.
+      # This is the real gate: a partial shard still has to be internally consistent
+      # and schema-valid before any of it reaches a PR.
       - name: Validate
         run: npm test
 
@@ -175,3 +200,17 @@ jobs:
         run: gh pr merge --squash --auto "${{ steps.pr.outputs.pull-request-number }}"
         env:
           GH_TOKEN: ${{ secrets.REFRESH_PAT }}
+
+      # Land the data, THEN complain. The genres that succeeded are already in the PR
+      # above and will merge on their own; this exists so a day that failed or ran out
+      # of time is still visibly red rather than passing as a normal morning. The
+      # genres it could not build kept their old `refreshedAt`, so they are at the head
+      # of tomorrow's queue with no bookkeeping — see `rotation.ts`.
+      - name: Report a failed or truncated shard
+        if: steps.details.outcome == 'failure'
+        run: |
+          echo "::error::Today's shard did not finish: the build step failed or hit its"
+          echo "::error::90-minute ceiling. Whatever genres DID build have been committed"
+          echo "::error::and the rest stay at the head of tomorrow's queue. Check the"
+          echo "::error::'Rebuild today's genres' log above for which genres threw."
+          exit 1

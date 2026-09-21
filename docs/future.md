@@ -56,11 +56,14 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
   disqualifier). Cloudflare Pages remains the documented fallback if the 100 GB/month
   soft bandwidth cap or the /genre-explorer/ sub-path ever becomes a problem —
   `docs/runbooks/hosting.md`.
-- 2026-08-19 — The rolling refresh has not yet completed a full 14-day rotation, and
-  no automated data PR has ever merged. It needs the `REFRESH_PAT` secret to exist
-  before day one works at all (`docs/runbooks/dataset-refresh.md`). Watch the first
-  week: confirm a PR opens, `verify` runs on it, it auto-merges, and the next day
-  picks up different genres.
+- 2026-09-21 — Watch whether any single genre now fails EVERY day. Partial progress
+  means a permanently-broken genre no longer fails the run — it just quietly holds a
+  slot in every shard and never updates. The run log names the failed ids; if the same
+  id recurs for a week it is a genre the pipeline can no longer build, not weather.
+- 2026-09-21 — The 2026-09-20 run was cancelled at the 2 h job ceiling and has NOT been
+  diagnosed. The other observed failures were single upstream errors, which the partial
+  -progress change now survives; a run that takes 40× its usual few minutes is a
+  different fault and the 90-minute step ceiling only bounds it, does not explain it.
 
 ## Decisions still open
 

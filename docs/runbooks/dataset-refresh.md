@@ -29,12 +29,40 @@ the whole mechanism, and it is deliberately derived rather than stored:
 
 There is no state to reconcile and nothing to reset by hand.
 
+## A failed genre fails only itself
+
+A genre whose upstream calls fail is skipped, logged by id, and left unwritten. Because
+it is unwritten its old `refreshedAt` survives, so it sits at the head of tomorrow's
+queue and is retried then — the retry is the rotation itself, and there is nothing to
+schedule or track. The genres that succeeded are already on disk and land in the day's
+PR as normal.
+
+This replaced an all-or-nothing shard that aborted on the first rejection. Over the
+rotation's first month it lost 12 of 34 days, every one of them to a SINGLE transient
+error (MusicBrainz 503, ListenBrainz ETIMEDOUT) discarding the ~65 genres that had
+already been built. Effective rotation was ~21 days against a designed 14.
+
+Two ceilings keep that tolerance honest:
+
+- **More than 25% of the shard failing** (or more than 2 genres on a small manual
+  shard) exits non-zero. That shape is an upstream outage rather than weather, and a PR
+  opened every morning for it would teach us to ignore the PR. `shard-outcome.ts`.
+- **90 minutes** kills the build step. A killed process cannot handle its own death, so
+  survival is at the workflow level: the step is `continue-on-error`, the artist index
+  is rebuilt from whatever landed, the test suite still gates the PR, and a final step
+  marks the run red. The data lands; the day is still visibly a bad one.
+
+A genre that appears in the failure log EVERY day is not transient — it is a genre the
+pipeline can no longer build, and it will hold a slot in every shard until fixed.
+
 ## It merges itself
 
 The daily PR auto-merges once `verify` is green. This is the one place in the project
 where data reaches `main` without a human reading it, and it is deliberate: a day spent
 waiting for review is a day the rotation stalls. The gate is the pipeline's sharp-drop
 guard plus the full test suite, and a bad slice can only reach the ~66 genres it touched.
+A PARTIAL slice merges on the same terms: it is still schema-valid and internally
+consistent, and the genres missing from it simply keep the panels they already had.
 
 ## No post-merge chores
 

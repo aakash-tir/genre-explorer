@@ -29,6 +29,7 @@ import { GraphDataset, type GenreNode } from '../../src/types';
 import { GENRE_CONCURRENCY, MIN_RELEASE_GROUPS } from './config';
 import { mapWithConcurrency } from './concurrency';
 import { SHARD_SIZE, readRefreshTimes, selectShard } from './rotation';
+import { judgeShard } from './shard-outcome';
 import { buildGraph } from './build-graph';
 import { emitArtistIndex } from './emit-artist-index';
 import { emitDetail } from './emit-details';
@@ -102,6 +103,12 @@ async function readGraphNodes(): Promise<GenreNode[]> {
  *
  * Genres outside `nodes` keep the detail files they already have, so `public/data`
  * stays complete after every run rather than only at the end of a rotation.
+ *
+ * A genre that throws fails only ITSELF. It is left unwritten, which leaves its old
+ * `refreshedAt` in place, which keeps it at the head of the queue tomorrow — the
+ * retry is the rotation, not a mechanism of its own. The genres that succeeded are
+ * already on disk and stay there. See `shard-outcome.ts` for why, and for the
+ * ceiling that still fails a run when the upstream is genuinely down.
  */
 export async function buildDetails(nodes: readonly GenreNode[]): Promise<void> {
   console.log(
@@ -110,72 +117,95 @@ export async function buildDetails(nodes: readonly GenreNode[]): Promise<void> {
   );
   let done = 0;
   let emptyPanels = 0;
+  const failedIds: string[] = [];
   const refreshedAt = new Date().toISOString();
 
   await mapWithConcurrency(nodes, GENRE_CONCURRENCY, async (node) => {
-    const candidates = await fetchEntities(node);
-    const artistListens = await fetchArtistListens(
-      node.mbid,
-      candidates.artists.map((a) => a.mbid),
-    );
-    const recordingListens = await fetchRecordingListens(
-      node.mbid,
-      candidates.recordings.map((r) => r.mbid),
-    );
-    const artists = selectEntities(candidates.artists, artistListens);
-    const tracks = selectEntities(candidates.recordings, recordingListens);
-
-    const toArtist = async (r: Ranked<CandidateArtist>) => ({
-      mbid: r.entity.mbid,
-      name: r.entity.name,
-      listens: r.listens,
-      tagVotes: r.entity.tagVotes,
-      links: await fetchArtistLinks(r.entity.mbid),
-    });
-    const toTrack = async (r: Ranked<CandidateRecording>) => ({
-      mbid: r.entity.mbid,
-      title: r.entity.title,
-      artistName: r.entity.artistName,
-      listens: r.listens,
-      links: [],
-      deezerId: await fetchDeezerId(r.entity),
-    });
-
-    // Artists resolve against MusicBrainz and tracks against Deezer, so these two
-    // groups are issued TOGETHER rather than one after the other. Awaiting them in
-    // sequence left MusicBrainz idle through every Deezer over-quota backoff (6-30 s)
-    // and Deezer idle through every 1 req/s MusicBrainz wait — the gap that turned a
-    // 4.3 h floor into ~12 h. `Promise.all` preserves order, and the per-host queues
-    // in `http.ts` still space each host's own requests, so no limit is widened.
-    const [popularArtists, smallArtists, popularTracks, obscureTracks] =
-      await Promise.all([
-        Promise.all(artists.popular.map(toArtist)),
-        Promise.all(artists.obscure.map(toArtist)),
-        Promise.all(tracks.popular.map(toTrack)),
-        Promise.all(tracks.obscure.map(toTrack)),
-      ]);
-
-    await emitDetail({
-      id: node.id,
-      refreshedAt,
-      popularArtists,
-      smallArtists,
-      popularTracks,
-      obscureTracks,
-    });
-
-    if (popularArtists.length === 0 && tracks.popular.length === 0) emptyPanels++;
+    try {
+      await buildOneDetail(node, refreshedAt, () => {
+        emptyPanels++;
+      });
+    } catch (error) {
+      // Deliberately swallowed. `mapWithConcurrency` aborts the whole shard on the
+      // first rejection — right for the graph stages, wrong here, where the unit of
+      // work is one genre and the other 65 are already correct.
+      failedIds.push(node.id);
+      console.warn(
+        `  ! ${node.id} failed, leaving it for the next run: ${String(error)}`,
+      );
+    }
     done++;
     if (done % 25 === 0) console.log(`  details: ${done}/${nodes.length} genres`);
   });
 
-  console.log(
-    `  details done: ${nodes.length} files, ${emptyPanels} with no ranked entities at all`,
-  );
-
-  // Stage 9 — invert the detail files just written into the artist → genre index
-  // the personal lens matches against. Pure re-read of our own output, no network.
+  // Stage 9 — invert the detail files just written into the artist → genre index the
+  // personal lens matches against. Pure re-read of our own output, no network, so it
+  // runs even after a partial shard and always describes what is actually on disk.
   await emitArtistIndex();
+
+  const outcome = judgeShard(nodes.length, failedIds);
+  console.log(`  ${outcome.summary}`);
+  console.log(`  ${emptyPanels} genres had no ranked entities at all`);
+  if (!outcome.acceptable) throw new Error(outcome.summary);
+}
+
+/** One genre's panel: stages 4-6 for a single node. Throws on any upstream failure. */
+async function buildOneDetail(
+  node: GenreNode,
+  refreshedAt: string,
+  onEmptyPanel: () => void,
+): Promise<void> {
+  const candidates = await fetchEntities(node);
+  const artistListens = await fetchArtistListens(
+    node.mbid,
+    candidates.artists.map((a) => a.mbid),
+  );
+  const recordingListens = await fetchRecordingListens(
+    node.mbid,
+    candidates.recordings.map((r) => r.mbid),
+  );
+  const artists = selectEntities(candidates.artists, artistListens);
+  const tracks = selectEntities(candidates.recordings, recordingListens);
+
+  const toArtist = async (r: Ranked<CandidateArtist>) => ({
+    mbid: r.entity.mbid,
+    name: r.entity.name,
+    listens: r.listens,
+    tagVotes: r.entity.tagVotes,
+    links: await fetchArtistLinks(r.entity.mbid),
+  });
+  const toTrack = async (r: Ranked<CandidateRecording>) => ({
+    mbid: r.entity.mbid,
+    title: r.entity.title,
+    artistName: r.entity.artistName,
+    listens: r.listens,
+    links: [],
+    deezerId: await fetchDeezerId(r.entity),
+  });
+
+  // Artists resolve against MusicBrainz and tracks against Deezer, so these two
+  // groups are issued TOGETHER rather than one after the other. Awaiting them in
+  // sequence left MusicBrainz idle through every Deezer over-quota backoff (6-30 s)
+  // and Deezer idle through every 1 req/s MusicBrainz wait — the gap that turned a
+  // 4.3 h floor into ~12 h. `Promise.all` preserves order, and the per-host queues
+  // in `http.ts` still space each host's own requests, so no limit is widened.
+  const [popularArtists, smallArtists, popularTracks, obscureTracks] = await Promise.all([
+    Promise.all(artists.popular.map(toArtist)),
+    Promise.all(artists.obscure.map(toArtist)),
+    Promise.all(tracks.popular.map(toTrack)),
+    Promise.all(tracks.obscure.map(toTrack)),
+  ]);
+
+  await emitDetail({
+    id: node.id,
+    refreshedAt,
+    popularArtists,
+    smallArtists,
+    popularTracks,
+    obscureTracks,
+  });
+
+  if (popularArtists.length === 0 && tracks.popular.length === 0) onEmptyPanel();
 }
 
 /**
