@@ -53,9 +53,16 @@ jobs:
   refresh:
     name: rolling refresh
     runs-on: ubuntu-latest
-    # A daily shard is minutes. This is a runaway guard, not a budget — nothing here is
-    # expected to come near it, and unlike the old design no progress is lost if it trips.
-    timeout-minutes: 120
+    # A runaway guard, not a budget — the per-STEP ceilings below are the budget, and
+    # that distinction is load-bearing rather than stylistic. A JOB timeout CANCELS the
+    # job, and a cancelled job skips its post-steps, including the `actions/cache` save.
+    # A STEP timeout merely fails the step, so the later steps and the cache save still
+    # run. At 120 this ceiling was doing the opposite of its job: it was the thing
+    # killing every Sunday, and killing it in the one way that saves nothing.
+    #
+    # 350 sits just under the 360-minute hard limit GitHub imposes on hosted runners,
+    # and above the 240 + 90 the two build steps can spend between them plus setup.
+    timeout-minutes: 350
 
     # The `secrets` context is NOT available in a step-level `if:`, so the presence of
     # the token has to be surfaced as an env value here to be testable below.
@@ -114,8 +121,26 @@ jobs:
                    .cache/build-dataset/rg-counts
           fi
 
+      # Sunday's graph rebuild is the expensive one: stages 1-3 are ~4,400 MusicBrainz
+      # requests that cannot be sharded, because they decide WHICH genres exist and a
+      # sliced run would make the map gain and lose nodes mid-rotation.
+      #
+      # It needs ~140 minutes and used to share a 120-minute job ceiling with the daily
+      # details shard, so it could never finish: all 7 Sunday runs between 2026-08-09
+      # and 2026-09-20 failed, `graph.json` had not been rebuilt since 2026-08-18, and
+      # each cancellation skipped the cache save so the next Sunday started identical.
+      # Measured on 2026-09-20: stage 2 took 69 min for 2,202 pages, stage 3 was ~50 min
+      # in and unfinished when the ceiling killed it.
+      #
+      # 240 is roughly 1.7x the measured need, and `continue-on-error` matters for the
+      # same reason it does below: a dead graph step must not skip the day's DETAILS
+      # shard, which is how Sunday was costing the rotation a seventh of its days on
+      # top of never rebuilding the map.
       - name: Rebuild graph
+        id: graph
         if: steps.plan.outputs.mode != 'details'
+        continue-on-error: true
+        timeout-minutes: 240
         run: npm run build:dataset -- --graph
 
       # `continue-on-error` because the genres this step has ALREADY written are correct
@@ -207,10 +232,19 @@ jobs:
       # genres it could not build kept their old `refreshedAt`, so they are at the head
       # of tomorrow's queue with no bookkeeping — see `rotation.ts`.
       - name: Report a failed or truncated shard
-        if: steps.details.outcome == 'failure'
+        if: steps.details.outcome == 'failure' || steps.graph.outcome == 'failure'
         run: |
-          echo "::error::Today's shard did not finish: the build step failed or hit its"
-          echo "::error::90-minute ceiling. Whatever genres DID build have been committed"
-          echo "::error::and the rest stay at the head of tomorrow's queue. Check the"
-          echo "::error::'Rebuild today's genres' log above for which genres threw."
+          if [ "${{ steps.graph.outcome }}" = "failure" ]; then
+            echo "::error::The graph rebuild failed or hit its 240-minute ceiling, so"
+            echo "::error::public/data/graph.json may be unchanged: no genre entered or"
+            echo "::error::left the map this week. Unlike the details shard this does NOT"
+            echo "::error::self-heal — stages 1-3 only run on Sundays, so the next attempt"
+            echo "::error::is a week away unless dispatched by hand with mode=graph."
+          fi
+          if [ "${{ steps.details.outcome }}" = "failure" ]; then
+            echo "::error::Today's shard did not finish: the build step failed or hit its"
+            echo "::error::90-minute ceiling. Whatever genres DID build have been committed"
+            echo "::error::and the rest stay at the head of tomorrow's queue. Check the"
+            echo "::error::'Rebuild today's genres' log above for which genres threw."
+          fi
           exit 1

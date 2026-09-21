@@ -60,10 +60,14 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
   means a permanently-broken genre no longer fails the run — it just quietly holds a
   slot in every shard and never updates. The run log names the failed ids; if the same
   id recurs for a week it is a genre the pipeline can no longer build, not weather.
-- 2026-09-21 — The 2026-09-20 run was cancelled at the 2 h job ceiling and has NOT been
-  diagnosed. The other observed failures were single upstream errors, which the partial
-  -progress change now survives; a run that takes 40× its usual few minutes is a
-  different fault and the 90-minute step ceiling only bounds it, does not explain it.
+- 2026-09-21 — Confirm the first Sunday graph rebuild actually completes now that the
+  budget fits (~140 min needed, 240 min step ceiling). Every Sunday run from 2026-08-09
+  to 2026-09-20 failed, so a green one has never been observed — watch that `graph.json`
+  gets a new `builtAt` and that the sharp-drop guard passes on a real rebuild.
+- 2026-09-21 — A failed graph does not self-heal the way a failed genre does: stages 1-3
+  run only on Sundays, so a bad week costs a week unless someone dispatches `mode=graph`
+  by hand. Worth a retry the following day, or moving the graph to its own workflow, if
+  Sundays keep failing for a reason other than the budget.
 
 ## Decisions still open
 

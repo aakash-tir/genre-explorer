@@ -55,6 +55,32 @@ Two ceilings keep that tolerance honest:
 A genre that appears in the failure log EVERY day is not transient — it is a genre the
 pipeline can no longer build, and it will hold a slot in every shard until fixed.
 
+## Sunday is the expensive day
+
+Sundays also rebuild the graph — stages 1-3, ~4,400 MusicBrainz requests, ~140 minutes
+cold. They cannot be sharded across days because they decide WHICH genres exist, so a
+sliced run would make the map gain and lose nodes mid-rotation.
+
+**Every Sunday run between 2026-08-09 and 2026-09-20 failed.** The graph shared a
+120-minute job ceiling with the daily details shard, so it could not finish — and each
+cancellation skipped the `actions/cache` save, so the next Sunday started from exactly
+the same place. `graph.json` went unrebuilt from 2026-08-18 to 2026-09-21: no genre
+entered or left the map in that time, and no node changed size.
+
+The distinction that matters, and the one the old ceiling got wrong:
+
+| ceiling                    | on overrun       | post-steps | cache saved            |
+| -------------------------- | ---------------- | ---------- | ---------------------- |
+| **job** `timeout-minutes`  | job is CANCELLED | skipped    | no — progress lost     |
+| **step** `timeout-minutes` | step FAILS       | still run  | yes — next run resumes |
+
+So the budget lives on the steps (graph 240 min, details 90 min) and the job ceiling
+(350, just under GitHub's 360-minute hard limit) is only a runaway guard.
+
+Unlike a failed genre, **a failed graph does not self-heal**: stages 1-3 only run on
+Sundays, so the next attempt is a week away. To force one, dispatch the workflow by hand
+with `mode=graph`.
+
 ## It merges itself
 
 The daily PR auto-merges once `verify` is green. This is the one place in the project

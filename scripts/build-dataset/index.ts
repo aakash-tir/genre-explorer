@@ -65,11 +65,16 @@ export async function buildGraphOnly(): Promise<GenreNode[]> {
   const genres = await fetchGenres();
   console.log(`  ${genres.length} genres`);
 
-  console.log('stage 2: hierarchy (cold cache ≈ 40 min at 1 req/s)');
+  // ~70 min cold, NOT the 40 this once claimed. Measured on the 2026-09-20 run:
+  // 2,202 pages in 69 minutes, i.e. ~1.88 s each rather than the bare 1.1 s rate
+  // limit, because each page is also parsed and some are retried. The optimistic
+  // number is part of why the Sunday job was given a budget it could never fit in.
+  console.log('stage 2: hierarchy (cold cache ≈ 70 min at 1 req/s)');
   const mbidEdges = await fetchHierarchy(genres);
   console.log(`  ${mbidEdges.length} raw relations`);
 
-  console.log('stage 3: popularity (cold cache ≈ 40 min at 1 req/s)');
+  // Same request count as stage 2, so budget the same ~70 min.
+  console.log('stage 3: popularity (cold cache ≈ 70 min at 1 req/s)');
   const counts = await fetchPopularity(genres);
 
   const { nodes, edges, report } = buildGraph(
