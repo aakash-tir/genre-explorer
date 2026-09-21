@@ -56,11 +56,18 @@ Backlog. Dated bullets under the matching section. Remove an item when it's comp
   disqualifier). Cloudflare Pages remains the documented fallback if the 100 GB/month
   soft bandwidth cap or the /genre-explorer/ sub-path ever becomes a problem —
   `docs/runbooks/hosting.md`.
-- 2026-08-19 — The rolling refresh has not yet completed a full 14-day rotation, and
-  no automated data PR has ever merged. It needs the `REFRESH_PAT` secret to exist
-  before day one works at all (`docs/runbooks/dataset-refresh.md`). Watch the first
-  week: confirm a PR opens, `verify` runs on it, it auto-merges, and the next day
-  picks up different genres.
+- 2026-09-21 — Watch whether any single genre now fails EVERY day. Partial progress
+  means a permanently-broken genre no longer fails the run — it just quietly holds a
+  slot in every shard and never updates. The run log names the failed ids; if the same
+  id recurs for a week it is a genre the pipeline can no longer build, not weather.
+- 2026-09-21 — Confirm the first Sunday graph rebuild actually completes now that the
+  budget fits (~140 min needed, 240 min step ceiling). Every Sunday run from 2026-08-09
+  to 2026-09-20 failed, so a green one has never been observed — watch that `graph.json`
+  gets a new `builtAt` and that the sharp-drop guard passes on a real rebuild.
+- 2026-09-21 — A failed graph does not self-heal the way a failed genre does: stages 1-3
+  run only on Sundays, so a bad week costs a week unless someone dispatches `mode=graph`
+  by hand. Worth a retry the following day, or moving the graph to its own workflow, if
+  Sundays keep failing for a reason other than the budget.
 
 ## Decisions still open
 

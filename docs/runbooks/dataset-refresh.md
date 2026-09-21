@@ -29,12 +29,66 @@ the whole mechanism, and it is deliberately derived rather than stored:
 
 There is no state to reconcile and nothing to reset by hand.
 
+## A failed genre fails only itself
+
+A genre whose upstream calls fail is skipped, logged by id, and left unwritten. Because
+it is unwritten its old `refreshedAt` survives, so it sits at the head of tomorrow's
+queue and is retried then — the retry is the rotation itself, and there is nothing to
+schedule or track. The genres that succeeded are already on disk and land in the day's
+PR as normal.
+
+This replaced an all-or-nothing shard that aborted on the first rejection. Over the
+rotation's first month it lost 12 of 34 days, every one of them to a SINGLE transient
+error (MusicBrainz 503, ListenBrainz ETIMEDOUT) discarding the ~65 genres that had
+already been built. Effective rotation was ~21 days against a designed 14.
+
+Two ceilings keep that tolerance honest:
+
+- **More than 25% of the shard failing** (or more than 2 genres on a small manual
+  shard) exits non-zero. That shape is an upstream outage rather than weather, and a PR
+  opened every morning for it would teach us to ignore the PR. `shard-outcome.ts`.
+- **90 minutes** kills the build step. A killed process cannot handle its own death, so
+  survival is at the workflow level: the step is `continue-on-error`, the artist index
+  is rebuilt from whatever landed, the test suite still gates the PR, and a final step
+  marks the run red. The data lands; the day is still visibly a bad one.
+
+A genre that appears in the failure log EVERY day is not transient — it is a genre the
+pipeline can no longer build, and it will hold a slot in every shard until fixed.
+
+## Sunday is the expensive day
+
+Sundays also rebuild the graph — stages 1-3, ~4,400 MusicBrainz requests, ~140 minutes
+cold. They cannot be sharded across days because they decide WHICH genres exist, so a
+sliced run would make the map gain and lose nodes mid-rotation.
+
+**Every Sunday run between 2026-08-09 and 2026-09-20 failed.** The graph shared a
+120-minute job ceiling with the daily details shard, so it could not finish — and each
+cancellation skipped the `actions/cache` save, so the next Sunday started from exactly
+the same place. `graph.json` went unrebuilt from 2026-08-18 to 2026-09-21: no genre
+entered or left the map in that time, and no node changed size.
+
+The distinction that matters, and the one the old ceiling got wrong:
+
+| ceiling                    | on overrun       | post-steps | cache saved            |
+| -------------------------- | ---------------- | ---------- | ---------------------- |
+| **job** `timeout-minutes`  | job is CANCELLED | skipped    | no — progress lost     |
+| **step** `timeout-minutes` | step FAILS       | still run  | yes — next run resumes |
+
+So the budget lives on the steps (graph 240 min, details 90 min) and the job ceiling
+(350, just under GitHub's 360-minute hard limit) is only a runaway guard.
+
+Unlike a failed genre, **a failed graph does not self-heal**: stages 1-3 only run on
+Sundays, so the next attempt is a week away. To force one, dispatch the workflow by hand
+with `mode=graph`.
+
 ## It merges itself
 
 The daily PR auto-merges once `verify` is green. This is the one place in the project
 where data reaches `main` without a human reading it, and it is deliberate: a day spent
 waiting for review is a day the rotation stalls. The gate is the pipeline's sharp-drop
 guard plus the full test suite, and a bad slice can only reach the ~66 genres it touched.
+A PARTIAL slice merges on the same terms: it is still schema-valid and internally
+consistent, and the genres missing from it simply keep the panels they already had.
 
 ## No post-merge chores
 
