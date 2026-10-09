@@ -68,13 +68,22 @@ This repo has a GitHub remote, so `main` is protected:
   `.claude/settings.json`), which denies `git commit`/`git merge`/`git push` against
   `main`.
 - Workflow: branch → commit → push the branch → open a PR → merge the PR → pull `main`.
+- **CI is lean on Actions minutes** (`.github/workflows/ci.yml`): the `verify` job runs
+  on pull requests only, and only when a file it depends on changed (`src/`, `tests/`,
+  `scripts/`, `public/`, the manifests and tool configs, the workflows). Nothing runs on
+  the merge to `main`. Docs-only PRs (`docs/`, `logs/`, `graphify-out/`, `*.md`) start
+  no CI. Any other PR waits for every check that started; `gh pr checks` lists only
+  those. `verify` is still a **required** check on `main`, so a docs-only PR cannot merge
+  without one: dispatch it on the branch (`gh workflow run ci.yml --ref <branch>`) and
+  merge once it is green.
 
-## After every PR merge (required)
+## Before every PR merge (required)
 
-Two artifacts must be kept current, together:
+Two artifacts must be kept current, together, **in the same PR** (no separate follow-up
+PR: each one costs a CI run):
 
-1. **Knowledge graph** — run `graphify update .` and commit the refreshed
-   `graphify-out/` (fold it into the next docs-sync commit/PR).
+1. **Knowledge graph** — run `graphify update .` on the branch once the code is final
+   and commit the refreshed `graphify-out/` to that PR.
 2. **Architecture diagram** — update `docs/architecture/architecture-diagram.html`
    whenever the merged PR changed the architecture: components, stages,
    data stores/collections, external services, flows, schedules, or

@@ -1,17 +1,38 @@
+# CI: lint, format, types, tests, build (the `verify` job).
+#
+# Kept lean on Actions minutes: pull requests only (the merge to main re-runs nothing,
+# the PR already tested it), and only when a file this check depends on changed.
+# Docs-only changes (docs/, logs/, graphify-out/, *.md) run no CI at all. Run it by
+# hand from the Actions tab (workflow_dispatch) when needed.
+#
+# `verify` is a REQUIRED status check on main, so a PR that runs no CI cannot merge
+# until it has one: for a docs-only PR, dispatch it on the branch
+# (`gh workflow run ci.yml --ref <branch>`) — see docs/runbooks/ci-and-branch-protection.md.
+# The daily dataset PR touches public/data/**, which is listed below, so it always runs.
 name: CI
 
-# Runs on every PR and on pushes to main. The `verify` job is wired up as a required
-# status check on main, so a red run blocks the merge button — see docs/runbooks/.
 on:
   pull_request:
-  push:
-    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'scripts/**'
+      - 'public/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - 'vite.config.ts'
+      - 'vitest.config.ts'
+      - 'eslint.config.js'
+      - '.prettierrc.json'
+      - '.prettierignore'
+      - '.github/workflows/**'
+  workflow_dispatch:
 
-# A new push to a PR cancels the previous run for that branch. Saves Actions minutes
-# without ever cancelling a run against main.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
