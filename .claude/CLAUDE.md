@@ -40,6 +40,12 @@ See `plan.md` for scope, milestones and the tech-stack rationale.
   change must fail `tsc` on both sides. Never redeclare the dataset shape in the pipeline.
 - **The dataset is a committed artifact.** `public/data/` is checked in, produced by the
   pipeline, refreshed via PR. Never hand-edit it.
+- **PAUSED since 2026-10-09** (the owner's call, until they say otherwise): the
+  `Refresh dataset` workflow is disabled on GitHub, so no cron runs. Turn it back on with
+  `gh workflow enable "Refresh dataset" --repo aakash-tir/genre-explorer`. Before that,
+  note that `verify` is no longer a required check, so the refresh PR's
+  `gh pr merge --auto` would merge without waiting for the tests: re-add `verify` as a
+  required check, or make the workflow wait for it (`gh pr checks --watch`) first.
 - **The refresh is a daily rotation, and it auto-merges.** `refresh-data.yml` rebuilds
   the 66 least-recently-refreshed genres each day and merges the PR itself once `verify`
   is green — a day spent waiting for review is a day the rotation stalls, which is the
@@ -73,9 +79,9 @@ This repo has a GitHub remote, so `main` is protected:
   `scripts/`, `public/`, the manifests and tool configs, the workflows). Nothing runs on
   the merge to `main`. Docs-only PRs (`docs/`, `logs/`, `graphify-out/`, `*.md`) start
   no CI. Any other PR waits for every check that started; `gh pr checks` lists only
-  those. `verify` is still a **required** check on `main`, so a docs-only PR cannot merge
-  without one: dispatch it on the branch (`gh workflow run ci.yml --ref <branch>`) and
-  merge once it is green.
+  those. No check is required on `main` (removed 2026-10-09): GitHub only requires a PR,
+  so a docs-only PR merges without CI. Never merge a code PR whose `verify` is red or
+  still running.
 
 ## Before every PR merge (required)
 

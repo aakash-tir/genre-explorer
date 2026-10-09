@@ -23,9 +23,9 @@ only, and only when a file it depends on changed. It does, in order:
   `index.html`, `package.json`, `package-lock.json`, `tsconfig.json`, the Vite, Vitest,
   ESLint and Prettier configs, and `.github/workflows/`. A PR touching only `docs/`,
   `logs/`, `graphify-out/` or `*.md` starts no CI.
-- **Docs-only PRs and the required check.** `verify` is a required status check on
-  `main`, so a PR that started no CI cannot merge. Dispatch it on the branch and merge
-  once green: `gh workflow run ci.yml --ref <branch>`.
+- **No required check.** Since 2026-10-09 `main` requires a PR but no status check,
+  so a docs-only PR (which starts no CI) can merge. "Never merge a red or running
+  `verify`" is a rule, not something GitHub enforces.
 - **Caveat:** `npm run format:check` is `prettier --check .`, which also covers `*.md`.
   A docs-only PR is not format-checked in CI, so run `npm run format:check` locally
   before opening one, or the next code PR inherits the failure.
@@ -40,13 +40,14 @@ Two layers, because they cover different holes.
 target `main` from inside a Claude Code session. This covers the accident-in-the-moment
 case, and works even if the repo has no server-side protection.
 
-**Server-side** — a GitHub branch protection rule on `main` requiring:
+**Server-side** — a GitHub branch protection rule on `main` (the repo is public, so
+it's free). Current state, 2026-10-09:
 
-- a pull request before merging
-- the **`verify`** status check to pass
-- the branch to be up to date with `main` before merging (`strict`)
-- conversations resolved
+- a pull request before merging (0 approvals: a solo project can't approve its own PR)
 - enforcement for admins too
+- no force pushes, no branch deletion
+- **no required status check.** `verify` was required until 2026-10-09; it was dropped
+  because CI is path-filtered and a docs-only PR never gets the check.
 
 ### Applying it
 
@@ -54,13 +55,12 @@ case, and works even if the repo has no server-side protection.
 gh api -X PUT repos/{owner}/genre-explorer/branches/main/protection \
   --input - <<'JSON'
 {
-  "required_status_checks": { "strict": true, "contexts": ["verify"] },
+  "required_status_checks": null,
   "enforce_admins": true,
   "required_pull_request_reviews": {
     "required_approving_review_count": 0,
     "dismiss_stale_reviews": false
   },
-  "required_conversation_resolution": true,
   "restrictions": null
 }
 JSON
@@ -83,7 +83,12 @@ gh api repos/{owner}/genre-explorer/branches/main/protection \
          conversations: .required_conversation_resolution.enabled}'
 ```
 
-### ⚠️ Current state: server-side protection is NOT active
+### History: server-side protection was not available while the repo was private
+
+Superseded: the repo went public on 2026-08-08 and protection is active now (see
+above). Kept for the record.
+
+#### What happened on 2026-08-04
 
 Attempted on **2026-08-04**. Both APIs refused:
 
@@ -139,8 +144,16 @@ update the architecture diagram if the PR changes the architecture.
 
 ## The dataset refresh workflow
 
+**PAUSED since 2026-10-09** (the owner's call, until they say otherwise): the
+`Refresh dataset` workflow is disabled on GitHub, so no cron runs. Turn it back on with
+`gh workflow enable "Refresh dataset" --repo aakash-tir/genre-explorer`. Before that,
+note that `verify` is no longer a required check, so the refresh PR's
+`gh pr merge --auto` would merge without waiting for the tests: re-add `verify` as a
+required check, or make the workflow wait for it (`gh pr checks --watch`) first.
+
 `.github/workflows/refresh-data.yml` rebuilds `public/data/` and opens a PR. Its `cron`
-schedule is **live**: `0 4 * * 0`, Sundays 04:00 UTC. It can also be run by hand with
+schedule is `0 4 * * *`, daily at 04:00 UTC (it was weekly, Sundays, before the
+daily rotation). It can also be run by hand with
 `workflow_dispatch`.
 
 It was deliberately left commented out until the pipeline existed — a stub that fails
