@@ -2,8 +2,8 @@
 
 ## The gate
 
-`.github/workflows/ci.yml` defines one job, **`verify`**, which runs on every pull request
-and on pushes to `main`. It does, in order:
+`.github/workflows/ci.yml` defines one job, **`verify`**, which runs on pull requests
+only, and only when a file it depends on changed. It does, in order:
 
 1. `npm ci`
 2. `npm run lint`
@@ -13,6 +13,23 @@ and on pushes to `main`. It does, in order:
 6. `npm run build`
 
 `npm run verify` runs the identical sequence locally. Run it before opening a PR.
+
+### Lean on Actions minutes (since 2026-10-09)
+
+- **PR-only.** There is no `push: main` trigger: the PR already tested the exact code,
+  so the merge re-ran the same suite for nothing.
+- **Path-filtered.** The workflow's `on.pull_request.paths` lists what `verify` reads:
+  `src/`, `tests/`, `scripts/`, `public/` (so the daily dataset PR always runs it),
+  `index.html`, `package.json`, `package-lock.json`, `tsconfig.json`, the Vite, Vitest,
+  ESLint and Prettier configs, and `.github/workflows/`. A PR touching only `docs/`,
+  `logs/`, `graphify-out/` or `*.md` starts no CI.
+- **Docs-only PRs and the required check.** `verify` is a required status check on
+  `main`, so a PR that started no CI cannot merge. Dispatch it on the branch and merge
+  once green: `gh workflow run ci.yml --ref <branch>`.
+- **Caveat:** `npm run format:check` is `prettier --check .`, which also covers `*.md`.
+  A docs-only PR is not format-checked in CI, so run `npm run format:check` locally
+  before opening one, or the next code PR inherits the failure.
+- Any PR waits for every check that started; `gh pr checks` lists only those.
 
 ## Branch protection on `main`
 
@@ -90,7 +107,7 @@ Branch protection and rulesets on **private** repositories require a paid GitHub
   `git merge` and `git push` against `main` from inside Claude Code sessions.
 - **A plain `git push origin main` from a normal terminal will succeed.** There is
   nothing server-side stopping it.
-- **CI still runs** on every PR and push to `main` — it just cannot _block_ a merge.
+- **CI still runs** on every PR that touches its inputs — it just cannot _block_ a merge.
   A red run is visible, not enforced.
 
 Three ways out, in rough order of cost:
@@ -117,8 +134,8 @@ gh pr merge --squash --delete-branch
 git switch main && git pull
 ```
 
-Then the post-merge artifacts, per `.claude/CLAUDE.md`: refresh `graphify-out/`, and
-update the architecture diagram if the merge changed the architecture.
+Before merging, in the same PR (per `.claude/CLAUDE.md`): refresh `graphify-out/`, and
+update the architecture diagram if the PR changes the architecture.
 
 ## The dataset refresh workflow
 

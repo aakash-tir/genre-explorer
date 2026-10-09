@@ -24,12 +24,16 @@
       not a checkbox
 - [ ] `docs/future.md` updated if anything was deferred or discovered
 - [ ] Today's `logs/YYYY-MM-DD.md` entry written (what · why · how)
+- [ ] Every CI check that started is green (CI is path-filtered and PR-only; a docs-only
+      PR starts none — dispatch `verify` with `gh workflow run ci.yml --ref <branch>`,
+      since it is a required check on `main`)
 
-## After merging — required artifacts
+## Before merging — required artifacts (in this PR, never a follow-up PR)
 
 Both are kept current together, per `.claude/CLAUDE.md`:
 
-- [ ] **Knowledge graph** — `graphify update .`, commit the refreshed `graphify-out/`
+- [ ] **Knowledge graph** — `graphify update .` on this branch, commit the refreshed
+      `graphify-out/` to this PR
 - [ ] **Architecture diagram** — update `docs/architecture/architecture-diagram.html` if
       this PR changed components, pipeline stages, data stores, external services, flows,
       schedules or retention. Use the `architecture-diagram` skill's MANUAL workflow and
