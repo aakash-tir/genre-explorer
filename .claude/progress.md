@@ -2,7 +2,14 @@
 
 **Current milestone: 7 — Keep it alive** (complete — v1 is live)
 
-The weekly refresh workflow is live: Sundays 04:00 UTC, `refresh-data.yml` rebuilds
+**PAUSED since 2026-10-09** (the owner's call, until they say otherwise): the
+`Refresh dataset` workflow is disabled on GitHub, so no cron runs. Turn it back on with
+`gh workflow enable "Refresh dataset" --repo aakash-tir/genre-explorer`. Before that,
+note that `verify` is no longer a required check, so the refresh PR's
+`gh pr merge --auto` would merge without waiting for the tests: re-add `verify` as a
+required check, or make the workflow wait for it (`gh pr checks --watch`) first.
+
+When it runs, the refresh workflow is: Sundays 04:00 UTC, `refresh-data.yml` rebuilds
 the dataset and opens a PR. Cold runs exceed the 6-hour job limit, so the Actions
 cache doubles as cross-run resume, and scheduled runs prune only the volatile cache
 (tree, counts, searches, rankings) while keeping stable id mappings (links, Deezer
